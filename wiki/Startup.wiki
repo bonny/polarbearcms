@@ -1,0 +1,5 @@
+#labels install,setup,start
+$_GET["polarbear-page"] = 10;
+include("./polarbear/polarbear-boot.php");
+include("mall.php");
+exit;
