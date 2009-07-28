@@ -1,1 +1,2 @@
+#labels Featured
 The documentation is a bit messy right now since I'm moving all the docs from my local Wiki to Google Code.
