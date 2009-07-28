@@ -1,0 +1,12 @@
+#labels install,checkout
+    *  Hämta nyaste versionen från SVN och sparar i mappen "polarbear-latest"
+          o "bleeding edge"
+                + svn export http://marsapril.unfuddle.com/svn/marsapril_main/polarbear polarbear-latest
+          o senaste "stabila"
+                + svn export http://marsapril.unfuddle.com/svn/marsapril_main/polarbear2.0 polarbear-2.0
+    * Ladda upp den exporterade mappen till den nya servern
+    * Ställ in databasen i polarbear-config.php
+    * kör install.php för att skapa tabeller och användare
+    * skapa mapp polarbear-storage och sätt skrivrättigheter. Skapa undermapparna files, cache, dwoo
+    * ta bort install.php!!!
+    * skapa artiklar...
