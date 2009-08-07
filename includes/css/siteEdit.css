@@ -1,0 +1,35 @@
+#polarbear-site-edit-tab {
+	position: fixed;
+	background-color: #1F1450;
+	width: 170px;
+	color: white;
+	left: -200px;
+	xtop: 100px;
+	bottom: 0px;
+	opacity: .9;
+	padding: 15px;
+	font-family: arial, verdana, sans-serif;
+	font-size: 14px;
+}
+#polarbear-site-edit-tab a:link,
+#polarbear-site-edit-tab a:visited,
+#polarbear-site-edit-tab a:hover,
+#polarbear-site-edit-tab a:active {
+	color: white;
+	text-decoration: underline;
+}
+#polarbear-site-edit-tab-logo {
+	position: absolute;
+	left: 200px;
+	top: 0;
+	cursor: pointer;
+}
+#polarbear-site-edit-tab-logo img {
+	border: 0;
+}
+
+.pb-site-edit-msg {
+	font-weight:  bold;
+	padding: 1ex;
+	border: 2px solid #938EAF;
+}
