@@ -1,0 +1,516 @@
+
+/**
+ * common stuff
+ */
+
+html, body {
+	min-height: 100%;
+}
+
+h1, h2, h3, h4, h5, h6 {
+font-weight: bold;
+}
+
+ul {
+	list-style-type: disc;
+	margin-left: 20px;
+}
+
+.nav-userinfo {
+	xmargin-top: 2em;
+	font-weight: bold;
+}
+#content {
+	xbackground: #aaa;
+	margin-left: 250px;
+}
+body{
+	font-size: 14px;
+	font-family: "Segoe UI", arial, verdana, sans-serif;
+	color: #444;
+}
+
+/* overridar lite theme-grejjer eftersom jag vill kunna ladda hem senaste jqueryui utan att riskera att skriva över egna saker */
+.ui-widget {
+	font-family: "Segoe UI", arial, verdana, sans-serif;
+	font-size: 1em;
+}
+.ui-accordion .ui-accordion-content {
+	padding: .5em 1em .5em 2em;
+}
+.ui-widget-overlay {
+	opacity: .6;
+}
+
+
+/* filament group buttons*/
+	.fg-button { outline: 0; margin:0 4px 0 0; padding: .4em 1em; text-decoration:none !important; cursor:pointer; position: relative; text-align: center; zoom: 1; }
+	.fg-button .ui-icon { position: absolute; top: 50%; margin-top: -8px; left: 50%; margin-left: -8px; }
+
+	a.fg-button { float:left; }
+
+	/* remove extra button width in IE */
+	button.fg-button { width:auto; overflow:visible; }
+
+	.fg-button-icon-left { padding-left: 2.1em; }
+	.fg-button-icon-right { padding-right: 2.1em; }
+	.fg-button-icon-left .ui-icon { right: auto; left: .2em; margin-left: 0; }
+	.fg-button-icon-right .ui-icon { left: auto; right: .2em; margin-left: 0; }
+
+	.fg-button-icon-solo { display:block; width:8px; text-indent: -9999px; }	 /* solo icon buttons must have block properties for the text-indent to work */
+
+	.fg-buttonset { float:left; }
+	.fg-buttonset .fg-button { float: left; }
+	.fg-buttonset-single .fg-button,
+	.fg-buttonset-multi .fg-button { margin-right: -1px;}
+
+	.fg-toolbar { padding: .5em; margin: 0;  }
+	.fg-toolbar .fg-buttonset { margin-right:1.5em; padding-left: 1px; }
+	.fg-toolbar .fg-button { font-size: 1em;  }
+
+/* end theme-stuff*/
+
+
+a:focus {
+	outline: 1px dotted #333;
+}
+.clearer {
+display: block; clear: both;
+}
+
+/*
+a:link,
+a:visited,
+a:hover,
+a:active {
+color: black;
+text-decoration: underline;
+}
+*/
+a {
+	color: black;
+	text-decoration: underline;
+}
+h1 {
+	font-weight: normal;
+	font-size: 1.6em;
+}
+
+h2 {
+	border-top: 1px solid #ccc;
+	background-color: #eee;
+	margin: 1em 0 1em 0;
+	padding: .5ex;
+}
+
+.okmsg, .errmsg {
+	padding: 1em;
+	font-weight: bold;
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+.errmsg {
+	background-color: #F7D2D2;
+	border: 2px solid #bbb;
+}
+.okmsg {
+	background-color:#CFEEC8;
+	border: 2px solid #aaa;
+}
+
+p {
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+
+
+/**
+* knappar 
+*/
+.buttons {
+height: 26px;
+background-color: #dde;
+padding: 3px 3px 3px 3px;
+}
+.buttons a {
+xheight: 18px;
+}
+a.button:link,
+a.button:visited,
+a.button:hover,
+a.button:active
+{
+border-top: 1px solid #eee;
+border-left: 1px solid #eee;
+border-bottom: 1px solid #999;
+border-right: 1px solid #999;
+xfont-weight: bold;
+text-decoration: none;
+color: black;
+background-color: #eee;
+padding: 3px 3px 3px 3px;
+float: left;
+margin: 0 10px 0 0;
+}
+
+a.button:hover {
+background-color: #f5f5f5;
+}
+
+a.button-disabled:link,
+a.button-disabled:visited,
+a.button-disabled:hover,
+a.button-disabled:active
+{
+color: #ccc;
+border-color: #ccc;
+cursor: default;
+opacity: 0.5;
+}
+
+/* end knappar */
+
+
+/**
+ * formulär 
+ */
+.fields .group {
+	clear: both;
+	width: 99%;
+	margin: 0 0 1em 0;
+}
+.fields .group label {
+	font-weight: bold;
+	display: block;
+}
+.fields .col {
+	float: left;
+	margin-right: .5ex;
+}
+.fields .col label, .fields .full label {
+	font-weight: normal;
+	color: #666;
+}
+.fields .col.left, .fields .col.right {
+	width: 48%;
+	margin: 0;
+}
+.fields .col.left {
+	float:left;
+}
+.fields .col.right {
+	float:right;
+	margin-right: 1%;
+}
+.fields .col.left input, .fields .col.right input, .fields .full, .fields .full input {
+width: 98%;
+}
+.fields .full {
+clear: both;
+}
+.fields .col, .fields .full {
+	height: 3.25em;
+}
+.fields .col label, .fields .full label {
+	position: relative;
+	/*top: 1.5em;*/
+}
+.fields .col input, .fields .full input,
+.fields .col span, .fields .full span
+ {
+	position: relative;
+	/*top: -1em;*/
+}
+.fields h3 {
+display: block;
+clear: both;
+margin: 0 0 .5em 0;
+padding-top: .5em;
+border-top: 1px solid #ccc;
+}
+.fields .checkboxes input {
+	display: block;
+}
+.fields .checkboxes label {
+	font-weight: normal;
+	margin: -1em 0 0 25px;
+}
+.fields .actions {
+margin-top: 1.25em;
+border-bottom: 1px solid #ccc;
+padding: .5em;
+background: #f6f6f6;
+}
+/* end formulär */
+
+
+/**
+ * Page "settings"
+ */
+.polarbear-page-settings-frm textarea {
+	width: 75%;
+	height: 10em;
+}
+.polarbear-page-settings-frm .settings-list-required,
+.polarbear-page-settings-frm .settings-list
+ {
+margin-top: 1em;
+}
+.polarbear-page-settings-frm .settings-list-required li,
+.polarbear-page-settings-frm .settings-list li
+ {
+margin-top: 1em;
+}
+/* make some required fiels a bit smaller */
+.polarbear-page-settings-frm li.imagemagick_path textarea,
+.polarbear-page-settings-frm li.attachpath textarea,
+.polarbear-page-settings-frm li.imagemagickpath textarea,
+.polarbear-page-settings-frm li.storagepath textarea,
+.polarbear-page-settings-frm li.usemodrewrite textarea,
+.polarbear-page-settings-frm li.article404 textarea
+ {
+	height: 1em;
+}
+
+
+/**
+ * Page "Users"
+ */
+.polarbear-page-users div.users-view-one-user p {
+	margin-bottom: 1em;
+}
+.polarbear-page-users .droppable-active {
+background-color: lightyellow;
+}
+.polarbear-page-users .droppable-hover {
+background-color: yellow;
+}
+       
+.polarbear-page-users ul {
+    clear: both;
+}
+
+.users-view-one-user p {
+margin-top: 0;
+}
+.users-view-one-user h3 {
+margin-top: .5em;
+}
+#users-userdetails {
+margin-top: .5em;
+}
+
+#users-group-list a, #users-userlist a {
+    /*display: block;*/
+    /*padding: 4px;*/
+    color: black;
+    text-decoration: none;
+} 
+#users-group-list a:hover, #users-userlist a:hover {
+    xbackground-color: #eee;
+    text-decoration: underline;
+} 
+#users-group-list a.group-active, #users-userlist a.user-active {
+    xbackground-color: #ddd;
+    font-weight: bold;
+} 
+
+#users-groups li.groupID-latestChanged, #users-groups li.groupID-admins {
+    margin-bottom: 5px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 5px;
+}
+    
+#users-groups li,
+#users-userlist li
+{
+/*position: relative;*/
+xmargin-right: 1em;
+margin-bottom: 4px;
+margin-top: 4px;
+}
+
+#users-groups li a {
+xpadding-right: 1em;
+}
+#users-groups li .group-count {
+/*position: absolute;*/
+top: 6px;
+right: 0;
+color: #666;
+font-size: .8em;
+margin-right: 1ex;
+}
+
+#user_edit_values_container .col{
+margin-top: .5em;
+}
+#users-edit-change-password {
+margin-top: 0;
+}
+
+
+.module {
+	xfont-size: 1.2em;
+}
+
+.module-menu-global {
+	margin: 1em 0 0 1em;
+}
+.module-menu-global li {
+	margin-top: .5em;
+}
+
+.tree li a,
+.tree .tree-default li a, .tree .tree-default li span
+ {
+
+}
+
+input.text {
+	padding: .3em;
+}
+textarea {
+	padding: .3em;
+}
+
+#article-edit-form {
+	margin-left: 15px;
+}
+#article-edit-form #article-title {
+	font-size: 1.1em;
+}
+#article-edit-form label {
+	display: block;
+	font-weight: bold;
+}
+#article-edit-form label.for-checkbox,
+#article-edit-form label.for-radio
+ {
+	display: inline;
+	font-weight: normal;
+}
+#article-edit-form input.text {
+	width: 98%;
+	padding: .4em;
+}
+#article-edit-form textarea {
+	width: 100%;
+}
+#article-shortName-change-input-wrapper input.text {
+	width: auto;
+}
+#article-edit-form div.row {
+	margin-top: 1em;
+}
+
+#article-edit-form .primary {
+	float: left;
+	width: 55%;
+}
+#article-edit-form .secondary {
+	float: right;
+	width: 40%;
+	padding: 1em 1em 1em 1em;
+	
+}
+
+#article-teaser {
+	height: 6em;
+}
+#article-body {
+	height: 16em;
+}
+
+.polarbear-afterbuttons {
+	float: left;
+	margin-top: .5em;
+}
+.polarbear-afterbuttons-text {
+	float: left;
+	margin-left: 1ex;
+	margin-right: 1ex;
+}
+
+fieldset {
+	border: 1px solid #ccc;
+	padding: 1em;
+	width: 95%;
+	margin-top: 1em;
+}
+
+#article-shortName-preview:hover {
+background-color: #FFFFD3;
+}
+
+ul.polarbear-article-edit-fields-repeatable {
+list-style-type: none;
+margin: 0;
+}
+ul.polarbear-article-edit-fields-repeatable li {
+	margin: 0em 0 0 0;
+	padding: 0em 1em 1em 1em;
+	border-top: 1px solid #ccc;
+}
+ul.polarbear-article-edit-fields-repeatable li:hover {
+	background-color: #FFF9DD;
+	cursor: move;
+}
+ul.polarbear-article-edit-fields-repeatable li.active {
+	background-color: #FFF4C2;
+}	
+
+ul.polarbear-article-edit-fields-repeatable label {
+	xmargin-top: 1em;
+	padding-top: 1em;
+}
+#article-edit-form ul.polarbear-article-edit-fields-repeatable input.text,
+#article-edit-form ul.polarbear-article-edit-fields-repeatable textarea,
+#article-edit-form ul.polarbear-article-edit-fields-repeatable label
+{
+	width: 90%;
+}
+
+.polarbear-article-edit-fields-repeatable-remove {
+float: right;
+margin-top: 1em;
+}
+
+.polarbear-article-edit-fields-nonrepeatable {
+	margin: 0;
+	list-style-type: none;
+}
+
+.pb-leftframe-meta {
+	border-top: 1px solid #ccc;
+	padding: 0 10px 10px 10px;
+}
+
+/* tags */
+.pb-tags-south, .maj-tags-south {
+	clear: both;
+}
+#pb-article-edit-tags .maj-tags-north ul {
+list-style-type: none;
+margin: 0;
+}
+#pb-article-edit-tags .maj-tags-link-edit {
+	display: block;
+	margin-top: 1em;
+}
+#article-edit-form #pb-article-edit-tags .maj-tags-north ul label {
+	display: inline;
+	font-weight:  normal;
+}
+#article-edit-form #pb-article-edit-tags .maj-tags-north ul ul {
+	margin-left: 20px;
+}
+
+#pb-article-edit-tags ul {
+clear: both;
+}
+#pb-article-edit-tags ul li {
+/* float: left; */
+margin: 0 10px 0 0;
+font-size: 12px;
+}
