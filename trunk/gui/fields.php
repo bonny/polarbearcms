@@ -153,7 +153,7 @@ if ($action == "fieldCollectionEditSave") {
 				$sql = "UPDATE " . POLARBEAR_DB_PREFIX . "_fields SET ";
 				$sqlWhere = " WHERE id = $fieldID";
 			} else {
-				$sql = "INSERT INTO polarbear_fields SET ";
+				$sql = "INSERT INTO " . POLARBEAR_DB_PREFIX . "_fields SET ";
 				$sqlWhere = "";
 			}
 			$sql .= " name = '$fieldName', ";
