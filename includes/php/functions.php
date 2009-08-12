@@ -970,7 +970,7 @@ function polarbear_getFieldForArticleEdit($articleID, $fieldID, $numInSet = 0) {
 	if (is_numeric($numInSet)) {
 		$sql = "SELECT value FROM " . POLARBEAR_DB_PREFIX . "_fields_values WHERE articleID = '$articleID' AND fieldID = $fieldID AND numInSet = $numInSet";
 		$fieldValue = $polarbear_db->get_var($sql);
-		$fieldValue = htmlspecialchars ($fieldValue, ENT_COMPAT, "UTF-8");
+		$fieldValue = htmlspecialchars ($fieldValue, ENT_QUOTES, "UTF-8");
 	}
 	if ($fieldType == "multichoice") {
 		$arrChoices = explode("\n", $fieldContentUnserialized["multichoiceChoices"]);
