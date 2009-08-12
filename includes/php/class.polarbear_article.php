@@ -1498,7 +1498,7 @@ class PolarBear_Article {
 	 * Loops through all, or some children (according to $options) and outputs template
 	 * Great for outputing lists with news or stuff like that 
 	 * Has two special formatting keywords that output() does not have: 
-	 * {$cssFirst} and {$cssLast}. Good for styling
+	 * {$cssFirst}, {$cssLast} and {$loopNum}. Good for styling
 	 * Also {$editAdd} will only be added for the first item
 	 *
 	 * @param string $format
@@ -1513,7 +1513,10 @@ class PolarBear_Article {
 			$cssFirst = ($i==0) ? "first" : "";
 			$cssLast = ($i==$count-1) ? "last" : "";
 			$editAdd = ($i==0) ? '{$editAdd}' : "";
-			$formatTmp = str_replace('{$cssFirst}', $cssFirst, $format);
+			$loopNum = $i;
+			$formatTmp = $format;
+			$formatTmp = str_replace('{$loopNum}', $loopNum, $formatTmp);
+			$formatTmp = str_replace('{$cssFirst}', $cssFirst, $formatTmp);
 			$formatTmp = str_replace('{$cssLast}', $cssLast, $formatTmp);
 			$formatTmp = str_replace('{$editAdd}', $editAdd, $formatTmp);
 			$out .= $children[$i]->output($formatTmp);
