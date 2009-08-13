@@ -100,40 +100,26 @@ function users_get_selected_user_id(){
 // add custom value
 $("#user_edit_value_add").live("click", function() {
 
-	var html = '<div class="col full">';
-	html += '<label>';
-	html += '<select style="float:left" class="user_edit_values_select"><option>Choose label for this value</option><option>New label...</option>';
-	<?php
-	// add all existing unique labels
-	$arrLabels = pb_users_values_all_unique_labels();
-	foreach ($arrLabels as $oneLabel) {
-		?>
-		html += '<option value="<?php echo htmlspecialchars($oneLabel, ENT_COMPAT, "UTF-8") ?>"><?php echo htmlspecialchars($oneLabel, ENT_COMPAT, "UTF-8") ?></option>';
-		<?php
-	}
-	?>
-	html += '</select>';
-	html += '<a class="user_edit_values_remove" style="float:left" title="Remove this custom value" class="" href=""><span class="ui-icon ui-icon-trash"></span></a>'
-	html += '</label>';
-	html += '<input type="text" class="user-edit-custom-value-thevalue text ui-widget-content ui-corner-all" value="" />';
-	html += '</div>';
-
-	$("#user_edit_values_container").append(html);
+	var html = $.post("<?php polarbear_webpath() ?>/gui/users.php", { action: "getUserValuesEditBox" }, function(data) {
 	
-	// listener for the drop down
-	$("select.user_edit_values_select").change(function(){
-		if (this.selectedIndex==1) {
-			// new
-			var name = prompt("Enter value label\n(i.e. 'nickname', 'City', 'Favorite color', etc.):");
-			if (name) {
-				$(this).append("<option>"+name+"</option>");
-				this.selectedIndex = this.length-1;
-				$(this).parent().parent().find("input").focus();
+	$("#user_edit_values_container").append(data);
+	
+		// listener for the drop down
+		$("select.user_edit_values_select").change(function(){
+			if (this.selectedIndex==1) {
+				// new
+				var name = prompt("Enter value label\n(i.e. 'nickname', 'City', 'Favorite color', etc.):");
+				if (name) {
+					$(this).append("<option>"+name+"</option>");
+					this.selectedIndex = this.length-1;
+					$(this).parent().parent().find("input").focus();
+				} else {
+					this.selectedIndex=0;
+				}
 			} else {
-				this.selectedIndex=0;
 			}
-		} else {
-		}
+		});
+	
 	});
 
 });
