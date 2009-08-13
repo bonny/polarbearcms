@@ -384,7 +384,7 @@ function polarbear_time2str($ts)
 function admin_get_user_group_list() {
 	global $polarbear_db;
 	$numUsers = $polarbear_db->get_var("SELECT COUNT(id) FROM " . POLARBEAR_DB_PREFIX . "_users WHERE isDeleted = 0");
-	$numAdminUsers = $polarbear_db->get_var("SELECT COUNT(userID) FROM " . POLARBEAR_DB_PREFIX . "_users_groups_relation INNER JOIN polarbear_users as a on a.id = userID WHERE a.isDeleted = 0 AND groupID = 1");
+	$numAdminUsers = $polarbear_db->get_var("SELECT COUNT(userID) FROM " . POLARBEAR_DB_PREFIX . "_users_groups_relation INNER JOIN " . POLARBEAR_DB_PREFIX . "_users as a on a.id = userID WHERE a.isDeleted = 0 AND groupID = 1");
 	?>
 	<ul id="users-groups">
 		<!-- fasta / virtuella grupper -->
@@ -411,7 +411,7 @@ function admin_get_user_group_list() {
 		{
 			foreach ($r as $oneGroup)
 			{
-				$numGroupUsers = $polarbear_db->get_var("SELECT COUNT(userID) FROM " . POLARBEAR_DB_PREFIX . "_users_groups_relation INNER JOIN polarbear_users as a on a.id = userID WHERE a.isDeleted = 0 AND groupID = $oneGroup->id");
+				$numGroupUsers = $polarbear_db->get_var("SELECT COUNT(userID) FROM " . POLARBEAR_DB_PREFIX . "_users_groups_relation INNER JOIN " . POLARBEAR_DB_PREFIX . "_users as a on a.id = userID WHERE a.isDeleted = 0 AND groupID = $oneGroup->id");
 				echo "<li><a class='groupID-{$oneGroup->id}' href='#'>$oneGroup->name</a>\n<span class='group-count'>$numGroupUsers</span></li>\n";
 			}
 		}
