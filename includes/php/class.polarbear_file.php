@@ -186,6 +186,8 @@ class PolarBear_File {
 			$image = "film.png";
 		} elseif (strpos($this->mime, "audio/") !== false) {
 			$image = "sound_none.png";
+		} elseif (strpos($this->mime, "application/pdf") !== false) {
+			$image = "page_white_acrobat.png";
 		} else {
 			$image = "attach.png";
 		}
