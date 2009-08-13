@@ -204,22 +204,19 @@ function polarbear_require_admin() {
  * Ref: http://se2.php.net/manual/en/function.mime-content-type.php#87856
  * Extended av Pär/MarsApril
  */
-if(!function_exists('mime_content_type')) {
-
-    function mime_content_type($filename) {
-		$mime_types = polarbear_getMimeTypes();
-        $ext = strtolower(array_pop(explode('.',$filename)));
-        if (array_key_exists($ext, $mime_types)) {
-            return $mime_types[$ext];
-        } elseif (function_exists('finfo_open')) {
-            $finfo = finfo_open(FILEINFO_MIME);
-            $mimetype = finfo_file($finfo, $filename);
-            finfo_close($finfo);
-            return $mimetype;
-        }
-        else {
-            return 'application/octet-stream';
-        }
+function pb_mime_content_type_by_name($filename) {
+	$mime_types = polarbear_getMimeTypes();
+    $ext = strtolower(array_pop(explode('.',$filename)));
+    if (array_key_exists($ext, $mime_types)) {
+        return $mime_types[$ext];
+    } elseif (function_exists('finfo_open')) {
+        $finfo = finfo_open(FILEINFO_MIME);
+        $mimetype = finfo_file($finfo, $filename);
+        finfo_close($finfo);
+        return $mimetype;
+    }
+    else {
+        return 'application/octet-stream';
     }
 }
 

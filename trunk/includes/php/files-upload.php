@@ -59,7 +59,14 @@ if ($file_error !== UPLOAD_ERR_OK) {
 } else {
 	
 	// hämta in info om filen
-	$filemime = mime_content_type($_FILES["Filedata"]["name"]);
+/*
+<br />
+<b>Warning</b>:  mime_content_type(Bild 1.png) [<a href='function.mime-content-type'>function.mime-content-type</a>]: 
+failed to open stream: No such file or directory in <b>/Users/marsapril/www.marsapril.se/polarbear/includes/php/files-upload.php</b> 
+on line <b>62</b><br />
+ok
+*/
+	$filemime = pb_mime_content_type_by_name($_FILES["Filedata"]["name"]);
 	$filename = $_FILES["Filedata"]["name"];
 	$filesize = $_FILES["Filedata"]["size"];
 	$filetmpname = $_FILES["Filedata"]["tmp_name"];
