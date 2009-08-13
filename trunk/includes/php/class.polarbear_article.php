@@ -1334,7 +1334,7 @@ class PolarBear_Article {
 	 * So for example a teaser with only an empty paragraph is considered empty
 	 */
 	function hasTeaser() {
-		$teaser = strip_tags($this->teaser);
+		$teaser = strip_tags($this->teaser, "<img><a>");
 		$teaser = trim($teaser);
 		if (empty($teaser)) {
 			return false;
@@ -1349,7 +1349,7 @@ class PolarBear_Article {
 	 * So for example a teaser with only an empty paragraph is considered empty
 	 */
 	function hasBody() {
-		$body = strip_tags($this->body, "<img>");
+		$body = strip_tags($this->body, "<img><a>");
 		$body = trim($body);
 		if (empty($body)) {
 			return false;
