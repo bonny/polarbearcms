@@ -57,7 +57,7 @@ function polarbear_article_onload() {
 		theme_advanced_toolbar_location : "top",
 		theme_advanced_toolbar_align : "left",
 		theme_advanced_statusbar_location : "bottom",
-		theme_advanced_buttons1 : "bold,italic,|,strikethrough,|,bullist,numlist,|,pastetext,|,undo,redo,|,cleanup,code",
+		theme_advanced_buttons1 : "bold,italic,|,strikethrough,|,bullist,numlist,outdent,indent,|,pastetext,|,undo,redo,|,cleanup,code",
 		theme_advanced_buttons2 : "link,unlink,image,media,|,formatselect<?php print ($tinymce_theme_advanced_styles)?",styleselect":"" ?>,|,tablecontrols",
 		theme_advanced_buttons3 : "",
 		theme_advanced_styles : "<?php echo $tinymce_theme_advanced_styles ?>",
@@ -656,6 +656,7 @@ $("a.polarbear-article-edit-fields-file-choose").live("click", function() {
 	$("#polarbear-article-edit-fields-files-dialog").dialog("open");
 	var iframe = $("#polarbear-article-edit-fields-files-dialog iframe").attr("src", "<?php polarbear_webpath() ?>gui/fileBrowser.php?field_name=src&url=&type=fieldFile");
 	
+	return false;
 });
 
 
