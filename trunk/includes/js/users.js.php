@@ -4,7 +4,10 @@ require_once("../../polarbear-boot.php");
 ?>
 function users_add_listener(where) {
 	where = where || "groups";
+	
 	if (where == "groups") {
+		
+		// click on group = view group members
 		$("#users-groups a").click(function(){
 			$("#users-group-members").text("Loading ...");
 			this.blur();
@@ -25,7 +28,10 @@ function users_add_listener(where) {
 			$("#users-group-members").load("gui/users.php", {
 				action: "users_getUsersInGroup",
 				groupID: this.className
-			}, function() { users_add_listener("users") });
+			}, function() {
+				users_add_listener("users");
+				$(".users-group-selectsort").css("visibility", "visible");
+			});
 			
 			
 		});
@@ -42,6 +48,7 @@ function users_add_listener(where) {
 
 	} else if (where == "users") {
 		
+		// click on user name = view user
 		$("#users-userlist a").click(function(){
 			$("#users-userdetails").text("Loading...");
 			this.blur();
@@ -58,7 +65,7 @@ function users_add_listener(where) {
 		*/
 
 	}
-
+	
 }
 
 function users_select_group(groupID){
@@ -131,6 +138,18 @@ $(".user_edit_values_remove").live("click", function() {
 	} else {
 	}
 	return false;
+});
+
+
+$(".users-group-selectsort input[type=button]").live("click", function() {
+	$("#users-group-members").load("gui/users.php", {
+		action: "users_getUsersInGroup",
+		groupID: $("#users-groups a").attr("className"),
+		orderBy: $(".users-group-selectsort select option:selected").attr("value")
+	}, function() {
+		users_add_listener("users");
+//		$(".users-group-selectsort").css("visibility", "visible");
+	});
 });
 
 polarbear_page_users_onload();

@@ -46,10 +46,13 @@ if ($_POST["action"] == "users_getUsersInGroup")
 	$matches = array();	
     preg_match("/groupID-([\w]*)/", $groupID, $matches);
 	$groupID = $matches[1];
+	$orderBy = $_POST["orderBy"];
+	if (!$orderBy) { $orderBy = "firstName"; }
 	if ($groupID == "admins") { $groupID = 1; }
     if ($groupID == "all") {
         // hämta alla
         $sql = "SELECT id as userID, firstName, lastName, email FROM " . POLARBEAR_DB_PREFIX . "_users where isDeleted = 0";
+	    $sql .= " order by $orderBy";
     } elseif ($groupID == "latest") {
 		// hämta senast tillagda
 		$sql = "SELECT id as userID, firstName, lastName, email FROM " . POLARBEAR_DB_PREFIX . "_users where isDeleted = 0 ORDER BY dateCreated DESC LIMIT 5";
@@ -59,6 +62,7 @@ if ($_POST["action"] == "users_getUsersInGroup")
     } else  {
         // hämta specifik grupp
         $sql = "SELECT userID, firstName, lastName, email FROM " . POLARBEAR_DB_PREFIX . "_users_groups_relation INNER JOIN " . POLARBEAR_DB_PREFIX . "_users as u ON u.id = userID WHERE groupID = $groupID and u.isDeleted = 0";
+	    $sql .= " order by $orderBy";
     }
     if ($users = $polarbear_db->get_results($sql))
     {
@@ -71,7 +75,11 @@ if ($_POST["action"] == "users_getUsersInGroup")
 			} else{
 				$nameToShow = $user->email;
 			}
-            echo "<li><a href='#' class='userID-$user->userID'>$nameToShow</a></li>";
+			$strEmail = "";
+			if ($user->email) {
+				$strEmail = " <span class='email'>{$user->email}</span>";
+			}
+            echo "<li><a href='#' class='userID-$user->userID'>$nameToShow</a>$strEmail</li>";
         }
         echo "</ul>";
     } else
@@ -235,6 +243,14 @@ if ($_POST["action"] == "users_viewOneUser") {
 				echo "<p>$one->value</p>";
 			}
 		}
+
+		// last login
+		echo "<h4>Last login</h4>";
+		if ($user->dateLastLogin) {
+			echo $user->dateLastLogin . " (". polarbear_time2str($user->dateLastLogin) . ")";
+		} else {
+			echo "Never";
+		}
 		?>
 		
 	</div>
@@ -375,6 +391,18 @@ if ($_POST["action"] == "users_createNewGroup") {
 		
 			<div class="ui-layout-west">
 				<!-- west = användarbrowser -->
+				<div class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix">
+					<? // polarbear_msg xxx ?>
+					<div style="padding: .3em 0 .3em 0;font-weight:normal;visibility:hidden;" class="users-group-selectsort">
+						Sort by
+						<select>
+							<option value="firstName">First name</option>
+							<option value="lastName">Last name</option>
+							<option value="email">E-mail</option>
+						</select>
+						<input type="button" value="Ok" />
+					</div>
+				</div>
 				<div id="users-group-members" class="clearer ui-layout-content"></div>
 			</div>
 			<div class="ui-layout-center">

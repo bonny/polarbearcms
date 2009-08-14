@@ -11,6 +11,7 @@ class PolarBear_User {
 		$email,
 		$dateCreated,
 		$dateChanged,
+		$dateLastLogin,
 		$isDeleted,
 		$arrGroups,
 		$isAdmin,
@@ -71,6 +72,7 @@ class PolarBear_User {
 		$this->password = $r->password;
 		$this->dateCreated = $r->dateCreated;
 		$this->dateChanged = $r->dateChanged;
+		$this->dateLastLogin = $r->dateLastLogin;
 		$this->isDeleted = $r->isDeleted;
 		$this->loginToken = $r->loginToken;
 	}
@@ -296,6 +298,7 @@ class PolarBear_User {
 		return $arr;
 		
 	}
+
 
 }
 ?>
