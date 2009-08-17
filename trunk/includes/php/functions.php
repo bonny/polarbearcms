@@ -1597,6 +1597,9 @@ function polarbear_boot() {
 		pb_event_attach("pb_page_contents", "pb_add_site_edit");
 		pb_event_attach("pb_page_contents", "pb_add_site_stats");
 	}
+	
+	// enable shortcodes
+	pb_event_attach("article_output", "pb_do_shortcode");
 
 	polarbear_connect_db();
 
