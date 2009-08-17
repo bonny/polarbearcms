@@ -18,6 +18,7 @@ require_once(POLARBEAR_ROOT . '/polarbear-config.php');
 require_once(POLARBEAR_ROOT . '/includes/php/locale.php');
 require_once(POLARBEAR_ROOT . '/includes/dwoo/dwooAutoload.php');
 require_once(POLARBEAR_ROOT . '/includes/utf8/utf8.php');
+require_once(POLARBEAR_ROOT . '/includes/php/shortcodes.php');
 
 polarbear_boot();
 ?>
