@@ -100,7 +100,12 @@ ok
 		if (!$file->setContentFromFile($filetmpname)) {
 			$uploadOK = false;
 		}
-		//print_r($file);
+
+		$args = array(
+			"file" => $file,
+			"isNew" => true
+		);
+		pb_event_fire("pb_file_saved", $args);
 		
 	}
 	

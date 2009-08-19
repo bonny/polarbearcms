@@ -11,7 +11,7 @@ function pb_createAndUpdateTables() {
 	  `articleID` int(10) unsigned NOT NULL default '0',
 	  `tagID` int(10) unsigned NOT NULL default '0',
 	  PRIMARY KEY  (`articleID`,`tagID`)
-	) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+	) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=utf8_swedish_ci;
 	
 	
 	CREATE TABLE `polarbear_article_tags` (
@@ -58,6 +58,7 @@ function pb_createAndUpdateTables() {
 	  KEY `status` (`status`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 	
+	
 	CREATE TABLE `polarbear_fields` (
 	  `id` int(10) unsigned NOT NULL auto_increment,
 	  `name` varchar(255) NOT NULL default '',
@@ -68,9 +69,7 @@ function pb_createAndUpdateTables() {
 	  `content` text NOT NULL,
 	  PRIMARY KEY  (`id`),
 	  KEY `fieldCollectionID` (`fieldcollectionID`)
-	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-	
-	
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 	
 	
 	CREATE TABLE `polarbear_fields_collections` (
@@ -79,9 +78,7 @@ function pb_createAndUpdateTables() {
 	  `repeatable` tinyint(4) NOT NULL default '0',
 	  `deleted` tinyint(4) NOT NULL default '0',
 	  PRIMARY KEY  (`id`)
-	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-	
-	
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 	
 	
 	CREATE TABLE `polarbear_fields_connectors` (
@@ -89,9 +86,7 @@ function pb_createAndUpdateTables() {
 	  `name` varchar(255) NOT NULL default '',
 	  `deleted` tinyint(4) NOT NULL default '0',
 	  PRIMARY KEY  (`id`)
-	) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-	
-	
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 	
 	
 	CREATE TABLE `polarbear_fields_link_connectors_collections` (
@@ -99,9 +94,7 @@ function pb_createAndUpdateTables() {
 	  `fieldCollectionID` int(10) unsigned NOT NULL default '0',
 	  `prio` int(11) NOT NULL default '0',
 	  PRIMARY KEY  (`fieldConnectorID`,`fieldCollectionID`)
-	) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-	
-	
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 	
 	
 	CREATE TABLE `polarbear_fields_values` (
@@ -110,9 +103,7 @@ function pb_createAndUpdateTables() {
 	  `value` text NOT NULL,
 	  `numInSet` int(11) NOT NULL default '0',
 	  PRIMARY KEY  (`fieldID`,`articleID`,`numInSet`)
-	) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-	
-	
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 	
 	
 	CREATE TABLE `polarbear_files` (
@@ -129,15 +120,11 @@ function pb_createAndUpdateTables() {
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 	
 	
-	
-	
 	CREATE TABLE `polarbear_files_tags` (
 	  `fileID` int(10) unsigned NOT NULL auto_increment,
 	  `tagName` varchar(255) collate utf8_swedish_ci NOT NULL default '',
 	  PRIMARY KEY  (`fileID`,`tagName`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
-	
-	
 	
 	
 	CREATE TABLE `polarbear_settings` (
@@ -146,9 +133,7 @@ function pb_createAndUpdateTables() {
 	  `date` datetime NOT NULL default '0000-00-00 00:00:00',
 	  PRIMARY KEY  (`id`),
 	  KEY `date` (`date`)
-	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-	
-	
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 	
 	
 	CREATE TABLE `polarbear_storage` (
@@ -156,9 +141,7 @@ function pb_createAndUpdateTables() {
 	  `thekey` varchar(255) NOT NULL default '',
 	  `thevalue` text NOT NULL,
 	  PRIMARY KEY  (`id`)
-	) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-	
-	
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 	
 	
 	CREATE TABLE `polarbear_usergroups` (
@@ -166,9 +149,7 @@ function pb_createAndUpdateTables() {
 	  `name` varchar(255) character set latin1 default NULL,
 	  `isDeleted` tinyint(4) default '0',
 	  PRIMARY KEY  (`id`)
-	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-	
-	
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 	
 	
 	CREATE TABLE `polarbear_users` (
@@ -187,15 +168,13 @@ function pb_createAndUpdateTables() {
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 	
 	
-	
-	
 	CREATE TABLE `polarbear_users_groups_relation` (
 	  `userID` int(10) unsigned NOT NULL default '0',
 	  `groupID` int(10) unsigned NOT NULL default '0',
 	  PRIMARY KEY  (`userID`,`groupID`)
-	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 	
-
+	
 	CREATE TABLE `polarbear_users_values` (
 	  `id` int(10) unsigned NOT NULL auto_increment,
 	  `name` varchar(255) NOT NULL,
@@ -203,9 +182,18 @@ function pb_createAndUpdateTables() {
 	  `userID` int(10) unsigned NOT NULL,
 	  PRIMARY KEY  (`id`),
 	  KEY `userID` (`userID`)
-	) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 	
 	
+	CREATE TABLE `polarbear_log` (
+	  `id` int(10) unsigned NOT NULL auto_increment,
+	  `date` datetime NOT NULL,
+	  `user` int(10) unsigned NOT NULL,
+	  `type` varchar(255) character set latin1 NOT NULL,
+	  `objectType` varchar(255) character set latin1 NOT NULL,
+	  `objectID` int(10) unsigned NOT NULL,
+	  PRIMARY KEY  (`id`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;	
 	";
 	$didSomething = false;
 	$arrTables = explode("CREATE TABLE ", $tables);
