@@ -193,7 +193,7 @@ if ($isPreview) {
 // refresh since IE had a problem not recognizing changes sometimes
 if ($doHeaderRefresh) {
 	header("refresh: 1; url=$url");
-	echo "Saving...";
+	echo "Article saved.<br /><a href='$url'>Continue &raquo;</a>";
 } else {
 	header("Location: $url");
 }
