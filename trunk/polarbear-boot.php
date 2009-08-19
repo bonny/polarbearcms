@@ -20,5 +20,15 @@ require_once(POLARBEAR_ROOT . '/includes/dwoo/dwooAutoload.php');
 require_once(POLARBEAR_ROOT . '/includes/utf8/utf8.php');
 require_once(POLARBEAR_ROOT . '/includes/php/shortcodes.php');
 
+spl_autoload_register('polarbear_class_autoload');
+
+// attach stuff for the log/recent activites-functionality
+pb_event_attach("pb_article_saved", "pb_log");
+pb_event_attach("pb_article_deleted", "pb_log");
+pb_event_attach("pb_user_saved", "pb_log");
+pb_event_attach("pb_user_deleted", "pb_log");
+pb_event_attach("pb_file_saved", "pb_log");
+pb_event_attach("pb_file_deleted", "pb_log");
+
 polarbear_boot();
 ?>

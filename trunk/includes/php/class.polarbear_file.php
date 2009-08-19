@@ -103,6 +103,15 @@ class PolarBear_File {
 		
 		// ladda om för att få fräscha värden
 		$this->load();
+		
+		$args = array(
+			"file" => $this,
+			"isNew" => $isNew
+		);
+		if (!$isNew) {
+			pb_event_fire("pb_file_saved", $args);
+		}
+				
 	}
 	
 	/**
@@ -348,7 +357,13 @@ class PolarBear_File {
 		// ta bort från taggar
 		$sql = "DELETE FROM " . POLARBEAR_DB_PREFIX . "_files_tags WHERE fileID = '$this->id'";
 		$polarbear_db->query($sql);
-				
+
+		$args = array(
+			"file" => $this
+		);
+		pb_event_fire("pb_file_deleted", $args);		
+
+
 	}
 	
 	

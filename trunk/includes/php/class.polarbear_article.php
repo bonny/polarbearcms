@@ -427,7 +427,6 @@ class PolarBear_Article {
 		$fieldValues = $this->fieldValues();
 
 		if ($isNew) {
-			#echo "xxx";print_r($fieldValues);
 			$this->id = $polarbear_db->insert_id;
 		}
 
@@ -445,6 +444,12 @@ class PolarBear_Article {
 				$numInSet++;
 			}
 		}
+
+		$args = array(
+			"article" => $this,
+			"isNew" => $isNew
+		);
+		pb_event_fire("pb_article_saved", $args);
 		
 	}
 	
@@ -1263,6 +1268,12 @@ class PolarBear_Article {
 		$sql = "UPDATE " . POLARBEAR_DB_PREFIX . "_articles SET status = '$this->status' WHERE id = '$this->id'";
 		global $polarbear_db;
 		$polarbear_db->query($sql);
+
+		$args = array(
+			"article" => $this
+		);
+		pb_event_fire("pb_article_deleted", $args);
+
 		return true;
 	}
 

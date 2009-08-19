@@ -10,7 +10,6 @@ function polarbear_class_autoload($class_name) {
 		require POLARBEAR_ROOT.'/includes/php/class.'.strtolower($class_name).'.php';
 	}
 }
-spl_autoload_register('polarbear_class_autoload');
 
 
 /**
@@ -1717,6 +1716,7 @@ function pb_event_fire($event, $arrArgs = null) {
 	// auto add some stuff to the arguments-array
 	global $polarbear_render_start_ms;
 	$arrArgs["pb_microtime_since_start"] = microtime(true) - $polarbear_render_start_ms;
+	$arrArgs["event"] = $event;
 			
 	// find and fire handler for event
 	$contentToReturn = null;
@@ -1725,15 +1725,13 @@ function pb_event_fire($event, $arrArgs = null) {
 		// @todo: fire them in prio order
 		foreach ($polarbear_observers[$event] as $oneEvent) {
 			if (is_callable($oneEvent["function"])) {
-				#$contentToReturn = call_user_func($oneEvent["function"], $arrArgs);
-				#$arrArgs["contentToReturn"] = $contentToReturn;
-				#$contentToReturn = call_user_func($oneEvent["function"], $arrArgs);
 				$arrArgsReturned = call_user_func($oneEvent["function"], $arrArgs);
 				$arrArgs = polarbear_extend($arrArgs, $arrArgsReturned);
 			}
 		}
 	}
-	#return $contentToReturn;
+
+	// return whole array
 	return $arrArgs;
 }
 
@@ -2600,6 +2598,57 @@ function pb_users_values_all_unique_labels() {
 		}
 	}
 	return $arr;
+}
+
+
+/**
+ * adds something to the log/"recent activities"
+ */
+function pb_log($options) {
+
+	global $polarbear_db, $polarbear_u;
+	
+	#echo ($options["event"]);
+
+	$user = (int) $polarbear_u->id;
+
+	// what has been done? create, update, delete
+	if ($options["event"] == "pb_article_deleted") {
+		$type = "delete";
+		$objectType = "article";
+		$objectID = $options["article"]->getId();
+	} elseif ($options["event"] == "pb_article_saved") {
+		$type = "update";
+		if ($options["isNew"]) { $type = "create"; }
+		$objectType = "article";
+		$objectID = $options["article"]->getId();
+	} elseif ($options["event"] == "pb_user_saved") {
+		$type = "update";
+		if ($options["isNew"]) { $type = "create"; }
+		$objectType = "user";
+		$objectID = $options["user"]->id;
+	} elseif ($options["event"] == "pb_user_deleted") {
+		$type = "delete";
+		$objectType = "user";
+		$objectID = $options["userID"];
+	} elseif ($options["event"] == "pb_file_saved") {
+		$type = "update";
+		$objectType = "file";
+		$objectID = $options["file"]->id;
+		if ($options["isNew"]) { $type = "create"; $user = $options["file"]->uploaderID; }
+	} elseif ($options["event"] == "pb_file_deleted") {
+		$type = "delete";
+		$objectType = "file";
+		$objectID = $options["file"]->id;
+		if ($options["isNew"]) { $type = "create"; }
+	}
+		
+	$objectID = (int) $objectID;
+
+	$sql = "INSERT INTO " . POLARBEAR_DB_PREFIX . "_log SET date = now(), user = $user, type = '$type', objectType='$objectType', objectID = $objectID ";
+
+	$polarbear_db->query($sql);
+
 }
 
 ?>

@@ -318,8 +318,15 @@ if ($_POST["action"] == "users_getAddGroupToUser") {
 
 
 if ($_POST["action"] == "users_deleteUser") {
+	// @todo: delete should be in user class instead
 	$userID = (int) $_POST["userID"];
 	$polarbear_db->query("UPDATE " . POLARBEAR_DB_PREFIX . "_users SET isDeleted = 1 WHERE id = $userID");
+
+	$args = array(
+		"userID" => $userID
+	);
+	pb_event_fire("pb_user_deleted", $args);
+
 	exit;
 }
 

@@ -110,6 +110,12 @@ class PolarBear_User {
 			$this->id = $polarbear_db->insert_id;
 		}
 		
+		$args = array(
+			"user" => $this,
+			"isNew" => $fetchNewID
+		);
+		pb_event_fire("pb_user_saved", $args);
+
 	}
 	
 	/**
