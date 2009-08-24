@@ -2608,7 +2608,13 @@ function pb_log($options) {
 
 	global $polarbear_db, $polarbear_u;
 	
-	#echo ($options["event"]);
+	/*
+		$options = array
+			event
+			isNew
+			article | file | user
+			objectName - used by for example file since the file is deleted and the reference to the name is lost
+	*/
 
 	$user = (int) $polarbear_u->id;
 
@@ -2642,10 +2648,17 @@ function pb_log($options) {
 		$objectID = $options["file"]->id;
 		if ($options["isNew"]) { $type = "create"; }
 	}
-		
+	
+	$objectName = null;
+	if (isset($options["objectName"])) {
+		$objectName = $options["objectName"];
+		$sqlObjectName = ", objectName = '" . $polarbear_db->escape($objectName) . "' ";
+echo "xxx";
+	}
+	
 	$objectID = (int) $objectID;
 
-	$sql = "INSERT INTO " . POLARBEAR_DB_PREFIX . "_log SET date = now(), user = $user, type = '$type', objectType='$objectType', objectID = $objectID ";
+	$sql = "INSERT INTO " . POLARBEAR_DB_PREFIX . "_log SET date = now(), user = $user, type = '$type', objectType='$objectType', objectID = $objectID $sqlObjectName ";
 
 	$polarbear_db->query($sql);
 

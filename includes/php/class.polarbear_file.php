@@ -106,7 +106,8 @@ class PolarBear_File {
 		
 		$args = array(
 			"file" => $this,
-			"isNew" => $isNew
+			"isNew" => $isNew,
+			"objectName" => $this->name
 		);
 		if (!$isNew) {
 			pb_event_fire("pb_file_saved", $args);
@@ -359,8 +360,10 @@ class PolarBear_File {
 		$polarbear_db->query($sql);
 
 		$args = array(
-			"file" => $this
+			"file" => $this,
+			"objectName" => $this->name
 		);
+		polarbear_d($args);
 		pb_event_fire("pb_file_deleted", $args);		
 
 

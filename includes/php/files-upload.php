@@ -103,7 +103,8 @@ ok
 
 		$args = array(
 			"file" => $file,
-			"isNew" => true
+			"isNew" => true,
+			"objectName" => $filename
 		);
 		pb_event_fire("pb_file_saved", $args);
 		
