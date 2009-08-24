@@ -4,9 +4,8 @@
  */
 ?>
 <div style="background-color: #E2E2E2;">
-	<a href="<?php polarbear_webpath() ?>"><img src="<?php polarbear_webpath() ?>images/polarbear/polarbear-logo.gif" alt="Polarbear CMS logotype" /></a>
+	<a href="<?php polarbear_webpath() ?>?treepage=gui/overview.php"><img src="<?php polarbear_webpath() ?>images/polarbear/polarbear-logo.gif" alt="Polarbear CMS logotype" /></a>
 </div>
-
 
 <div class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix">
 
@@ -32,12 +31,7 @@
 <div id="tree-articles" class="ui-layout-content"></div>
 
 <div class='pb-leftframe-meta'>
-	<!-- <div>
-		<a href="<?php polarbear_webpath() ?>">PolarBear CMS</a>
-		<br />by MarsApril
-	</div> -->
 	<div>
-		<!-- <p class="nav-userinfo">Logged in as<br /><strong><?php echo $polarbear_u ?></strong></p> -->
 		<p class="nav-userinfo"><?php echo $polarbear_u ?></p>
 		<p class="nav-userinfo-logout"><a href="login.php?logout">Log out</a></p>
 		<p class="nav-userinfo-visitWebsite"><a href="/">Go to <?php echo POLARBEAR_DOMAIN ?></a></p>

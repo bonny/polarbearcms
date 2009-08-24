@@ -184,7 +184,7 @@ function pb_createAndUpdateTables() {
 	  KEY `userID` (`userID`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 	
-	
+		
 	CREATE TABLE `polarbear_log` (
 	  `id` int(10) unsigned NOT NULL auto_increment,
 	  `date` datetime NOT NULL,
@@ -192,8 +192,10 @@ function pb_createAndUpdateTables() {
 	  `type` varchar(255) character set latin1 NOT NULL,
 	  `objectType` varchar(255) character set latin1 NOT NULL,
 	  `objectID` int(10) unsigned NOT NULL,
-	  PRIMARY KEY  (`id`)
-	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;	
+	  `objectName` varchar(255) collate utf8_swedish_ci NOT NULL,
+	  PRIMARY KEY  (`id`),
+	  KEY `date` (`date`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 	";
 	$didSomething = false;
 	$arrTables = explode("CREATE TABLE ", $tables);

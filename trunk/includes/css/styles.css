@@ -520,3 +520,14 @@ clear: both;
 margin: 0 10px 0 0;
 font-size: 12px;
 }
+
+.overview-recent-activities ul {
+	list-style-type: none;
+}
+.overview-recent-activities ul li {
+	margin-bottom: .25em;
+	margin-top: .25em;
+}
+.overview-recent-activities h3 {
+	margin-top: 1em;
+}

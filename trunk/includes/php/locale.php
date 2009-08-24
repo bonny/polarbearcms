@@ -22,7 +22,8 @@ $polarbear_arr_lang = array(
 		'next month' => 'nästa månad',
 		'just now' => 'alldeles nyss',
 		'1 minute ago' => '1 minut sedan',
-		'Yesterday' => 'Igår'
+		'Yesterday' => 'Igår',
+		"Today" => "Idag"
 	),
 	'en_US' => array(
 		'Polar Bear' => 'Polar Bear CMS',
@@ -42,7 +43,8 @@ $polarbear_arr_lang = array(
 		'next month' => 'next month',
 		'just now' => 'just now',
 		'1 minute ago' => '1 minute ago',
-		'Yesterday' => 'Yesterday'
+		'Yesterday' => 'Yesterday',
+		"Today" => "Today"
 	)
 );
 
