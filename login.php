@@ -89,7 +89,7 @@ if (isset($_POST["login"])) {
 			setcookie("pb_been_logged_in", "1", time()+60*60*24*30, "/");
 		}
 
-		// inloggad. välkommen in i maj! ;)
+		// inloggad. välkommen in i polarbear! ;)
 		if (isset($_POST["returnto"])) {
 			$returnto = $_POST["returnto"];
 			if ($returnto == "referer") { $returnto = $_SERVER["HTTP_REFERER"]; }
