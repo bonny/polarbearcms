@@ -2653,7 +2653,6 @@ function pb_log($options) {
 	if (isset($options["objectName"])) {
 		$objectName = $options["objectName"];
 		$sqlObjectName = ", objectName = '" . $polarbear_db->escape($objectName) . "' ";
-echo "xxx";
 	}
 	
 	$objectID = (int) $objectID;

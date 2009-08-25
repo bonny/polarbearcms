@@ -85,7 +85,11 @@ function polarbear_files_onload() {
 			//alert(response);
 		},
 		onAllComplete: function(event, data) {
-			var url = "<?php polarbear_webpath() ?>gui/files.php?uploaded=1";
+			// @todo: if were have a file browser
+			// fileBrowser.php?field_name=src&url=&type=fieldImage
+			var field_name = $.query.get('field_name');
+			var type = $.query.get('type');
+			var url = "<?php polarbear_webpath() ?>gui/files.php?uploaded=1&field_name=" + field_name+"&type=" + type;
 			$("#polarbear-page-files-content, #tabs-files").load(url, { action: "getFilesTable" }, function() {
 				polarbear_files_onload();
 			});

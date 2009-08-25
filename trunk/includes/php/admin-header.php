@@ -11,7 +11,7 @@ header('Content-type: text/html; charset="utf-8"');
 	<meta name="robots" content="noindex" />
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/jquery-ui.min.js"></script>
-	<script type="text/javascript" src="<?php polarbear_webpath() ?>gui/combine.php?type=javascript&amp;files=jquery.jeditable.mini.js,jquery.cookie.js,jquery.listen.js,jquery.metadata.js,jquery.blockUI.js,jquery.layout.js,jquery.timePicker.js"></script>
+	<script type="text/javascript" src="<?php polarbear_webpath() ?>gui/combine.php?type=javascript&amp;files=jquery.jeditable.mini.js,jquery.cookie.js,jquery.listen.js,jquery.metadata.js,jquery.blockUI.js,jquery.layout.js,jquery.timePicker.js,jquery.query-2.1.6.js"></script>
 	<script type="text/javascript" src="<?php polarbear_webpath() ?>includes/tree_component/tree_component.js"></script>
 	<script type="text/javascript" src="<?php polarbear_webpath() ?>includes/tree_component/css.js"></script>
 	<script type="text/javascript" src="<?php polarbear_webpath() ?>includes/js/global.js.php"></script>
