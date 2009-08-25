@@ -11,7 +11,7 @@ function pb_createAndUpdateTables() {
 	  `articleID` int(10) unsigned NOT NULL default '0',
 	  `tagID` int(10) unsigned NOT NULL default '0',
 	  PRIMARY KEY  (`articleID`,`tagID`)
-	) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=utf8_swedish_ci;
+	) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 	
 	
 	CREATE TABLE `polarbear_article_tags` (
