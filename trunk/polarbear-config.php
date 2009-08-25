@@ -1,6 +1,6 @@
 <?php
 /**
- * Denna fil är den enda man ska behöva ändra i för att Maj ska fungera på en sajt.
+ * Denna fil är den enda man ska behöva ändra i för att PolarBear ska fungera på en sajt.
  */
 
 // Database settings
@@ -11,7 +11,7 @@ define("POLARBEAR_DB_DATABASE", "maj");
 define("POLARBEAR_DB_PREFIX", "polarbear");
 
 // Misc
-define("POLARBEAR_SALT", ""); // no salt since prev. mamba-installation did not have any salt in the passwords
+define("POLARBEAR_SALT", "lkbnmrui8"); // please set your own
 
 error_reporting(E_ALL  & ~E_NOTICE);
 ini_set('display_errors', '1'); // just for some debuging
