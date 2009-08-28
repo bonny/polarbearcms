@@ -33,3 +33,21 @@
 	padding: 1ex;
 	border: 2px solid #938EAF;
 }
+
+
+#polarbear-site-edit-tab form p {
+margin-top: 5px;
+}
+
+#polarbear-site-edit-tab .polarbear-site-edit-removeTab {
+margin-top: 20px;
+font-size: 10px;
+text-align: right;
+line-height: 1;
+}
+#polarbear-site-edit-tab .polarbear-site-edit-removeTab a:link,
+#polarbear-site-edit-tab .polarbear-site-edit-removeTab a:visited,
+#polarbear-site-edit-tab .polarbear-site-edit-removeTab a:hover,
+#polarbear-site-edit-tab .polarbear-site-edit-removeTab a:active {
+color: #5f5884;
+}
