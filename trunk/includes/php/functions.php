@@ -1832,11 +1832,13 @@ function pb_add_site_edit($args) {
 							<input type='submit' value='Log in' class='submit fg-button ui-state-default ui-priority-primary ui-corner-all' name='login' />
 							<input type='hidden' name='returnto' value='referer' />
 						</p>
-						<p>
+						<p class='polarbear-site-edit-forgotPassword'>
 							<a href='" . POLARBEAR_WEBPATH . "login.php?forgotPassword'>Forgot your password?</a>
 						</p>
 					</form>
 
+					<p class='polarbear-site-edit-removeTab'><a href='" . POLARBEAR_WEBPATH . "login.php?removeTab'>Remove this tab</a></p>
+					
 				</div>
 			</div>
 			";

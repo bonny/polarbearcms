@@ -5,7 +5,17 @@ $okmsg = null;
 $errmsg = null;
 
 /**
- * logga ut användare
+ * hide polarbear tab completely
+ */
+if (isset($_GET["removeTab"])) {
+	$returnto = $_SERVER["HTTP_REFERER"];
+	setcookie("pb_been_logged_in", "0", time()+60*60*24*30, "/");
+	header("Location: $returnto");
+	exit;
+}
+
+/**
+ * log out user
  */
 if (isset($_GET["logout"]) && $polarbear_u) {
 	$polarbear_u->logout();
@@ -13,7 +23,6 @@ if (isset($_GET["logout"]) && $polarbear_u) {
 	if (isset($_GET["returnto"])) {
 		$returnto = $_GET["returnto"];
 		if ($returnto == "referer") {
-			#$_SESSION["pb_show_site_edit_tab"] = "1";
 			$_SESSION["pb_logged_out"] = "1";
 			$returnto = $_SERVER["HTTP_REFERER"];
 		}
