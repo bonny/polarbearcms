@@ -447,7 +447,8 @@ class PolarBear_Article {
 
 		$args = array(
 			"article" => $this,
-			"isNew" => $isNew
+			"isNew" => $isNew,
+			"objectName" => $this->getTitleArticle()
 		);
 		pb_event_fire("pb_article_saved", $args);
 		
@@ -1270,7 +1271,8 @@ class PolarBear_Article {
 		$polarbear_db->query($sql);
 
 		$args = array(
-			"article" => $this
+			"article" => $this,
+			"objectName" => $this->getTitleArticle()
 		);
 		pb_event_fire("pb_article_deleted", $args);
 
