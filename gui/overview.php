@@ -1,6 +1,6 @@
 <?php
 /**
- * någon form av översiktssida
+ * Owerview
  */
 require realpath(dirname(__FILE__)."/../") . "/polarbear-boot.php";
 polarbear_require_admin();
@@ -105,7 +105,9 @@ function pb_get_recent_activites($options = null) {
 			switch ($row->objectType) {
 				case "article":
 					$a = polarbear_article::getInstance($row->objectID);
-					$objectName = $a->getTitleArticle();
+					$a->load($a->getId(), true);
+					#$objectName = $a->getTitleArticle();
+					$objectName = $f->name;
 					#$icon = "page_white_text_edit.png";
 					$link = $a->fullpath();
 					$actionObjectType = "article";
