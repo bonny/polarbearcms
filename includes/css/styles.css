@@ -300,18 +300,19 @@ margin-top: .5em;
 margin-top: .5em;
 }
 
+#users-groups, #users-userlist {
+	list-style-type: none;
+	margin-left: 0;
+}
+
 #users-group-list a, #users-userlist a {
-    /*display: block;*/
-    /*padding: 4px;*/
     color: black;
     text-decoration: none;
 } 
 #users-group-list a:hover, #users-userlist a:hover {
-    xbackground-color: #eee;
     text-decoration: underline;
 } 
 #users-group-list a.group-active, #users-userlist a.user-active {
-    xbackground-color: #ddd;
     font-weight: bold;
 } 
 
@@ -324,11 +325,10 @@ margin-top: .5em;
 #users-groups li,
 #users-userlist li
 {
-/*position: relative;*/
-xmargin-right: 1em;
-margin-bottom: 4px;
-margin-top: 4px;
+margin-bottom: 6px;
+margin-top: 6px;
 }
+
 
 #users-userlist li span.email {
 	color: #999;
@@ -336,11 +336,7 @@ margin-top: 4px;
 	display: block;
 }
 
-#users-groups li a {
-xpadding-right: 1em;
-}
 #users-groups li .group-count {
-/*position: absolute;*/
 top: 6px;
 right: 0;
 color: #666;
