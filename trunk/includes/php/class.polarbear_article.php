@@ -1,6 +1,6 @@
 <?php
 /**
- * Klass som representerar en artikel i Maj
+ * Klass som representerar en artikel
  */
 class PolarBear_Article {
 
