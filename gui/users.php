@@ -378,52 +378,47 @@ if ($_POST["action"] == "users_createNewGroup") {
 
 #require ("includes/admin-header.php");
 ?> 
-	    <!-- en till layout -->
-		<div class="ui-layout-west">
-			<!-- west = gruppbrowser -->
-			<div class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix">
-				<a class="button-group-new fg-button ui-state-default fg-button-icon-left ui-corner-all" href="#" title="Create a new group"><span class="ui-icon ui-icon-circle-plus"></span>New</a>
-				<a class="button-group-edit fg-button ui-state-default ui-state-disabled fg-button-icon-left ui-corner-all" href="#" title="Edit group"><span class="ui-icon ui-icon-pencil"></span>Edit</a>
-				<a class="button-group-delete fg-button ui-state-default ui-state-disabled fg-button-icon-solo ui-corner-all" href="#" title="Delete group"><span class="ui-icon ui-icon-trash"></span>Remove</a>
-			</div>
-	
-			<div id="users-group-list" class="clearer ui-layout-content">
-				<?php
-					admin_get_user_group_list();
-				?>
-			</div>
+    <!-- en till layout -->
+	<div class="ui-layout-west">
+		<!-- west = gruppbrowser -->
+		<div class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix">
+			<a class="button-group-new fg-button ui-state-default fg-button-icon-left ui-corner-all" href="#" title="Create a new group"><span class="ui-icon ui-icon-circle-plus"></span>New</a>
+			<a class="button-group-edit fg-button ui-state-default ui-state-disabled fg-button-icon-left ui-corner-all" href="#" title="Edit group"><span class="ui-icon ui-icon-pencil"></span>Edit</a>
+			<a class="button-group-delete fg-button ui-state-default ui-state-disabled fg-button-icon-solo ui-corner-all" href="#" title="Delete group"><span class="ui-icon ui-icon-trash"></span>Remove</a>
 		</div>
 
-		<div class="ui-layout-center">
-		
-			<div class="ui-layout-west">
-				<!-- west = användarbrowser -->
-				<div class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix">
-					<? // polarbear_msg xxx ?>
-					<div style="padding: .3em 0 .3em 0;font-weight:normal;visibility:hidden;" class="users-group-selectsort">
-						Sort by
-						<select>
-							<option value="firstName">First name</option>
-							<option value="lastName">Last name</option>
-							<option value="email">E-mail</option>
-						</select>
-						<input type="button" value="Ok" />
-					</div>
-				</div>
-				<div id="users-group-members" class="clearer ui-layout-content"></div>
-			</div>
-			<div class="ui-layout-center">
-				<!-- center = details for selected user -->
-				<div class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix">
-					<a class="button-user-new fg-button ui-state-default fg-button-icon-left ui-corner-all" href="#" title="Creat a new user"><span class="ui-icon ui-icon-circle-plus"></span>New user</a>
-					<a class="button-user-edit fg-button ui-state-default ui-state-disabled fg-button-icon-left ui-corner-all" href="#" title="Edit user"><span class="ui-icon ui-icon-pencil"></span>Edit</a>
-					<a class="button-user-delete fg-button ui-state-default ui-state-disabled fg-button-icon-solo ui-corner-all" href="#" title="Delete user"><span class="ui-icon ui-icon-trash"></span>Delete</a>
-				</div>
-				<div id="users-userdetails"></div>
-			</div>	
-				
+		<div id="users-group-list" class="clearer ui-layout-content">
+			<?php
+				admin_get_user_group_list();
+			?>
 		</div>
+	</div>
 
+	<div class="ui-layout-center">
+		<!-- west = användarbrowser -->
+		<div class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix">
+			<div style="padding: .3em 0 .3em 0;font-weight:normal;visibility:hidden;" class="users-group-selectsort">
+				Sort by
+				<select>
+					<option value="firstName">First name</option>
+					<option value="lastName">Last name</option>
+					<option value="email">E-mail</option>
+				</select>
+				<input type="button" value="Ok" />
+			</div>
+		</div>
+		<div id="users-group-members" class="clearer ui-layout-content"></div>
+	</div>
+
+	<div class="ui-layout-east">
+		<!-- center = details for selected user -->
+		<div class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix">
+			<a class="button-user-new fg-button ui-state-default fg-button-icon-left ui-corner-all" href="#" title="Creat a new user"><span class="ui-icon ui-icon-circle-plus"></span>New user</a>
+			<a class="button-user-edit fg-button ui-state-default ui-state-disabled fg-button-icon-left ui-corner-all" href="#" title="Edit user"><span class="ui-icon ui-icon-pencil"></span>Edit</a>
+			<a class="button-user-delete fg-button ui-state-default ui-state-disabled fg-button-icon-solo ui-corner-all" href="#" title="Delete user"><span class="ui-icon ui-icon-trash"></span>Delete</a>
+		</div>
+		<div id="users-userdetails" class="ui-layout-content"></div>
+	</div>	
 
 	<script type="text/javascript" src="includes/js/users.js.php"></script> 
 <?php

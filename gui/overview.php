@@ -73,7 +73,7 @@ function pb_get_recent_activites($options = null) {
 				} else {
 					$prettyWhen = polarbear_time2str(date("Y-m-d", $row->dateUnix));
 				}
-				echo "<li><h3>" . strftime("%A, %B %e", $row->dateUnix) . " ($prettyWhen)</h></li>";
+				echo "<li><h3>" . strftime("%A, %B %e", $row->dateUnix) . " ($prettyWhen)</h3></li>";
 			}
 			$time = date("H:i", $row->dateUnix);
 			$details = "";

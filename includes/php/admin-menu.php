@@ -4,7 +4,7 @@
  */
 ?>
 <div style="background-color: #E2E2E2;">
-	<a href="<?php polarbear_webpath() ?>?treepage=gui/overview.php"><img src="<?php polarbear_webpath() ?>images/polarbear/polarbear-logo.gif" alt="Polarbear CMS logotype" /></a>
+	<a href="<?php polarbear_webpath() ?>?treepage=gui/overview.php"><img width="136" height="66" src="<?php polarbear_webpath() ?>images/polarbear/polarbear-logo.gif" alt="Polarbear CMS logotype" /></a>
 </div>
 
 <div class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix">
@@ -38,6 +38,6 @@
 	</div>
 </div>
 
-<div id="polarbear-article-edit-dialog-loading" style="display: none">
+<div id="polarbear-article-edit-dialog-loading" style="display: none" class="ui-layout-ignore">
 	Loading article...
 </div>

@@ -590,19 +590,12 @@ function polarbear_page_users_onload() {
 			closable: false
 		},
 		west: {
-			size: 250
-		}
-	});
-
-	usersLayout2 = $("#polarbear-content-main > .ui-layout-center").layout({
-		applyDefaultStyles: true,
-		defaults: {
-			resizable: false,
-			closable: false
+			size: .33
 		},
-		west: {
-			xsize: 250
+		east: {
+			size: .33
 		}
+
 	});
 
 }
