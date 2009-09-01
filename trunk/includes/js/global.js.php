@@ -71,13 +71,6 @@ $(function() {
 					title: "New article"
 				}
 			});
-/*
-{ 
-					attributes: { id : "article-396", data: "{type: \"article\"}" }, 
-					state: "opened", 
-					data: {
-
-*/
 		}
 		return false;
 	}).hover(function() {$(this).toggleClass("ui-state-hover");}, function() {$(this).toggleClass("ui-state-hover");});
@@ -101,23 +94,6 @@ $(function() {
 		return false;
 	});
 
-	/*
-	bugfix for jstree
-	it seems like jstree tries to select the previously selected node to early (while it's still openeing)
-	todo: fix this!
-	*/
-	// if(this.settings.cookies && $.cookie(this.settings.cookies.prefix + '_selected')) {
-	//var selected = $.cookie(tree.settings.cookies.prefix + "_selected");
-	//if(selected) {
-		// tree says a node has previously been selected
-		// now check if any node actually is selected in the tree. if not: select it!
-		//		alert(tree.selected);
-		// hm.. no that didn't do the trick...
-		
-	//}
-
-
-	
 }); // end ondomready
 
 // efter att en nod har döpts om
@@ -167,6 +143,9 @@ function treeOnChange(node,tree) {
 	$("#article-datePublish-window").remove();
 	$("#article-dateUnpublish-window").dialog("close");
 	$("#article-dateUnpublish-window").remove();
+
+	// remove layout for users
+	$("#polarbear-content-main").layout().destroy();
 
 	var nodeId = node.id;
 
