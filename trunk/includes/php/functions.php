@@ -2158,20 +2158,21 @@ class polarbear_articlefetcher {
 			if ($r = $polarbear_db->get_results($sqlTags)) {
 				// keep the hits that have count = sizeof(tagMustInclude) 
 				foreach ($r as $row) {
-					if ($row->count == sizeof($this->tagMustInclude)) {
+					if ($row->count == sizeof($this->tagMustNotInclude)) {
 						$strTagMustNotInclude .= "$row->articleID,";
 					}
 				}
 			}
-			$strTagMustNotInclude = preg_replace("/,$/", "", $strTagMustInclude);
+			$strTagMustNotInclude = preg_replace("/,$/", "", $strTagMustNotInclude);
 			if ($strTagMustNotInclude) {
-				$strTagMustNotInclude = " AND id NOT IN ($strTagMustInclude) ";
+				$strTagMustNotInclude = " AND id NOT IN ($strTagMustNotInclude) ";
+				$foundTagMustNotInclude = true;
 			} else {
 				$foundTagMustNotInclude = false;
 				// $strTagMustNotInclude = " AND false ";
 			}
 		}
-		$where .= $strTagMustInclude;
+		$where .= $strTagMustNotInclude;
 		// end tag must not include
 
 
