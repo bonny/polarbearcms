@@ -103,6 +103,8 @@ if ($action == "fieldConnectorSave") {
 		}
 	}
 
+	pb_event_fire("pb_field_connector_saved");
+
 	$action = "";
 	$okmsg = urlencode("Saved Field connector");
 	header("Location: " . polarbear_treepage("gui/fields.php?okmsg=$okmsg"));
@@ -184,6 +186,8 @@ if ($action == "fieldCollectionEditSave") {
 			$fieldPrio++;
 		}
 	}
+	
+	pb_event_fire("pb_field_connection_saved");
 	
 	$okmsg = urlencode("Saved");
 	header("Location: " . polarbear_treepage("gui/fields.php?okmsg=$okmsg"));

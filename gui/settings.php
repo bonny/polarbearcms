@@ -18,6 +18,9 @@ if ($_POST["action"] == "settingsSave") {
 	$sql = "INSERT INTO " . POLARBEAR_DB_PREFIX . "_settings SET settings = '$values', date = now()";
 	$polarbear_db->query($sql);
 	$pageToLoad = urlencode(POLARBEAR_WEBPATH . "gui/settings.php?settingsSaved=1");
+
+	pb_event_fire("pb_settings_general_saved");
+	
 	header("Location: " . POLARBEAR_WEBPATH . "?treepage=$pageToLoad");
 	exit;
 }

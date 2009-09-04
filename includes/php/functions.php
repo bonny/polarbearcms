@@ -21,6 +21,7 @@ function polarbear_d($var) {
 	print_r($var);
 	echo "</pre>";
 }
+function pb_d($var) { polarbear_d($var); }
 
 /**
  * skriver ut debug i header
@@ -483,7 +484,6 @@ function polarbear_getTemplates() {
 	} else {
 		return array();
 	}
-	// todo: fixa klart denna
 }
 
 /**
@@ -1042,8 +1042,6 @@ function polarbear_getFieldForArticleEdit($articleID, $fieldID, $numInSet = 0) {
  * laddar in artikeln för sidan man besöker
  * körs automatiskt varje gång polarbear-boot.php inkluderas. bra då man oftast vill hantera artikeln i "page"
  * sidans id eller shortname finns i $_GET[polarbear-page], t.ex. polarbear-page=305, eller polarbear-page=/hem/om-oss/medarbetare/
- * todo: hantera shortname
- * todo: hantera 404
  */
 function polarbear_article_bootload() {
 
@@ -1415,9 +1413,7 @@ function polarbear_connect_db() {
 function polarbear_script_end_stats() {
 	global $polarbear_db, $polarbear_render_start_ms;
 	$out = "";
-	$out .= "SQL: " . $polarbear_db->num_queries . " queries.";
-	$out .= "\nTime: " . round(microtime(true) - $polarbear_render_start_ms, 3) . " seconds.";			
-	$out .= "\nMemory: " . round(memory_get_peak_usage() / 1024, 0) . " kB peak, " . round(memory_get_usage() / 1024, 0) . " kB end." ;
+	$out .= "Dynamic page generated in " . round(microtime(true) - $polarbear_render_start_ms, 3) . " seconds using $polarbear_db->num_queries SQL queries. Memory usage: " . round(memory_get_peak_usage() / 1024, 0) . " kB peak, " . round(memory_get_usage() / 1024, 0) . " kB end.";
 	// pre singleton       	: 439 queries före singleton and took 0.17 seconds
 	// after multiton 		: 203 queries and took 0,0762989521027 seconds. 
 	// after field-cache    : 113 queries and took 0,0478739738464 seconds.
@@ -1573,7 +1569,12 @@ function pb_article_is_autoloaded() {
 }
 
 function pb_add_site_stats($args) {
-	$args["buffer"] = $args["buffer"] . "\n<!--\n" . polarbear_script_end_stats() . "\n-->";
+
+	if (pb_cache_hasBeenOutputed()) {
+		return;
+	}
+
+	$args["buffer"] = $args["buffer"] . "\n<!-- " . polarbear_script_end_stats() . " -->";
 	return $args;
 }
 
@@ -1595,11 +1596,21 @@ function polarbear_boot() {
 		ob_start();
 		pb_event_attach("pb_page_contents", "pb_add_site_edit");
 		pb_event_attach("pb_page_contents", "pb_add_site_stats");
+		pb_event_attach("pb_page_contents", "pb_cache");
 	}
 	
 	// enable shortcodes
 	pb_event_attach("article_output", "pb_do_shortcode");
 
+	// clear cache on create, modify and save
+	pb_event_attach("pb_file_saved", "pb_cache_clear");
+	pb_event_attach("pb_article_saved", "pb_cache_clear");
+	pb_event_attach("pb_user_saved", "pb_cache_clear");
+	pb_event_attach("pb_field_connector_saved", "pb_cache_clear");
+	pb_event_attach("pb_field_connection_saved", "pb_cache_clear");
+	pb_event_attach("pb_settings_general_saved", "pb_cache_clear");
+
+	// connect to database
 	polarbear_connect_db();
 
 	define("POLARBEAR_STORAGEPATH", rtrim(polarbear_setting('storagepath'), "/") . "/");
@@ -1619,6 +1630,42 @@ function polarbear_boot() {
 		$polarbear_domain .= $arrPolarbear_domain['domain'] . $arrPolarbear_domain['extension']; // todo: denna måste testas på riktigt
 		DEFINE('POLARBEAR_DOMAIN', $polarbear_domain);
 	}
+
+	/*
+		Look for cached file. We now have the cachepath and everything else we need
+		@todo: attach code to an event instead?
+	*/
+	if (pb_cache_isAllowed()) {
+		$cacheFilename = pb_cache_getFilename();
+		$etag = pb_cache_md5();
+		if (is_readable($cacheFilename)) {
+
+			// cached file exists. check if different than etag
+			$ifNoneMatch = isset($_SERVER['HTTP_IF_NONE_MATCH']) ? stripslashes($_SERVER['HTTP_IF_NONE_MATCH']) : false;
+			if ($ifNoneMatch == $etag) {
+			    #header("Cache-Control: max-age: 2");
+			    header("HTTP/1.0 304 Not Modified");
+			    pb_cache_hasBeenOutputed(true);
+			    exit;
+			}
+
+			// different, output cached file
+			// however, since register_shutdown_function will be called after the exit, we have to tell them not to fire by setting a variable
+			header("Etag: $etag");
+		    #header("Cache-Control: max-age: 2");
+			echo file_get_contents($cacheFilename);
+			pb_cache_hasBeenOutputed(true);
+			exit;
+		}
+	}
+/*
+
+$ifNoneMatch = isset($_SERVER['HTTP_IF_NONE_MATCH']) ? stripslashes($_SERVER['HTTP_IF_NONE_MATCH']) : false;
+if ($ifNoneMatch == $etag) {
+    header('HTTP/1.0 304 Not Modified');
+    die; // stop processing
+}
+*/
 
 	/*
 		starta session
@@ -1647,7 +1694,7 @@ function polarbear_boot() {
 		$_REQUEST = polarbear_fix_slashes($_REQUEST);
 	}
 
-	// finally, load selected article, if any, and load it's template, if it exists. this is a truly awesom function!
+	// finally, load selected article, if any, and load it's template, if it exists. this is a truly awesome function!
 	polarbear_article_bootload();
 
 	pb_event_fire("pb_boot_end");
@@ -1740,6 +1787,10 @@ function pb_event_fire($event, $arrArgs = null) {
  * 
  */
 function pb_add_site_edit($args) {
+
+	if (pb_cache_hasBeenOutputed()) {
+		return;
+	}
 
 	global $polarbear_u;
 	$pb_been_logged_in = (bool) $_COOKIE["pb_been_logged_in"];
@@ -1955,13 +2006,6 @@ function pb_shutdown_function() {
 
 }
 
-/**
- * Simpy returns the buffer. Attached by defautl to event "pb_page_contents"
- * to make sure something always gets returned
- */
-function pb_ob_output_callback_return_buffer($args) {
-	return $args["buffer"];
-}
 
 /**
  * Removes all files in the cache
@@ -2665,5 +2709,121 @@ function pb_log($options) {
 	$polarbear_db->query($sql);
 
 }
+
+function pb_cache_md5() {
+	$request = $_REQUEST;
+	unset($request["PHPSESSID"]);
+	$cacheMD5 = md5(POLARBEAR_DOMAIN . $_SERVER["REQUEST_URI"] . serialize($request));
+	return $cacheMD5;
+}
+
+function pb_cache_getFilename() {
+	$cacheMD5 = pb_cache_md5();
+	$cacheFileName = POLARBEAR_CACHEPATH . "cache-page-" . $cacheMD5;
+	return $cacheFileName;
+}
+
+/**
+ * is it ok to generate or use cache?
+ */
+function pb_cache_isAllowed() {
+	global $polarbear_u, $pb_cache_disabled;
+	$isOk = true;
+	// not allowed to cache when
+	// - a user is logged in
+	// cache is set to disabled by script och by article level
+	// a post request
+	if (is_object($polarbear_u) || $pb_cache_disabled == true || sizeof($_POST)>0) {
+		$isOk = false;
+	}
+	return $isOk;
+}
+
+/**
+ * disables caching for current page
+ */
+function pb_cache_disable() {
+	global $pb_cache_disabled;
+	$pb_cache_disabled = true;
+}
+
+/**
+ * perform the caching
+ */
+function pb_cache($args) {
+
+	if (pb_cache_hasBeenOutputed()) {
+		//*
+		$out = "\n<!-- ";
+		global $polarbear_db, $polarbear_render_start_ms;
+		$out .= "Dynamic page generated in " . round(microtime(true) - $polarbear_render_start_ms, 3) . " seconds using $polarbear_db->num_queries SQL queries. Memory usage: " . round(memory_get_peak_usage() / 1024, 0) . " kB peak, " . round(memory_get_usage() / 1024, 0) . " kB end.";		$out .= " -->";
+		$args["buffer"] = $args["buffer"] . $out;
+		return $args;
+		// */
+		return;
+		
+	}
+
+	if (pb_cache_isAllowed()) {
+		$date = date("Y-m-d H:i:s");
+		$str = "\n<!-- Cached copy created on $date -->";
+		$args["buffer"] = $args["buffer"] . $str;
+		$cacheFileName = pb_cache_getFilename();
+		// write cached content to file system, owerwriting possibly existing file
+		$etag = pb_cache_md5();
+		header("Etag: $etag");
+		#header("Cache-Control: max-age=2");
+		file_put_contents($cacheFileName, $args["buffer"]);
+	} else {
+		$str = "\n<!-- Caching of file was not allowed -->";
+		$args["buffer"] = $args["buffer"] . $str;
+	}
+	
+	return $args;
+
+}
+
+function pb_cache_hasBeenOutputed($bool = null) {
+	global $pb_cache_outputed;
+	if (isset($bool)) {
+		$pb_cache_outputed = $bool;
+	}
+	return (bool) $pb_cache_outputed;
+}
+
+/**
+ * Removes all cached files
+ */
+function pb_cache_clear() {
+	$d = dir(POLARBEAR_CACHEPATH);
+	$pattern = "/cache-page-[a-zA-Z0-9]*/";
+	while (false !== ($entry = $d->read())) {
+		// om detta är en cache'ad variant av filen
+		if (preg_match($pattern, $entry)) {
+			unlink(POLARBEAR_CACHEPATH . $entry);
+		}
+	}
+	$d->close();
+}
+
+/**
+ * Clear all files in the cache, i.e. both from cache-cache, image-cache and tinymce-cache
+*/
+function pb_clear_cache_all() {
+	$d = dir(POLARBEAR_CACHEPATH);
+	while (false !== ($entry = $d->read())) {
+		if ($entry != "." && $entry != "..") {
+			unlink(POLARBEAR_CACHEPATH . $entry);
+		}
+	}
+	$d->close();
+}
+
+
+#Köras:
+#artikel ändras
+#fil ändras
+#användare ändras
+
 
 ?>

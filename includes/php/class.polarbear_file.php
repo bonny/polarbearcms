@@ -343,7 +343,7 @@ class PolarBear_File {
 		while (false !== ($entry = $d->read())) {
 			// om detta är en cache'ad variant av filen
 			if (preg_match($pattern, $entry)) {
-				unlink(POLARBEAR_ATTACHPATH . $entry);
+				unlink(POLARBEAR_CACHEPATH . $entry);
 			}
 		}
 		$d->close();

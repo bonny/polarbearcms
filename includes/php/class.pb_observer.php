@@ -1,6 +1,6 @@
 <?php
 /**
- * Klass som representerar en användare
+ * Class for observers
  */
 class pb_observer {
 

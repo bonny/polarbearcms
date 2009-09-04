@@ -85,10 +85,10 @@ if ($id == "0") {
 			},
 			{
 				data: {
-					title: "Settings",
+					title: "Settings & Tools",
 					icon: "<?php polarbear_webpath() ?>images/silkicons/folder_wrench.png",
 					attributes: {
-						href: "#"
+						href: "gui/tools.php"
 					}
 				
 				},
