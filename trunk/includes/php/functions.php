@@ -1612,11 +1612,13 @@ function polarbear_boot() {
 
 	// connect to database
 	polarbear_connect_db();
-
+	
+	// set up some constants
 	define("POLARBEAR_STORAGEPATH", rtrim(polarbear_setting('storagepath'), "/") . "/");
 	define("POLARBEAR_ATTACHPATH", POLARBEAR_STORAGEPATH . "files/");
 	define("POLARBEAR_CACHEPATH", POLARBEAR_STORAGEPATH . 'cache/');
 	define("POLARBEAR_IMAGEMAGICK", polarbear_setting('imagemagickpath'));
+	define("POLARBEAR_CACHE_MAX_AGE", (int) polarbear_setting('cache_max_age'));
 
 	// Try to determine what our domain is
 	if ($_SERVER['HTTP_HOST'] == 'localhost') {
@@ -1637,13 +1639,20 @@ function polarbear_boot() {
 	*/
 	if (pb_cache_isAllowed()) {
 		$cacheFilename = pb_cache_getFilename();
-		$etag = pb_cache_md5();
+		$etag = '"'.pb_cache_md5().'"';
 		if (is_readable($cacheFilename)) {
 
-			// cached file exists. check if different than etag
+			// cached file exists
+			$filemtime = filemtime($cacheFilename);
+			
+			// check age
+			// cached file is ok, read from it or tell client to use their existing
+							
+			// check if different than etag/last-modified from client
 			$ifNoneMatch = isset($_SERVER['HTTP_IF_NONE_MATCH']) ? stripslashes($_SERVER['HTTP_IF_NONE_MATCH']) : false;
-			if ($ifNoneMatch == $etag) {
-			    #header("Cache-Control: max-age: 2");
+			if ($ifNoneMatch == $etag || (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && (strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) == $file_time))) {
+			  	header("Cache-Control: max-age: 300");
+				header("Etag: $etag");
 			    header("HTTP/1.0 304 Not Modified");
 			    pb_cache_hasBeenOutputed(true);
 			    exit;
@@ -1651,21 +1660,15 @@ function polarbear_boot() {
 
 			// different, output cached file
 			// however, since register_shutdown_function will be called after the exit, we have to tell them not to fire by setting a variable
+			header('Last-Modified: '.gmdate('D, d M Y H:i:s', $filemtime).' GMT');
 			header("Etag: $etag");
-		    #header("Cache-Control: max-age: 2");
+		    header("Cache-Control: max-age: 300");
 			echo file_get_contents($cacheFilename);
 			pb_cache_hasBeenOutputed(true);
 			exit;
+			
 		}
 	}
-/*
-
-$ifNoneMatch = isset($_SERVER['HTTP_IF_NONE_MATCH']) ? stripslashes($_SERVER['HTTP_IF_NONE_MATCH']) : false;
-if ($ifNoneMatch == $etag) {
-    header('HTTP/1.0 304 Not Modified');
-    die; // stop processing
-}
-*/
 
 	/*
 		starta session
@@ -2749,15 +2752,36 @@ function pb_cache_disable() {
 
 /**
  * perform the caching
+ * @todo: this must be called last, after allt other pb_page_contents-stuff
  */
 function pb_cache($args) {
 
+	$cacheFileName = pb_cache_getFilename();
+
 	if (pb_cache_hasBeenOutputed()) {
+
 		//*
 		$out = "\n<!-- ";
 		global $polarbear_db, $polarbear_render_start_ms;
-		$out .= "Dynamic page generated in " . round(microtime(true) - $polarbear_render_start_ms, 3) . " seconds using $polarbear_db->num_queries SQL queries. Memory usage: " . round(memory_get_peak_usage() / 1024, 0) . " kB peak, " . round(memory_get_usage() / 1024, 0) . " kB end.";		$out .= " -->";
+		$out .= "Half-cached page generated in " . round(microtime(true) - $polarbear_render_start_ms, 3) . " seconds using $polarbear_db->num_queries SQL queries. Memory usage: " . round(memory_get_peak_usage() / 1024, 0) . " kB peak, " . round(memory_get_usage() / 1024, 0) . " kB end.";
+		$cachedFile_max_age = pb_cache_get_cached_file_max_age();
+		$filemtime = filemtime($cacheFileName);
+		$diff = time()-$filemtime;
+		$timeUntilRefresh = $cachedFile_max_age-$diff;
+		$out .= " Time until refresh of cached file: $timeUntilRefresh seconds. -->";
 		$args["buffer"] = $args["buffer"] . $out;
+
+		// check if cached file is old
+		$cachedFile_max_age = pb_cache_get_cached_file_max_age();
+		$now = time();
+		$diff = $now-$filemtime;
+		#polarbear_hd("diff: $diff");
+		if ($diff>$cachedFile_max_age) {
+			// remove cached file. it will be recreated on next page load
+			unlink($cacheFileName);
+			clearstatcache();
+		}
+
 		return $args;
 		// */
 		return;
@@ -2768,12 +2792,13 @@ function pb_cache($args) {
 		$date = date("Y-m-d H:i:s");
 		$str = "\n<!-- Cached copy created on $date -->";
 		$args["buffer"] = $args["buffer"] . $str;
-		$cacheFileName = pb_cache_getFilename();
 		// write cached content to file system, owerwriting possibly existing file
-		$etag = pb_cache_md5();
-		header("Etag: $etag");
-		#header("Cache-Control: max-age=2");
 		file_put_contents($cacheFileName, $args["buffer"]);
+		$etag = '"'.pb_cache_md5().'"';
+		$filemtime = filemtime($cacheFileName);
+		header('Last-Modified: '.gmdate('D, d M Y H:i:s', $filemtime).' GMT');
+		header("Etag: $etag");
+		header("Cache-Control: max-age=300");
 	} else {
 		$str = "\n<!-- Caching of file was not allowed -->";
 		$args["buffer"] = $args["buffer"] . $str;
@@ -2820,10 +2845,24 @@ function pb_clear_cache_all() {
 }
 
 
-#Köras:
-#artikel ändras
-#fil ändras
-#användare ändras
+/**
+ * Get max time of cached file
+ */
+function pb_cache_get_cached_file_max_age() {
+	#echo "<br>get max age";
+	#global $pb_cache_cachedFile_max_age;
+	#if (!is_numeric($pb_cache_cachedFile_max_age)) {
+	#	$pb_cache_cachedFile_max_age = 600; // in seconds. default 10 min
+	#}
+	#return $pb_cache_cachedFile_max_age;
+	return POLARBEAR_CACHE_MAX_AGE;
+}
 
+// deprecated
+function pb_cache_set_cached_file_max_age($val) {
+	echo "<br>set max age";
+	global $pb_cache_cachedFile_max_age;
+	$pb_cache_cachedFile_max_age = (int) $val;
+}
 
 ?>
