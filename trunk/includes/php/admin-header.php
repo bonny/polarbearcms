@@ -51,7 +51,12 @@ header('Content-type: text/html; charset="utf-8"');
 				$("body").layout({
 					applyDefaultStyles: true,
 					defaults: {
-						resizeable: false
+						spacing_closed: 5,
+						spacing_open: 5,
+						togglerLength_closed: 35,
+						togglerLength_open: 35,
+						resizable: false,
+						slidable: false
 					},
 					west: {
 						size: 275

@@ -17,7 +17,6 @@ ul {
 }
 
 .nav-userinfo {
-	xmargin-top: 2em;
 	font-weight: bold;
 }
 #content {
@@ -526,4 +525,27 @@ font-size: 12px;
 }
 .overview-recent-activities h3 {
 	margin-top: 1em;
+}
+
+.ui-layout-resizer {
+background-color: #eaeaea;
+}
+.ui-layout-resizer:hover {
+background-color: #e0e0e0;
+}
+.ui-layout-toggler {
+xbackground-color: #ccc;
+}
+.ui-layout-toggler:hover {
+xbackground-color: #888;
+}
+.ui-layout-toggler-open {
+background: transparent url(../images/toggle-lt.gif) no-repeat 0px 0px;
+}
+.ui-layout-toggler-closed {
+background: transparent url(../images/toggle-rt.gif) no-repeat 0px 0px;
+}
+
+#polarbear-content-main {
+	margin: 10px;
 }
