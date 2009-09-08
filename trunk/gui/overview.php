@@ -3,6 +3,7 @@
  * Owerview
  */
 require realpath(dirname(__FILE__)."/../") . "/polarbear-boot.php";
+require realpath(dirname(__FILE__)."/../") . "/includes/php/gapi/gapi.class.php";
 polarbear_require_admin();
 
 if ($_GET["action"] == "loadMoreActivites") {
@@ -18,22 +19,36 @@ if ($_GET["action"] == "loadMoreActivites") {
 	exit;
 }
 
+if ($_POST["action"] == "loadGaAnalytics") {
+	pb_get_ga_statistics();
+	exit;
+}
 
 $page_class = "polarbear-page-overview";
 ?>
 
 <h1>Overview</h1>
 
-<style>
-</style>
 <script type="text/javascript">
 	var recentActivitiesPage = 0;
 	$("a.overview-recent-activities-load-more").live("click", function() {
-		$.get("<? polarbear_webpath() ?>gui/overview.php", { "action": "loadMoreActivites", recentActivitiesPage: recentActivitiesPage }, function(data) {
+		$.get("<?php polarbear_webpath() ?>gui/overview.php", { "action": "loadMoreActivites", recentActivitiesPage: recentActivitiesPage }, function(data) {
 			$(".overview-recent-activities-ajax-container").append("<div style='display: none;' class='overview-recent-activities-load-more-added'>" + data + "</div>");
 			$(".overview-recent-activities-load-more-added:last").slideDown("slow");
 		});
 	});
+	
+	/*
+		on load = load statistics via ajax
+		(because it can take a while to fetch them from GA)
+	*/
+	$(function() {
+		$(".overview-statistics").load("<?php polarbear_webpath() ?>gui/overview.php", { "action": "loadGaAnalytics" }, function() {
+			$("#overview-statistics-tabs").tabs();
+		});
+	});
+	
+	
 </script>
 
 <?php
@@ -43,11 +58,208 @@ polarbear_infomsg($_GET["okmsg"], $_GET["errmsg"]);
 /*
 	Log/Recent activites - part of core or plugin?
 */
-?><h2>Recent activities</h2><?
-echo "<div class='overview-recent-activities'>";
+?>
 
-echo pb_get_recent_activites();
+<h2>Recent activities</h2>
+<div class="overview-recent-activities">
+	<?php echo pb_get_recent_activites(); ?>
+</div>
 
+<?php
+$gaID = polarbear_setting("GoogleAnalyticsReportID");
+if (!empty($gaID)) {
+	?>
+	<h2>Statistics</h2>
+	<div class="overview-statistics">
+		<img src="<?php polarbear_webpath() ?>images/loading.gif" alt="Loading..." />
+		Loading statistics...
+	</div>
+	<?php
+}
+
+/**
+ * statistics from Google Analytics
+ * For available dimensions and metrics: 
+ * http://code.google.com/apis/analytics/docs/gdata/gdataReferenceDimensionsMetrics.html
+ */
+
+function pb_get_ga_statistics() {
+
+	$gaID = polarbear_setting("GoogleAnalyticsReportID");
+	$gaEmail = polarbear_setting("GoogleAnalyticsEmail");
+	$gaPassword = polarbear_setting("GoogleAnalyticsPassword");
+	
+	if (empty($gaID) || empty($gaEmail) || empty($gaPassword)) {
+		echo "<p>Can not load statistics: no settings found.</p>";
+		return false;
+	}
+	
+	$ga = new gapi($gaEmail, $gaPassword);
+
+	$ga->requestReportData($gaID,array('date'),array('pageviews','visits','uniquePageviews',"timeOnPage","timeOnSite","bounces"), array("date"));
+
+	$maxVisitsPerDay = 0;
+	$chartData = "";
+	$arrDays = array();
+	$loopNum = 0;
+	foreach($ga->getResults() as $result):
+		if ($result->getVisits() > $maxVisitsPerDay) {
+			$maxVisitsPerDay = $result->getVisits();
+		}
+		$chartData .= $result->getVisits() . ",";
+		// don't add all days, just every..eh.. fifth?
+		if ($loopNum % 5 == 0) {
+			$day = strftime("%b %e", strtotime($result));
+			$arrDays[] = $day;
+		}
+		$loopNum++;
+	endforeach;
+	$day = strftime("%b %e", strtotime($result));
+	$arrDays[] = $day;
+	
+	$arrDays = array_reverse($arrDays);
+	$labelDay = "|" . implode($arrDays, "|");
+	
+	// Generate chart with visits per day
+	$chartData = preg_replace("/,$/", "", $chartData);
+	$chartImg = "http://chart.apis.google.com/chart?";
+	$chartImg .= "chs=600x125&cht=lc"; // chart type and size
+	$chartImg .= "&chm=B,e6f2fa,0,0.0,0.0"; // blue solid fill
+	//$chartImg .= "|N,666666,0,-1,10,0"; // label on each day
+	$chartImg .= "&chco=0077cc"; // colors
+	$chartImg .= "&chd=t:$chartData"; // data
+	$chartImg .= "&chds=0,$maxVisitsPerDay"; // min and max
+	$chartImg .= "&chg=25,50"; // grid lines
+	$chartImg .= "&chxt=x,y,r"; // labels
+	$labelVisits = "||" . ceil($maxVisitsPerDay/2) . "|" . $maxVisitsPerDay;
+	$chartImg .= "&chxl=0:{$labelDay}|1:{$labelVisits}|2:{$labelVisits}";
+	
+	$bounceRate = round(($ga->getBounces() / $ga->getVisits())*100,2);
+	$pagesPerVisit = $ga->getPageviews() / $ga->getVisits();
+	$avgTimeOnSite = ceil($ga->getTimeOnSite() / $ga->getVisits());
+	$visits = $ga->getVisits();
+	$pageviews = $ga->getPageviews();
+	
+	?>
+	
+		<p class="stats">
+			The last 30 days <?php polarbear_domain() ?> had 
+			<em><?php echo $visits ?> visits</em>
+			and <em><?php echo $pageviews ?> pageviews</em>.
+			That's about <em><?php echo round($pagesPerVisit, 2) ?> pages per visit</em>.
+		</p>
+		<p class="stats">
+			<em>Average time on site was <?php echo $avgTimeOnSite ?> seconds</em> 
+			and the <em>bounce rate was <?php echo $bounceRate ?>%</em>.
+		</p>
+	
+		<h3>Visits per day</h3>	
+		<p><img src="<?php echo $chartImg ?>" alt="Chart showing visitor count for the last 30 days" /></p>
+	
+	
+		<div id="overview-statistics-tabs">
+			<ul>
+				<li><a href="#overview-statistics-top-content"><span>Top Content</span></a></li>
+				<li><a href="#overview-statistics-keywords"><span>Top Keywords</span></a></li>
+				<li><a href="#overview-statistics-sources"><span>Top Sources</span></a></li>
+				<li><a href="#overview-statistics-medium"><span>Medium</span></a></li>
+			</ul>
+			<div id="overview-statistics-top-content">
+				<table>
+					<tr>
+						<th>Page</th>
+						<th>Pageviews</th>
+					</tr>
+					<?php
+					// info about most visited pages
+					$ga->requestReportData($gaID,array('pagePath'),array('pageviews'), "-pageviews");
+					$loopNum = 0;
+					foreach($ga->getResults() as $result):
+						if ($loopNum>=10) { break; }
+						echo "<tr>";
+						echo "<td>$result</td>";
+						echo "<td>" . $result->getPageviews() . "</td>";
+						echo "</tr>";
+						$loopNum++;
+					endforeach;
+					?>
+				</table>
+			</div>
+			<div id="overview-statistics-keywords">
+				<table>
+					<tr>
+						<th>Keyword</th>
+						<th>Pageviews</th>
+					</tr>
+					<?php
+					// search keywords
+					$ga->requestReportData($gaID,array('keyword'),array('pageviews'), array("-pageviews"));
+					$loopNum = 0;
+					foreach($ga->getResults() as $result) {
+						if ($result == "(not set)") { continue; }
+						if ($loopNum > 10) { break; }
+						echo "<td>$result</td>";
+						echo "<td>" . $result->getPageviews() . "</tr>";
+						$loopNum++;
+					}
+					?>
+				</table>
+			
+			</div>
+			<div id="overview-statistics-sources">
+				<table>
+					<tr>
+						<th>Source</th>
+						<th>Pageviews</th>
+					</tr>
+					<?php
+					// referers
+					$ga->requestReportData($gaID,array('source'),array('pageviews'), array("-pageviews"));
+					$loopNum = 0;
+					foreach($ga->getResults() as $result) {
+						if ($result == "(direct)") { continue; }
+						if ($loopNum > 10) { break; }
+						echo "<td>$result</td>";
+						echo "<td>" . $result->getPageviews() . "</tr>";
+						$loopNum++;
+					}
+					?>
+				</table>
+			</div>
+			<div id="overview-statistics-medium">
+				<table>
+					<tr>
+						<th>Source</th>
+						<th>Pageviews</th>
+					</tr>
+					<?php
+					// medium
+					$ga->requestReportData($gaID,array('medium'),array('pageviews'), array("-pageviews"));
+					$loopNum = 0;
+					foreach($ga->getResults() as $result) {
+						#if ($result == "(direct)") { continue; }
+						if ($loopNum > 10) { break; }
+						echo "<td>$result</td>";
+						echo "<td>" . $result->getPageviews() . "</tr>";
+						$loopNum++;
+					}
+					?>
+				</table>
+			</div>
+		
+		</div>
+		
+		<p>
+			<a href="http://www.google.com/analytics/">Visit Google Analytics</a> for more detailed statistics.
+			Statistics updated on <?php echo strftime("%b %e, %H:%M", strtotime($ga->getUpdated())) ?>
+		</p>
+
+	<?php
+} // get stats
+
+/**
+ * get recent activites
+ */
 function pb_get_recent_activites($options = null) {
 	global $polarbear_db;
 	$defaults = array(
@@ -170,6 +382,5 @@ function pb_get_recent_activites($options = null) {
 
 }
 
-echo "<div>";
 
 ?>
