@@ -28,12 +28,15 @@ if ($_POST["action"] == "settingsSave") {
 $settings = polarbear_getGlobalSettings();
 
 // Required settings; stuff that needs to be set
-$arrRequired = array(
-	"storagepath",
-	"imagemagickpath",
-	"usemodrewrite",
-	"templates",
-	"article404"
+$arrDefaultSettings = array(
+	"storagepath" => array("fieldType"=>"singleline", "description" => ""),
+	"imagemagickpath" => array("fieldType"=>"singleline", "description" => ""),
+	"usemodrewrite" => array("fieldType"=>"bool", "description" => ""),
+	"templates" => array("fieldType"=>"multiline", "description" => ""),
+	"article404" => array("fieldType"=>"singleline", "description" => "ID of article to use as 404"),
+	"GoogleAnalyticsEmail" => array("fieldType"=>"singleline", "description" => ""),
+	"GoogleAnalyticsPassword" => array("fieldType"=>"password", "description" => ""),
+	"GoogleAnalyticsReportID" => array("fieldType"=>"singleline", "description" => "")
 );
 
 ?>
@@ -85,12 +88,38 @@ $arrRequired = array(
 
 		<ul class="settings-list-required">
 		<?php
-			foreach ($arrRequired as $key) {
+			foreach ($arrDefaultSettings as $key => $val) {
 				?>
 				<li class="<?php echo $key ?>">
 					<?php echo htmlspecialchars ($key, ENT_COMPAT, "UTF-8") ?>
+					<?php
+					if (!empty($val["description"])) {
+						echo " - " . $val["description"];
+					}
+					?>
 					<br />
-					<textarea class="ui-widget-content ui-corner-all" name="<?php echo $key ?>"><?php echo htmlspecialchars ($settings[$key], ENT_COMPAT, "UTF-8") ?></textarea>
+					<?php
+					$fieldType = $val["fieldType"];
+					if ($fieldType == "singleline") {
+						?><input type="text" class="ui-widget-content ui-corner-all text" name="<?php echo $key ?>" value="<?php echo htmlspecialchars ($settings[$key], ENT_COMPAT, "UTF-8") ?>" /><?php
+					} elseif ($fieldType == "password") {
+						?><input type="password" class="ui-widget-content ui-corner-all text" name="<?php echo $key ?>" value="<?php echo htmlspecialchars ($settings[$key], ENT_COMPAT, "UTF-8") ?>" /><?php
+					} elseif ($fieldType == "bool") {
+						$boolval = strtolower($settings[$key]);
+						if ($boolval == "true" || $boolval == "1" || $boolval == "yes") {
+							$boolval = true;
+						} else {
+							$boolval = false;
+						}
+						?>
+						<input name="<?php echo $key ?>" type="radio" value="true" <?php if($boolval == true) { echo 'checked="checked"'; } ?> /> Yes
+						<br />
+						<input name="<?php echo $key ?>" type="radio" value="false" <?php if($boolval == false) { echo 'checked="checked"'; } ?> /> No
+						<?php
+					} else {
+						?><textarea class="ui-widget-content ui-corner-all" name="<?php echo $key ?>"><?php echo htmlspecialchars ($settings[$key], ENT_COMPAT, "UTF-8") ?></textarea><?php
+					}
+					?>
 				</li>
 				<?php
 			}
@@ -100,7 +129,7 @@ $arrRequired = array(
 			<?php
 			foreach ($settings as $key => $val) {
 				// if a value that is not among the required
-				if (!in_array($key, $arrRequired)) {
+				if (!array_key_exists($key, $arrDefaultSettings)) {
 					?>
 					<li>
 						<?php echo htmlspecialchars ($key, ENT_COMPAT, "UTF-8") ?>

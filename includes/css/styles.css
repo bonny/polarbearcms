@@ -250,10 +250,15 @@ background: #f6f6f6;
 	width: 75%;
 	height: 10em;
 }
+.polarbear-page-settings-frm input.text {
+	width: 75%;
+}
 .polarbear-page-settings-frm .settings-list-required,
 .polarbear-page-settings-frm .settings-list
- {
+{
+list-style-type: none;
 margin-top: 1em;
+margin-left: 0;
 }
 .polarbear-page-settings-frm .settings-list-required li,
 .polarbear-page-settings-frm .settings-list li
@@ -261,6 +266,7 @@ margin-top: 1em;
 margin-top: 1em;
 }
 /* make some required fiels a bit smaller */
+/*
 .polarbear-page-settings-frm li.imagemagick_path textarea,
 .polarbear-page-settings-frm li.attachpath textarea,
 .polarbear-page-settings-frm li.imagemagickpath textarea,
@@ -270,7 +276,7 @@ margin-top: 1em;
  {
 	height: 1em;
 }
-
+*/
 
 /**
  * Page "Users"
@@ -526,6 +532,23 @@ font-size: 12px;
 .overview-recent-activities h3 {
 	margin-top: 1em;
 }
+
+.overview-statistics p.stats {
+	font-size: 1.3em;
+	margin: 0 0 .5em 0;
+}
+.overview-statistics p.stats em {
+	font-weight: bold;
+	font-style: normal;
+}
+.overview-statistics table th {
+	text-align: left;
+}
+.overview-statistics table th,
+.overview-statistics table td {
+	padding: 0 15px 10px 0;
+}
+
 
 .ui-layout-resizer {
 background-color: #eaeaea;
