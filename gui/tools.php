@@ -12,6 +12,9 @@ if ($_GET["action"] == "clearCache") {
 	$okmsg = "The cache has been cleared";
 }
 
+
+pb_must_come_through_tree();
+
 ?>
 
 <div class="polarbear-page-tools">

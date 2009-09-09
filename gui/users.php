@@ -251,6 +251,15 @@ if ($_POST["action"] == "users_viewOneUser") {
 		} else {
 			echo "Never";
 		}
+
+		// last seen
+		echo "<h4>Last seen</h4>";
+		if ($user->dateLastSeen) {
+			echo $user->dateLastSeen . " (". polarbear_time2str($user->dateLastSeen) . ")";
+		} else {
+			echo "Never";
+		}
+
 		?>
 		
 	</div>

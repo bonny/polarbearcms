@@ -43,8 +43,10 @@ $page_class = "polarbear-page-overview";
 		(because it can take a while to fetch them from GA)
 	*/
 	$(function() {
-		$(".overview-statistics").load("<?php polarbear_webpath() ?>gui/overview.php", { "action": "loadGaAnalytics" }, function() {
+		$(".overview-statistics-content").hide().load("<?php polarbear_webpath() ?>gui/overview.php", { "action": "loadGaAnalytics" }, function() {
+			$(".overview-statistics-loading").hide();
 			$("#overview-statistics-tabs").tabs();
+			$(".overview-statistics-content").fadeIn("slow");
 		});
 	});
 	
@@ -71,8 +73,11 @@ if (!empty($gaID)) {
 	?>
 	<h2>Statistics</h2>
 	<div class="overview-statistics">
-		<img src="<?php polarbear_webpath() ?>images/loading.gif" alt="Loading..." />
-		Loading statistics...
+		<div class="overview-statistics-loading">
+			<img src="<?php polarbear_webpath() ?>images/loading.gif" alt="" />
+			Loading statistics...
+		</div>
+		<div class="overview-statistics-content"></div>
 	</div>
 	<?php
 }

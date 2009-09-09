@@ -25,18 +25,23 @@ if ($_POST["action"] == "settingsSave") {
 	exit;
 }
 
+
+pb_must_come_through_tree();
+
 $settings = polarbear_getGlobalSettings();
 
 // Required settings; stuff that needs to be set
 $arrDefaultSettings = array(
-	"storagepath" => array("fieldType"=>"singleline", "description" => ""),
+	"storagepath" => array("fieldType"=>"singleline", "description" => "This is where PolarBear stores files and images, but also the cache. Must be writable."),
 	"imagemagickpath" => array("fieldType"=>"singleline", "description" => ""),
 	"usemodrewrite" => array("fieldType"=>"bool", "description" => ""),
-	"templates" => array("fieldType"=>"multiline", "description" => ""),
+	"templates" => array("fieldType"=>"multiline", "description" => "Format: template name&lt;new line&gt;template file"),
 	"article404" => array("fieldType"=>"singleline", "description" => "ID of article to use as 404"),
+	"cache_max_age" => array("fieldType" => "singleline", "description" => "How long page may stay in the cache, in seconds"),
+	"tinymce_theme_advanced_styles" => array("fieldType" => "singleline", "description" => "This option should contain a semicolon separated list of class titles and class names separated by =. The titles will be presented to the user in the styles dropdown list and the class names will be inserted"),
 	"GoogleAnalyticsEmail" => array("fieldType"=>"singleline", "description" => ""),
 	"GoogleAnalyticsPassword" => array("fieldType"=>"password", "description" => ""),
-	"GoogleAnalyticsReportID" => array("fieldType"=>"singleline", "description" => "")
+	"GoogleAnalyticsReportID" => array("fieldType"=>"singleline", "description" => ""),
 );
 
 ?>
@@ -91,13 +96,13 @@ $arrDefaultSettings = array(
 			foreach ($arrDefaultSettings as $key => $val) {
 				?>
 				<li class="<?php echo $key ?>">
-					<?php echo htmlspecialchars ($key, ENT_COMPAT, "UTF-8") ?>
+					<p><?php echo htmlspecialchars ($key, ENT_COMPAT, "UTF-8") ?></p>
 					<?php
 					if (!empty($val["description"])) {
-						echo " - " . $val["description"];
+						echo "<p class='description'>" . $val["description"] . "</p>";
 					}
 					?>
-					<br />
+					<p>
 					<?php
 					$fieldType = $val["fieldType"];
 					if ($fieldType == "singleline") {
@@ -120,6 +125,7 @@ $arrDefaultSettings = array(
 						?><textarea class="ui-widget-content ui-corner-all" name="<?php echo $key ?>"><?php echo htmlspecialchars ($settings[$key], ENT_COMPAT, "UTF-8") ?></textarea><?php
 					}
 					?>
+					</p>
 				</li>
 				<?php
 			}
