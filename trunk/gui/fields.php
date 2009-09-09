@@ -3,6 +3,11 @@ require_once("../polarbear-boot.php");
 $page_class = "polarbear-page-fields";
 $action = $_REQUEST["action"];
 
+
+if (!$action) {
+	pb_must_come_through_tree();
+}
+
 /**
  * laddar in ett fält
  */
@@ -206,23 +211,6 @@ if ($action == "fieldLoad"){
 // require_once("includes/admin-header.php");
 
 ?>
-<style type="text/css">
-	#fieldEditFields li {
-		border-top: 1px solid #aaa;
-		border-bottom: 1px solid #aaa;
-		margin-bottom: -1px;
-		padding: 1em;
-		background: white;
-	}
-	#fieldEditFields li:hover {
-		background: lightyellow;
-		cursor: move;
-	}
-	#fieldEditFields .delete {
-		float: right;
-	}
-</style>
-
 <script type="text/javascript">
 	var numNewFields = 0;
 	$(function(){
@@ -380,6 +368,7 @@ if ($action == "fieldCollectionEdit"){
 }
 
 if (!$action){
+
 	?>
 
 	<h1>Fields</h1>

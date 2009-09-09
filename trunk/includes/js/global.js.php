@@ -563,16 +563,16 @@ function polarbear_page_users_onload() {
 	// koppla på en layout till
 	//$(".users-layout").layout();
 	usersLayout1 = $("#polarbear-content-main").layout({
-		applyDefaultStyles: true,
+		applyDefaultStyles: false,
 		defaults: {
-			resizable: false,
+			resizable: true,
 			closable: false
 		},
 		west: {
-			size: .33
+			size: .26
 		},
 		east: {
-			size: .33
+			size: .40
 		}
 
 	});

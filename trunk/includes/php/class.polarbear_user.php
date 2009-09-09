@@ -12,6 +12,7 @@ class PolarBear_User {
 		$dateCreated,
 		$dateChanged,
 		$dateLastLogin,
+		$dateLastSeen,
 		$isDeleted,
 		$arrGroups,
 		$isAdmin,
@@ -73,6 +74,7 @@ class PolarBear_User {
 		$this->dateCreated = $r->dateCreated;
 		$this->dateChanged = $r->dateChanged;
 		$this->dateLastLogin = $r->dateLastLogin;
+		$this->dateLastSeen = $r->dateLastSeen;
 		$this->isDeleted = $r->isDeleted;
 		$this->loginToken = $r->loginToken;
 	}
@@ -199,7 +201,7 @@ class PolarBear_User {
 		global $polarbear_db;
 		
 		// sätt logintoken samt datum för senaste login
-		$polarbear_db->query("UPDATE " . POLARBEAR_DB_PREFIX . "_users SET loginToken = '$token', dateLastLogin = now() WHERE id = '$this->id'");
+		$polarbear_db->query("UPDATE " . POLARBEAR_DB_PREFIX . "_users SET loginToken = '$token', dateLastLogin = now(), dateLastSeen = now() WHERE id = '$this->id'");
 		
 		$domain = POLARBEAR_DOMAIN;
 		if ($domain == "localhost") {

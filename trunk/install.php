@@ -163,6 +163,7 @@ function pb_createAndUpdateTables() {
 	  `dateChanged` datetime default NULL,
 	  `loginToken` varchar(32) character set latin1 default NULL,
 	  `dateLastLogin` datetime default NULL,
+	  `dateLastSeen` datetime default NULL,
 	  `passwordResetCode` varchar(32) character set latin1 default NULL,
 	  PRIMARY KEY  (`id`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;

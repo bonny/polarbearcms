@@ -265,18 +265,15 @@ margin-left: 0;
  {
 margin-top: 1em;
 }
-/* make some required fiels a bit smaller */
-/*
-.polarbear-page-settings-frm li.imagemagick_path textarea,
-.polarbear-page-settings-frm li.attachpath textarea,
-.polarbear-page-settings-frm li.imagemagickpath textarea,
-.polarbear-page-settings-frm li.storagepath textarea,
-.polarbear-page-settings-frm li.usemodrewrite textarea,
-.polarbear-page-settings-frm li.article404 textarea
- {
-	height: 1em;
+
+
+.polarbear-page-settings-frm li p {
+	margin: 0 0 .25em 0;
 }
-*/
+.polarbear-page-settings-frm li p.description {
+	color: #777;
+	font-size: 12px;
+}
 
 /**
  * Page "Users"
@@ -571,4 +568,22 @@ background: transparent url(../images/toggle-rt.gif) no-repeat 0px 0px;
 
 #polarbear-content-main {
 	padding: 10px;
+}
+
+/**
+ * page fields
+ */
+#fieldEditFields li {
+	border-top: 1px solid #aaa;
+	border-bottom: 1px solid #aaa;
+	margin-bottom: -1px;
+	padding: 1em;
+	background: white;
+}
+#fieldEditFields li:hover {
+	background: lightyellow;
+	cursor: move;
+}
+#fieldEditFields .delete {
+	float: right;
 }

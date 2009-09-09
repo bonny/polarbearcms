@@ -174,6 +174,9 @@ function polarbear_user_login_from_cookie() {
 		$userToken = $polarbear_db->escape($_COOKIE['polarbear_token']);
 		$sql = "SELECT id FROM " . POLARBEAR_DB_PREFIX . "_users WHERE id = '$userID' AND loginToken = '$userToken' AND isDeleted = 0 AND loginToken <> ''";
 		if ($r = $polarbear_db->get_var($sql)) {
+			// mark this user as seen
+			$sql = "UPDATE " . POLARBEAR_DB_PREFIX . "_users SET dateLastSeen = now() WHERE id = '$userID'";
+			$polarbear_db->query($sql);
 			return new PolarBear_User($r);
 		} else {
 			return false;
@@ -2863,6 +2866,19 @@ function pb_cache_set_cached_file_max_age($val) {
 	echo "<br>set max age";
 	global $pb_cache_cachedFile_max_age;
 	$pb_cache_cachedFile_max_age = (int) $val;
+}
+
+
+/**
+ * don't access this page directly, must come through tree
+ */
+function pb_must_come_through_tree() {
+	if (empty($_SERVER["HTTP_X_REQUESTED_WITH"])) {
+		// go to the current page, but via tree
+		$url = polarbear_treepage($url);
+		header("Location: $url");
+		exit;
+	}
 }
 
 ?>
