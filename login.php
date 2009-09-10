@@ -204,14 +204,9 @@ if (isset($_POST["forgot-password"])) {
 			#login-wrapper label.checkbox {
 				display: inline;
 			}
-			
-			#login-form {
-				xbackground: #eee;
-				padding: 1em;
-			}
-			
+					
 			p {
-				padding: .5em;
+				xpadding: .5em;
 			}
 			p.focused {
 				xbackground-color: #cfc;
