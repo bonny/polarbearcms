@@ -1811,7 +1811,7 @@ function pb_add_site_edit($args) {
 	unset($_SESSION["pb_wrong_login"]);
 	unset($_SESSION["pb_ok_login"]);
 	unset($_SESSION["pb_logged_out"]);
-	
+
 	// make the pb-box visible if we a) just (tried) logged in or b) just logged out
 	if ($pb_show_site_edit_tab == "1") {
 		$visibleStyle = "left: 0px;";
@@ -2718,7 +2718,7 @@ function pb_log($options) {
 
 function pb_cache_md5() {
 	$request = $_REQUEST;
-	unset($request["PHPSESSID"]);
+	unset($request["PHPSESSID"]); // kinda stupid actually. if we are using sessions, it must be reason for it?!
 	$cacheMD5 = md5(POLARBEAR_DOMAIN . $_SERVER["REQUEST_URI"] . serialize($request));
 	return $cacheMD5;
 }
@@ -2737,9 +2737,11 @@ function pb_cache_isAllowed() {
 	$isOk = true;
 	// not allowed to cache when
 	// - a user is logged in
-	// cache is set to disabled by script och by article level
-	// a post request
-	if (is_object($polarbear_u) || $pb_cache_disabled == true || sizeof($_POST)>0) {
+	// - a user has previosly been logged in
+	// - session is in use (@todo actually do what I say here..)
+	// - cache is set to disabled by script och by article level
+	// - request is a post request
+	if (is_object($polarbear_u) || $pb_cache_disabled == true || sizeof($_POST)>0 || $_COOKIE["pb_been_logged_in"]) {
 		$isOk = false;
 	}
 	return $isOk;
@@ -2852,20 +2854,7 @@ function pb_clear_cache_all() {
  * Get max time of cached file
  */
 function pb_cache_get_cached_file_max_age() {
-	#echo "<br>get max age";
-	#global $pb_cache_cachedFile_max_age;
-	#if (!is_numeric($pb_cache_cachedFile_max_age)) {
-	#	$pb_cache_cachedFile_max_age = 600; // in seconds. default 10 min
-	#}
-	#return $pb_cache_cachedFile_max_age;
 	return POLARBEAR_CACHE_MAX_AGE;
-}
-
-// deprecated
-function pb_cache_set_cached_file_max_age($val) {
-	echo "<br>set max age";
-	global $pb_cache_cachedFile_max_age;
-	$pb_cache_cachedFile_max_age = (int) $val;
 }
 
 

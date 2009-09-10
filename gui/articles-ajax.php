@@ -349,7 +349,7 @@ if ($action == "articleEdit") {
 				
 				<div class="row">
 					<label for="article-body">Body</label>
-					<textarea style="width: 100%" cols="50" rows="10" id="article-body" name="article-body"><?php echo htmlspecialchars($a->getBody()) ?></textarea>
+					<textarea style="width: 100%" cols="50" rows="15" id="article-body" name="article-body"><?php echo htmlspecialchars($a->getBody()) ?></textarea>
 				</div>
 
 				

@@ -24,6 +24,7 @@ if (isset($_GET["logout"]) && $polarbear_u) {
 		$returnto = $_GET["returnto"];
 		if ($returnto == "referer") {
 			$_SESSION["pb_logged_out"] = "1";
+			$_SESSION["pb_show_site_edit_tab"] = "1";
 			$returnto = $_SERVER["HTTP_REFERER"];
 		}
 		header("Location: $returnto");
@@ -123,6 +124,7 @@ if (isset($_POST["login"])) {
 			if ($returnto == "referer") { $returnto = $_SERVER["HTTP_REFERER"]; }
 			#$_SESSION["pb_show_site_edit_tab"] = "1";
 			$_SESSION["pb_wrong_login"] = "1";
+			$_SESSION["pb_show_site_edit_tab"] = "1";
 			header("Location: $returnto");
 			exit;
 		} else {
@@ -205,16 +207,17 @@ if (isset($_POST["forgot-password"])) {
 				display: inline;
 			}
 					
-			p {
-				xpadding: .5em;
-			}
-			p.focused {
-				xbackground-color: #cfc;
-			}
 			p.forgot {
 				border-top: 1px solid #aaa;
 				padding-top: 1em;
 				margin-top: 1em;
+			}
+			
+			#login-form {
+				margin-bottom: 2em;
+			}
+			#login-form p {
+				margin-bottom: 1.5em;
 			}
 			
 		</style>
@@ -313,12 +316,22 @@ if (isset($_POST["forgot-password"])) {
 					<label for="login-password">Password</label>
 					<input id="login-password" name="login-password" type="password" size="30" class="password text ui-widget-content ui-corner-all" />
 				</p>
+				<!--
+				<p>
+					<label>Go to PolarBear CMS</label>
+					<input type="radio" name="goTo" />
+					<label>Go to <?php polarbear_domain() ?></label>
+					<input type="radio" name="goTo" />				
+				</p>
+				-->
 				<p>
 					<input type="checkbox" class="checkbox" value="1" name="login-remember-me" id="login-remember-me" />
 					<label class="checkbox" for="login-remember-me">Remember me on this computer</label>
 				</p>
 				<p>
 					<input type="submit" value="Log in" class="submit fg-button ui-state-default ui-priority-primary ui-corner-all" name="login" />
+					or
+					<a href="http://<?php polarbear_domain() ?>">return to <?php polarbear_domain() ?></a>
 				</p>
 			</form>
 

@@ -4,12 +4,12 @@
 	width: 170px;
 	color: white;
 	left: -200px;
-	xtop: 100px;
 	bottom: 0px;
 	opacity: .9;
 	padding: 15px;
 	font-family: arial, verdana, sans-serif;
 	font-size: 14px;
+	line-height: 1.2;
 }
 #polarbear-site-edit-tab a:link,
 #polarbear-site-edit-tab a:visited,
@@ -28,10 +28,12 @@
 	border: 0;
 }
 
-.pb-site-edit-msg {
+#polarbear-site-edit-tab .pb-site-edit-msg {
 	font-weight:  bold;
 	padding: 1ex;
 	border: 2px solid #938EAF;
+	color: black;
+	background-color: #fff48c;
 }
 
 
