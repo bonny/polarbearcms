@@ -120,9 +120,10 @@ function pb_get_ga_statistics() {
 		$loopNum++;
 	endforeach;
 	#$arrDays = array_reverse($arrDays);
-	$labelDay = "|" . implode($arrDays, "|");
+	// also add the last day fetched
 	$day = strftime("%b %e", strtotime($result));
 	$arrDays[] = $day;
+	$labelDay = "|" . implode($arrDays, "|");
 
 	// Generate chart with visits per day
 	$chartData = preg_replace("/,$/", "", $chartData);
