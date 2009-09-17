@@ -196,7 +196,7 @@ $skip_menu = true;
 $filebrowser_type = $_GET["type"];
 
 ?>
-	<div class="ui-layout-content" id="polarbear-page-files-content">
+	<div class="ui-layout-content polarbear-content-main-inner" id="polarbear-page-files-content">
 		<?php
 			polarbear_files_get_page_content();
 		?>

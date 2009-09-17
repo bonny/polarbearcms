@@ -211,6 +211,9 @@ if ($action == "fieldLoad"){
 // require_once("includes/admin-header.php");
 
 ?>
+
+<div class="polarbear-content-main-inner">
+
 <script type="text/javascript">
 	var numNewFields = 0;
 	$(function(){
@@ -406,3 +409,4 @@ if (!$action){
 
 #require ("includes/admin-footer.php");
 ?>
+</div>

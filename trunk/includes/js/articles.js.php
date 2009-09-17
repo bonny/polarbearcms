@@ -250,7 +250,8 @@ $("#official-author-window input[name='author-type-custom-name']").live("click",
 
 // on click on a group or a user in the user browser
 // todo: is this using the same id as the real user admin?
-$("#users-groups").live("click", function(e) {
+// todo: this is also getting called in gui/users.php. that's baaaaad!
+$("#article-edit-choose-author-users-groups").live("click", function(e) {
 	// users_getUsersInGroup
 	// $_POST["groupID"]; groupID-<id>
 	var groupClassName = e.target.className;

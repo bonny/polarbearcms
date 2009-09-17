@@ -16,8 +16,7 @@ if ($_GET["action"] == "clearCache") {
 pb_must_come_through_tree();
 
 ?>
-
-<div class="polarbear-page-tools">
+<div class="polarbear-page-tools polarbear-content-main-inner">
 	
 
 	<h1>Tools</h1>
