@@ -32,12 +32,12 @@ $settings = polarbear_getGlobalSettings();
 
 // Required settings; stuff that needs to be set
 $arrDefaultSettings = array(
-	"storagepath" => array("fieldType"=>"singleline", "description" => "This is where PolarBear stores files and images, but also the cache. Must be writable."),
+	"storagepath" => array("fieldType"=>"singleline", "description" => "This is where PolarBear stores files and images, but also the cache. Must be writable.<br />Hint: current DOCUMENT_ROOT is '" . $_SERVER["DOCUMENT_ROOT"] . "'"),
 	"imagemagickpath" => array("fieldType"=>"singleline", "description" => ""),
 	"usemodrewrite" => array("fieldType"=>"bool", "description" => ""),
 	"templates" => array("fieldType"=>"multiline", "description" => "Format: template name&lt;new line&gt;template file"),
 	"article404" => array("fieldType"=>"singleline", "description" => "ID of article to use as 404"),
-	"cache_max_age" => array("fieldType" => "singleline", "description" => "How long page may stay in the cache, in seconds"),
+	"cache_max_age" => array("fieldType" => "singleline", "description" => "How long a page may stay in the cache, in seconds"),
 	"tinymce_theme_advanced_styles" => array("fieldType" => "singleline", "description" => "This option should contain a semicolon separated list of class titles and class names separated by =. The titles will be presented to the user in the styles dropdown list and the class names will be inserted"),
 	"GoogleAnalyticsEmail" => array("fieldType"=>"singleline", "description" => ""),
 	"GoogleAnalyticsPassword" => array("fieldType"=>"password", "description" => ""),
@@ -94,6 +94,7 @@ $arrDefaultSettings = array(
 		<ul class="settings-list-required">
 		<?php
 			foreach ($arrDefaultSettings as $key => $val) {
+				$thisValue = $settings[$key];
 				?>
 				<li class="<?php echo $key ?>">
 					<p><?php echo htmlspecialchars ($key, ENT_COMPAT, "UTF-8") ?></p>
@@ -101,14 +102,31 @@ $arrDefaultSettings = array(
 					if (!empty($val["description"])) {
 						echo "<p class='description'>" . $val["description"] . "</p>";
 					}
+					$msgOk = "";
+					$msgErr = "";
+					// check some stuff, for example that storagepath exists
+					if ($key == "storagepath") {
+						if (is_readable($thisValue)) {
+							if (is_writeable($thisValue)) {
+								// ok
+							} else {
+								$msgErr = "Path '". htmlspecialchars($thisValue, ENT_COMPAT, "UTF-8") . "' is not writable.";								
+							}
+						} else {
+							$msgErr = "Path '". htmlspecialchars($thisValue, ENT_COMPAT, "UTF-8") . "' is not readable.";
+						}
+					}
+					if (!empty($msgErr)) {
+						echo "<p class='msg-error'>$msgErr</p>";
+					}
 					?>
 					<p>
 					<?php
 					$fieldType = $val["fieldType"];
 					if ($fieldType == "singleline") {
-						?><input type="text" class="ui-widget-content ui-corner-all text" name="<?php echo $key ?>" value="<?php echo htmlspecialchars ($settings[$key], ENT_COMPAT, "UTF-8") ?>" /><?php
+						?><input type="text" class="ui-widget-content ui-corner-all text" name="<?php echo $key ?>" value="<?php echo htmlspecialchars($thisValue, ENT_COMPAT, "UTF-8") ?>" /><?php
 					} elseif ($fieldType == "password") {
-						?><input type="password" class="ui-widget-content ui-corner-all text" name="<?php echo $key ?>" value="<?php echo htmlspecialchars ($settings[$key], ENT_COMPAT, "UTF-8") ?>" /><?php
+						?><input type="password" class="ui-widget-content ui-corner-all text" name="<?php echo $key ?>" value="<?php echo htmlspecialchars ($thisValue, ENT_COMPAT, "UTF-8") ?>" /><?php
 					} elseif ($fieldType == "bool") {
 						$boolval = strtolower($settings[$key]);
 						if ($boolval == "true" || $boolval == "1" || $boolval == "yes") {
@@ -122,7 +140,7 @@ $arrDefaultSettings = array(
 						<input name="<?php echo $key ?>" type="radio" value="false" <?php if($boolval == false) { echo 'checked="checked"'; } ?> /> No
 						<?php
 					} else {
-						?><textarea class="ui-widget-content ui-corner-all" name="<?php echo $key ?>"><?php echo htmlspecialchars ($settings[$key], ENT_COMPAT, "UTF-8") ?></textarea><?php
+						?><textarea class="ui-widget-content ui-corner-all" name="<?php echo $key ?>"><?php echo htmlspecialchars ($thisValue, ENT_COMPAT, "UTF-8") ?></textarea><?php
 					}
 					?>
 					</p>
