@@ -384,12 +384,12 @@ function polarbear_time2str($ts)
 /**
  * Skriver ut en lista på de användargrupper som finns.
  */
-function admin_get_user_group_list() {
+function admin_get_user_group_list($ulID = "users-groups") {
 	global $polarbear_db;
 	$numUsers = $polarbear_db->get_var("SELECT COUNT(id) FROM " . POLARBEAR_DB_PREFIX . "_users WHERE isDeleted = 0");
 	$numAdminUsers = $polarbear_db->get_var("SELECT COUNT(userID) FROM " . POLARBEAR_DB_PREFIX . "_users_groups_relation INNER JOIN " . POLARBEAR_DB_PREFIX . "_users as a on a.id = userID WHERE a.isDeleted = 0 AND groupID = 1");
 	?>
-	<ul id="users-groups">
+	<ul id="<?=$ulID?>">
 		<!-- fasta / virtuella grupper -->
 		<li class="groupID-all">
 			<a href="#" class="groupID-all">All users</a>
@@ -2334,9 +2334,36 @@ class polarbear_articlefetcher {
 
 
 /**
- * Easy get and set values. For anything!
+ * same as polarbear_storage but with option to get expired
  */
-function polarbear_storage($key = null, $value = null) {
+function polarbear_storage_get($key = null, & $expired = null) {
+	# id key value
+	global $polarbear_db;
+	if (isset($key) && !isset($value)) {
+		$key = trim($key);
+		// only key is set, so just fetch the current value of that key
+		$sqlkey = mysql_real_escape_string($key);
+		$sql = "SELECT thevalue, (dateExpire - now()) as expired FROM " . POLARBEAR_DB_PREFIX . "_storage WHERE thekey = '$sqlkey'";
+		if ($r = $polarbear_db->get_results($sql)) {
+			$value = unserialize($r[0]->thevalue);
+			$expire = (int)$r[0]->expired;
+			$expired = ($expire <= 0) ? true : false;
+			return $value;
+		} else {
+			// key does not exist
+			// treat as expired? if it does not exist, we wold like to update it, right?
+			$expired = true;
+			return null;
+		}
+	}
+}
+
+
+/**
+ * Easy get and set values. For anything!
+ * same function for both setting and getting
+ */
+function polarbear_storage($key = null, $value = null, $maxAge = 0) {
 	if (!isset($key) && !isset($value)) {
 		// nothing set
 		return null;
@@ -2348,9 +2375,9 @@ function polarbear_storage($key = null, $value = null) {
 		$key = trim($key);
 		// only key is set, so just fetch the current value of that key
 		$sqlkey = mysql_real_escape_string($key);
-		$sql = "SELECT thevalue FROM " . POLARBEAR_DB_PREFIX . "_storage WHERE thekey = '$sqlkey'";
-		if ($r = $polarbear_db->get_var($sql)) {
-			$value = unserialize($r);
+		$sql = "SELECT thevalue, (dateExpire - now()) as expired FROM " . POLARBEAR_DB_PREFIX . "_storage WHERE thekey = '$sqlkey'";
+		if ($r = $polarbear_db->get_results($sql)) {
+			$value = unserialize($r[0]->thevalue);
 			return $value;
 		} else {
 			// key does not exist
@@ -2359,8 +2386,9 @@ function polarbear_storage($key = null, $value = null) {
 	}
 
 	if (isset($key) && isset($value)) {
-		$key = trim($key);
-		$value = trim($value);
+		// removed since they don't work with non-string values
+		#$key = trim($key);
+		#$value = trim($value);
 		// both key and value is set, so set the value for the key
 		$sqlkey = mysql_real_escape_string($key);
 		$sqlvalue = mysql_real_escape_string(serialize($value));
@@ -2370,7 +2398,7 @@ function polarbear_storage($key = null, $value = null) {
 		$polarbear_db->query($sql);
 		
 		// add new
-		$sql = "INSERT INTO " . POLARBEAR_DB_PREFIX . "_storage SET thekey = '$sqlkey', thevalue = '$sqlvalue'";
+		$sql = "INSERT INTO " . POLARBEAR_DB_PREFIX . "_storage SET thekey = '$sqlkey', thevalue = '$sqlvalue', dateExpire = now() + INTERVAL $maxAge SECOND";
 		$rs = $polarbear_db->query($sql);
 		
 		return $value;

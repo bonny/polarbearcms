@@ -77,3 +77,7 @@ header('Content-type: text/html; charset="utf-8"');
 </head>                            
 
 <body class="<?php print (isset($page_class)) ? $page_class : "" ?>">
+
+<div class="ui-layout-ignore" id="pb-message">
+	<p>I'm a message!</p>
+</div>

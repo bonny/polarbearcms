@@ -115,6 +115,7 @@ function polarbear_files_onload() {
 			// ok, radera filen
 			li.block({ message: "Deleting..." });
 			$.post("<?php polarbear_webpath() ?>gui/files.php", { action: "deleteFile", fileID: fileID }, function(data) {
+				pb_showMessage("<p>File deleted</p>");
 				// Ta bort diven
 				li.fadeOut("slow");
 			});
@@ -130,7 +131,8 @@ function polarbear_files_onload() {
 		cancel		: 'Cancel',
 		submit 		: 'Save',
 		indicator	: 'Saving...',
-		onblur		: "ignore"
+		onblur		: "ignore",
+		callback	: function() { pb_showMessage("<p>Filename updated</p>"); }
 	});
 		
 

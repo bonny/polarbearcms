@@ -27,6 +27,8 @@ if ($_POST["action"] == "loadGaAnalytics") {
 $page_class = "polarbear-page-overview";
 ?>
 
+<div class="polarbear-content-main-inner">
+
 <h1>Overview</h1>
 
 <script type="text/javascript">
@@ -75,12 +77,17 @@ if (!empty($gaID)) {
 	<div class="overview-statistics">
 		<div class="overview-statistics-loading">
 			<img src="<?php polarbear_webpath() ?>images/loading.gif" alt="" />
-			Loading statistics...
+			Fetching data from Google Analytics...
 		</div>
 		<div class="overview-statistics-content"></div>
 	</div>
 	<?php
 }
+
+
+?>
+</div>
+<?
 
 /**
  * statistics from Google Analytics
@@ -93,15 +100,25 @@ function pb_get_ga_statistics() {
 	$gaID = polarbear_setting("GoogleAnalyticsReportID");
 	$gaEmail = polarbear_setting("GoogleAnalyticsEmail");
 	$gaPassword = polarbear_setting("GoogleAnalyticsPassword");
+	$maxAge = 300; // seconds to store data in cache
 	
 	if (empty($gaID) || empty($gaEmail) || empty($gaPassword)) {
 		echo "<p>Can not load statistics: no settings found.</p>";
 		return false;
 	}
-	
-	$ga = new gapi($gaEmail, $gaPassword);
 
-	$ga->requestReportData($gaID,array('date'),array('pageviews','visits','uniquePageviews',"timeOnPage","timeOnSite","bounces"), array("date"));
+	$ga = polarbear_storage_get("pb_google_analytics_GAPI_1", $expired); // get
+	if ($expired) {
+		$ga = polarbear_storage("pb_google_analytics_GAPI_1", new gapi($gaEmail, $gaPassword), $maxAge); // store
+	}
+
+	$gaTmp = polarbear_storage_get("pb_google_analytics_GAPI_date", $expired);
+	if ($expired) {
+		$ga->requestReportData($gaID,array('date'),array('pageviews','visits','uniquePageviews',"timeOnPage","timeOnSite","bounces"), array("date"));
+		$ga = polarbear_storage("pb_google_analytics_GAPI_date", $ga, $maxAge);
+	} else {
+		$ga = $gaTmp;
+	}
 
 	$maxVisitsPerDay = 0;
 	$chartData = "";
@@ -153,7 +170,6 @@ function pb_get_ga_statistics() {
 	$pageviews = $ga->getPageviews();
 	
 	?>
-	
 		<p class="stats">
 			The last 30 days <?php polarbear_domain() ?> had 
 			<em><?php echo $visits ?> visits</em>
@@ -184,7 +200,15 @@ function pb_get_ga_statistics() {
 					</tr>
 					<?php
 					// info about most visited pages
-					$ga->requestReportData($gaID,array('pagePath'),array('pageviews'), "-pageviews");
+
+					$gaTmp = polarbear_storage_get("pb_google_analytics_GAPI_pagePath", $expired);
+					if ($expired) {
+						$ga->requestReportData($gaID,array('pagePath'),array('pageviews'), "-pageviews");
+						$ga = polarbear_storage("pb_google_analytics_GAPI_pagePath", $ga, $maxAge);
+					} else {
+						$ga = $gaTmp;
+					}
+
 					$loopNum = 0;
 					foreach($ga->getResults() as $result):
 						if ($loopNum>=10) { break; }
@@ -205,7 +229,14 @@ function pb_get_ga_statistics() {
 					</tr>
 					<?php
 					// search keywords
-					$ga->requestReportData($gaID,array('keyword'),array('pageviews'), array("-pageviews"));
+					$gaTmp = polarbear_storage_get("pb_google_analytics_GAPI_keyword", $expired);
+					if ($expired) {
+						$ga->requestReportData($gaID,array('keyword'),array('pageviews'), array("-pageviews"));
+						$ga = polarbear_storage("pb_google_analytics_GAPI_keyword", $ga, $maxAge);
+					} else {
+						$ga = $gaTmp;
+					}
+
 					$loopNum = 0;
 					foreach($ga->getResults() as $result) {
 						if ($result == "(not set)") { continue; }
@@ -226,7 +257,14 @@ function pb_get_ga_statistics() {
 					</tr>
 					<?php
 					// referers
-					$ga->requestReportData($gaID,array('source'),array('pageviews'), array("-pageviews"));
+					$gaTmp = polarbear_storage_get("pb_google_analytics_GAPI_source", $expired);
+					if ($expired) {
+						$ga->requestReportData($gaID,array('source'),array('pageviews'), array("-pageviews"));
+						$ga = polarbear_storage("pb_google_analytics_GAPI_source", $ga, $maxAge);
+					} else {
+						$ga = $gaTmp;
+					}
+
 					$loopNum = 0;
 					foreach($ga->getResults() as $result) {
 						if ($result == "(direct)") { continue; }
@@ -246,7 +284,14 @@ function pb_get_ga_statistics() {
 					</tr>
 					<?php
 					// medium
-					$ga->requestReportData($gaID,array('medium'),array('pageviews'), array("-pageviews"));
+					$gaTmp = polarbear_storage_get("pb_google_analytics_GAPI_medium", $expired);
+					if ($expired) {
+						$ga->requestReportData($gaID,array('medium'),array('pageviews'), array("-pageviews"));
+						$ga = polarbear_storage("pb_google_analytics_GAPI_medium", $ga, $maxAge);
+					} else {
+						$ga = $gaTmp;
+					}
+
 					$loopNum = 0;
 					foreach($ga->getResults() as $result) {
 						#if ($result == "(direct)") { continue; }
@@ -393,6 +438,5 @@ function pb_get_recent_activites($options = null) {
 	}
 
 }
-
 
 ?>

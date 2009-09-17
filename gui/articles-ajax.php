@@ -752,7 +752,7 @@ if ($action == "articleEdit") {
 					<div>Groups</div>
 					<div style="height: 200px; overflow: auto;">
 						<?php
-						admin_get_user_group_list();
+						admin_get_user_group_list("article-edit-choose-author-users-groups");
 						?>
 					</div>
 				</div>

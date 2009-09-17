@@ -325,6 +325,7 @@ function polarbear_page_users_onload() {
 			var groupID = users_get_selected_group_id();
 			newName = $.trim(newName);
 			if (newName) {
+				pb_showMessage("<p>Group saved</p>");
 				$("#users-group-list").load("gui/users.php", {
 					action: "users_group_rename",
 					groupID: groupID,
@@ -342,6 +343,7 @@ function polarbear_page_users_onload() {
 	$(".button-group-delete").click(function(){
 		if (!$(this).hasClass("ui-state-disabled")) {
 			if (confirm("Delete group?")) {
+				pb_showMessage("<p>Group deleted</p>");
 				var groupID = users_get_selected_group_id();
 				$(".button-group-edit").addClass("ui-state-disabled");
 				$(".button-group-delete").addClass("ui-state-disabled");
@@ -365,6 +367,7 @@ function polarbear_page_users_onload() {
 		var name = prompt("Enter name of new group");
 		name = $.trim(name);
 		if (name) {
+			pb_showMessage("<p>Group added</p>");
 			$.post("gui/users.php", {
 				action: "users_createNewGroup",
 				groupName: name
@@ -388,6 +391,7 @@ function polarbear_page_users_onload() {
 				var groupID = users_get_selected_group_id();
 				$.post("gui/users.php", { action: "users_deleteUser", userID: userID }, function() {
 					// användaren raderad. ladda om grupper och så
+					pb_showMessage("<p>User deleted</p>");
 					$("#users-group-list").load("gui/users.php", { action: "users_getUserGroupList" }, function() {
 						users_add_listener();
 						users_select_group(groupID);
@@ -519,6 +523,9 @@ function polarbear_page_users_onload() {
 			$.post("<?php polarbear_webpath() ?>gui/users.php", { action: "users_user_save", userID: userID, firstname: firstname, lastname: lastname, email: email, groups: selectedGroupsID, newPasswordRepeat: newPasswordRepeat, newPassword: newPassword, "customLabels[]":arrLabels, "customValues[]":arrValues }, function(data) {
 				// användaren är sparad. Ladda om kategorier + välj kategori + välj användare
 				$("#users-group-list").load("gui/users.php", { action: "users_getUserGroupList" }, function() {
+	
+					pb_showMessage("<p>User saved</p>");
+					
 					users_add_listener();
 					// ny användare = gå till senast addade, befintlig användare = gå till senast ändrde
 					if (userID) {
@@ -577,4 +584,12 @@ function polarbear_page_users_onload() {
 
 	});
 
+}
+
+/**
+ * shows a info-message at top, like in gmail and other apps
+ */
+function pb_showMessage(text, type) {
+	$("#pb-message").html(text).slideDown("slow");
+	setTimeout(function() { $("#pb-message").slideUp("fast"); }, 5000);
 }

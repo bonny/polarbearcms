@@ -46,7 +46,7 @@ $arrDefaultSettings = array(
 
 ?>
 
-<div class="polarbear-page-settings">
+<div class="polarbear-page-settings polarbear-content-main-inner">
 	
 	<script type="text/javascript">
 		/**

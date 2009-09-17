@@ -2,7 +2,11 @@
 $polarbear_cache_allow_client_caching = true;
 require_once("../../polarbear-boot.php");
 ?>
+/**
+ * @todo: move out as live-events instead
+ */
 function users_add_listener(where) {
+
 	where = where || "groups";
 	
 	if (where == "groups") {
@@ -24,7 +28,6 @@ function users_add_listener(where) {
 				$("a.button-group-edit").addClass("ui-state-disabled");
 				$("a.button-group-delete").addClass("ui-state-disabled");
 			}
-			
 			$("#users-group-members").load("gui/users.php", {
 				action: "users_getUsersInGroup",
 				groupID: this.className
@@ -32,8 +35,6 @@ function users_add_listener(where) {
 				users_add_listener("users");
 				$(".users-group-selectsort").css("visibility", "visible");
 			});
-			
-			
 		});
 
 		/*

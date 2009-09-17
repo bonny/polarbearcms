@@ -300,11 +300,12 @@ margin-top: .5em;
 }
 #users-userdetails {
 margin-top: .5em;
+padding: 0 10px 10px 10px;
 }
 
-#users-groups, #users-userlist {
+#users-groups, #users-userlist, #article-edit-choose-author-users-groups {
 	list-style-type: none;
-	margin-left: 0;
+	margin-left: 10px;
 }
 
 #users-group-list a, #users-userlist a {
@@ -318,14 +319,19 @@ margin-top: .5em;
     font-weight: bold;
 } 
 
-#users-groups li.groupID-latestChanged, #users-groups li.groupID-admins {
+#users-groups li.groupID-latestChanged, 
+#users-groups li.groupID-admins,
+#article-edit-choose-author-users-groups li.groupID-latestChanged,
+#article-edit-choose-author-users-groups li.groupID-admins
+ {
     margin-bottom: 5px;
     border-bottom: 1px solid #ccc;
     padding-bottom: 5px;
 }
     
 #users-groups li,
-#users-userlist li
+#users-userlist li,
+#article-edit-choose-author-users-groups li
 {
 margin-bottom: 6px;
 margin-top: 6px;
@@ -338,7 +344,9 @@ margin-top: 6px;
 	display: block;
 }
 
-#users-groups li .group-count {
+#users-groups li .group-count,
+#article-edit-choose-author-users-groups li .group-count
+ {
 top: 6px;
 right: 0;
 color: #666;
@@ -379,7 +387,7 @@ textarea {
 }
 
 #article-edit-form {
-	margin-left: 15px;
+	margin: 15px;
 }
 #article-edit-form #article-title {
 	font-size: 1.1em;
@@ -405,7 +413,7 @@ textarea {
 	width: auto;
 }
 #article-edit-form div.row {
-	margin-top: 1em;
+	margin-bottom: 1em;
 }
 
 #article-edit-form .primary {
@@ -566,7 +574,7 @@ background: transparent url(../images/toggle-lt.gif) no-repeat 0px 0px;
 background: transparent url(../images/toggle-rt.gif) no-repeat 0px 0px;
 }
 
-#polarbear-content-main {
+.polarbear-content-main-inner {
 	padding: 10px;
 }
 
@@ -586,4 +594,34 @@ background: transparent url(../images/toggle-rt.gif) no-repeat 0px 0px;
 }
 #fieldEditFields .delete {
 	float: right;
+}
+
+#pb-message {
+position: absolute;
+top: 0;
+left: 50%;
+background-color: #fbffbe;
+border-left: 1px solid #c3c694;
+border-right: 1px solid #c3c694;
+border-bottom: 1px solid #c3c694;
+color: black;
+font-weight: bold;
+z-index: 99;
+padding-right: 10px;
+padding-left: 10px;
+width: 300px;
+margin-left: -150px;
+display: none;
+}
+
+.ui-state-highlight,
+.ui-widget-content .ui-state-highlight
+{
+background-image: none;
+background-color: #fbffbe;
+border-color: #c3c694;
+}
+
+.polarbear-okmsg {
+	margin-bottom: 1em;
 }
