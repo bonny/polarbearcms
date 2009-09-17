@@ -1577,7 +1577,7 @@ function pb_add_site_stats($args) {
 		return;
 	}
 
-	$args["buffer"] = $args["buffer"] . "\n<!-- " . polarbear_script_end_stats() . " -->";
+	$args["buffer"] = str_replace("</body>", "\n<!-- " . polarbear_script_end_stats() . " -->\n</body>", $args["buffer"]);
 	return $args;
 }
 
@@ -1998,7 +1998,7 @@ function pb_add_site_edit($args) {
 	} // if includeJS
 
 	// attach right after <body> or right before </body>
-	$newBuffer = str_replace("</body>", "$out</body>", $args["buffer"]);
+	$newBuffer = str_replace("</body>", "$out\n</body>", $args["buffer"]);
 	$args["buffer"] = $newBuffer;
 	return $args;
 }
@@ -2795,7 +2795,8 @@ function pb_cache($args) {
 		$diff = time()-$filemtime;
 		$timeUntilRefresh = $cachedFile_max_age-$diff;
 		$out .= " Time until refresh of cached file: $timeUntilRefresh seconds. -->";
-		$args["buffer"] = $args["buffer"] . $out;
+		$args["buffer"] = str_replace("</body>", "$out\n</body>", $args["buffer"]);
+		#$args["buffer"] = $args["buffer"] . $out;
 
 		// check if cached file is old
 		$cachedFile_max_age = pb_cache_get_cached_file_max_age();
@@ -2817,7 +2818,8 @@ function pb_cache($args) {
 	if (pb_cache_isAllowed()) {
 		$date = date("Y-m-d H:i:s");
 		$str = "\n<!-- Cached copy created on $date -->";
-		$args["buffer"] = $args["buffer"] . $str;
+		#$args["buffer"] = $args["buffer"] . $str;
+		$args["buffer"] = str_replace("</body>", "$str\n</body>", $args["buffer"]);
 		// write cached content to file system, owerwriting possibly existing file
 		file_put_contents($cacheFileName, $args["buffer"]);
 		$etag = '"'.pb_cache_md5().'"';
@@ -2827,7 +2829,8 @@ function pb_cache($args) {
 		header("Cache-Control: max-age=300");
 	} else {
 		$str = "\n<!-- Caching of file was not allowed -->";
-		$args["buffer"] = $args["buffer"] . $str;
+		#$args["buffer"] = $args["buffer"] . $str;
+		$args["buffer"] = str_replace("</body>", "$str\n</body>", $args["buffer"]);
 	}
 	
 	return $args;
