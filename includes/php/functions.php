@@ -1600,9 +1600,10 @@ function polarbear_boot() {
 		pb_event_attach("pb_page_contents", "pb_add_site_edit");
 		pb_event_attach("pb_page_contents", "pb_add_site_stats");
 		pb_event_attach("pb_page_contents", "pb_add_pb_generator");
+		pb_event_attach("pb_page_contents", "pb_add_pb_seo_meta");
 		pb_event_attach("pb_page_contents", "pb_cache");
 	}
-	
+
 	// enable shortcodes
 	pb_event_attach("article_output", "pb_do_shortcode");
 
@@ -2014,13 +2015,34 @@ function pb_add_pb_generator($args) {
 }
 
 /**
+ * add meta description and meta keywords for current article
+ * tries to be "smart" (read: "pretty stupid") and not add them if they already exists
+ */
+function pb_add_pb_seo_meta($args) {
+
+	global $polarbear_a;
+	$out = "";
+	if (strpos($args["buffer"], '<meta name="description"') === false || strpos($args["buffer"], "<meta name='description'") === false) {
+		$format = '{if $metaDescription}<meta name="description" content="{$metaDescription}" />{/if}';
+		$out .= $polarbear_a->output($format);
+	}
+	if (strpos($args["buffer"], '<meta name="keywords"') === false || strpos($args["buffer"], "<meta name='keywords'") === false) {
+		$format = '{if $metaKeywords}<meta name="keywords" content="{$metaKeywords}" />{/if}';
+		$out .= $polarbear_a->output($format);
+	}
+
+	$args["buffer"] = str_replace("</head>", "$out</head>", $args["buffer"]);
+
+	return $args;
+}
+
+/**
  * Shutdown = get buffer and fire away events
  */
 function pb_shutdown_function() {
 	$buffer = ob_get_clean();
 	$args = pb_event_fire("pb_page_contents", array("buffer"=>$buffer));
 	echo $args["buffer"];
-
 }
 
 
@@ -2540,25 +2562,6 @@ function pb_search_highlight_do($fragment){
 	return "<strong>$fragment</strong>";
 }
 
-/**
- * From http://us2.php.net/manual/en/function.str-ireplace.php#87417
- * Slightly modified
- */
-/*
-function pb_highlightStr($haystack, $needle) {
-     // return $haystack if there is no highlight color or strings given, nothing to do.
-    if (strlen($haystack) < 1 || strlen($needle) < 1) {
-        return $haystack;
-    }
-    preg_match_all("/$needle+/i", $haystack, $matches);
-    if (is_array($matches[0]) && count($matches[0]) >= 1) {
-        foreach ($matches[0] as $match) {
-            $haystack = str_replace($match, '<strong>'.$match.'</strong>', $haystack);
-        }
-    }
-    return $haystack;
-}
-*/
 
 // from http://krijnhoetmer.nl/stuff/php/word-highlighter/
 // slightly modified
