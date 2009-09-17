@@ -119,12 +119,11 @@ function pb_get_ga_statistics() {
 		}
 		$loopNum++;
 	endforeach;
+	#$arrDays = array_reverse($arrDays);
+	$labelDay = "|" . implode($arrDays, "|");
 	$day = strftime("%b %e", strtotime($result));
 	$arrDays[] = $day;
-	
-	$arrDays = array_reverse($arrDays);
-	$labelDay = "|" . implode($arrDays, "|");
-	
+
 	// Generate chart with visits per day
 	$chartData = preg_replace("/,$/", "", $chartData);
 	$chartImg = "http://chart.apis.google.com/chart?";
