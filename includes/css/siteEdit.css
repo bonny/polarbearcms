@@ -10,6 +10,7 @@
 	font-family: arial, verdana, sans-serif;
 	font-size: 14px;
 	line-height: 1.2;
+	z-index: 99;
 }
 #polarbear-site-edit-tab a:link,
 #polarbear-site-edit-tab a:visited,
@@ -52,4 +53,9 @@ line-height: 1;
 #polarbear-site-edit-tab .polarbear-site-edit-removeTab a:hover,
 #polarbear-site-edit-tab .polarbear-site-edit-removeTab a:active {
 color: #5f5884;
+}
+
+#polarbear-site-edit-tab input.text {
+	width: 150px;
+	padding: 3px;
 }
