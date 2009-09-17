@@ -138,10 +138,17 @@ function pb_get_ga_statistics() {
 	$chartImg .= "&chxt=x,y,r"; // labels
 	$labelVisits = "||" . ceil($maxVisitsPerDay/2) . "|" . $maxVisitsPerDay;
 	$chartImg .= "&chxl=0:{$labelDay}|1:{$labelVisits}|2:{$labelVisits}";
+
+	if ($ga->getVisits()>0) {
+		$bounceRate = round(($ga->getBounces() / $ga->getVisits())*100,2);		
+		$pagesPerVisit = $ga->getPageviews() / $ga->getVisits();
+		$avgTimeOnSite = ceil($ga->getTimeOnSite() / $ga->getVisits());
+	} else {
+		$bounceRate = 0;
+		$pagesPerVisit = 0;
+		$avgTimeOnSite = 0;
+	}
 	
-	$bounceRate = round(($ga->getBounces() / $ga->getVisits())*100,2);
-	$pagesPerVisit = $ga->getPageviews() / $ga->getVisits();
-	$avgTimeOnSite = ceil($ga->getTimeOnSite() / $ga->getVisits());
 	$visits = $ga->getVisits();
 	$pageviews = $ga->getPageviews();
 	
