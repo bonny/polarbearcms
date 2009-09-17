@@ -2060,6 +2060,7 @@ class polarbear_articlefetcher {
 	private 
 		$includeNonPublished = false,
 		$titleIs = null,
+		$titleNavIs = null,
 		$orderBy = "prio";
 
 	function __construct() {	
@@ -2107,14 +2108,19 @@ class polarbear_articlefetcher {
 	}
 	
 	
-	/**
-	 *
-	 */
 	function titleIs($str) {
 		$this->titleIs = $str;
 	}
 	function clearTitleIs() {
 		$this->titleIs = null;
+	}
+
+
+	function titleNavIs($str) {
+		$this->titleNavIs = $str;
+	}
+	function clearTitleNavIs() {
+		$this->titleNavIs = null;
 	}
 	
 	/**
@@ -2164,7 +2170,11 @@ class polarbear_articlefetcher {
 		if (isset($this->titleIs)) {
 			$where .= " AND titleArticle = '" . mysql_real_escape_string($this->titleIs) . "' ";
 		}
-		
+
+		if (isset($this->titleNavIs)) {
+			$where .= " AND titleNav = '" . mysql_real_escape_string($this->titleNavIs) . "' ";
+		}
+
 		// tags that the articles must have
 		$strTagMustInclude = "";
 		if (!empty($this->tagMustInclude)) {
@@ -2836,15 +2846,17 @@ function pb_cache_hasBeenOutputed($bool = null) {
  * Removes all cached files
  */
 function pb_cache_clear() {
-	$d = dir(POLARBEAR_CACHEPATH);
-	$pattern = "/cache-page-[a-zA-Z0-9]*/";
-	while (false !== ($entry = $d->read())) {
-		// om detta är en cache'ad variant av filen
-		if (preg_match($pattern, $entry)) {
-			unlink(POLARBEAR_CACHEPATH . $entry);
+	if (is_readable(POLARBEAR_CACHEPATH)) {
+		$d = dir(POLARBEAR_CACHEPATH);
+		$pattern = "/cache-page-[a-zA-Z0-9]*/";
+		while (false !== ($entry = $d->read())) {
+			// om detta är en cache'ad variant av filen
+			if (preg_match($pattern, $entry)) {
+				unlink(POLARBEAR_CACHEPATH . $entry);
+			}
 		}
+		$d->close();
 	}
-	$d->close();
 }
 
 /**
