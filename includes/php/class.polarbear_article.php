@@ -1412,7 +1412,7 @@ class PolarBear_Article {
 	 * alias of isChildOrSubChildOf
 	 */
 	function isDescendantOf($refArticle) {
-		isChildOrSubChildOf($refArticle);
+		return $this->isChildOrSubChildOf($refArticle);
 	}
 
 	/**
