@@ -68,14 +68,14 @@ var arrTags; // array med alla existerande taggar. Verkar inte användas längre
 /**
  * Körs när sidan med filerna blivit uppdaterad
  * Attach events etc.
- * This one chould use delegation instead
+ * This one should use delegation instead
  */
 function polarbear_files_onload() {
 
 	// create uploadify
 
-	$('#uploadify1').fileUpload({
-		'uploader':'<?php polarbear_webpath() ?>includes/jquery.uploadify/uploader.swf',
+	$('#uploadify1').uploadify({
+		'uploader':'<?php polarbear_webpath() ?>includes/jquery.uploadify/uploadify.swf',
 		'script':'<?php polarbear_webpath() ?>includes/php/files-upload.php',
 		'cancelImg':'<?php polarbear_webpath() ?>includes/jquery.uploadify/cancel.png',
 		'auto':true,
@@ -85,8 +85,6 @@ function polarbear_files_onload() {
 			//alert(response);
 		},
 		onAllComplete: function(event, data) {
-			// @todo: if were have a file browser
-			// fileBrowser.php?field_name=src&url=&type=fieldImage
 			var field_name = $.query.get('field_name');
 			var type = $.query.get('type');
 			var url = "<?php polarbear_webpath() ?>gui/files.php?uploaded=1&field_name=" + field_name+"&type=" + type;

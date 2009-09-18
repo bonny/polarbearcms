@@ -8,10 +8,35 @@
 $page_class = "polarbear-page-files";
 require_once("../polarbear-boot.php");
 
+
+if ($_GET["action"] == 'getFilesTableIframe') {
+	header('Content-Type: text/html; charset=utf-8'); 
+	polarbear_require_admin();
+	$skip_layout = true;
+	require_once("../includes/php/admin-header.php");	
+	?>
+	<script type="text/javascript">
+		$(function() {
+			polarbear_files_onload();
+			polarbear_files_create_ajaxlinks("files");
+		});
+	</script>
+	<div class="polarbear-content-main-inner" id="polarbear-page-files-content">
+		<?php
+		polarbear_files_get_page_content($_GET);
+		?>
+	</div>
+	<?php
+	exit;
+}
+
+
+
+
 /**
  * little helper for our ajax call to get the inner table
  */
-if ($_POST["action"] == 'getFilesTable') {
+if ($_POST["action"] == 'getFilesTable' || $_GET["action"] == 'getFilesTable') {
 	header('Content-Type: text/html; charset=utf-8'); 
 	polarbear_files_get_page_content($_GET);
 	exit;
@@ -196,17 +221,20 @@ $skip_menu = true;
 $filebrowser_type = $_GET["type"];
 
 ?>
-	<div class="ui-layout-content polarbear-content-main-inner" id="polarbear-page-files-content">
+	<iframe
+		frameborder="0" marginheight="0" marginwidth="0"
+		style="width: 100%; height: 100%;"
+		class="ui-layout-content" 
+		xid="polarbear-page-files-content"
+		src="<?php polarbear_webpath() ?>gui/files.php?action=getFilesTableIframe"
+	></iframe>
 		<?php
-			polarbear_files_get_page_content();
+			#polarbear_files_get_page_content();
 		?>
-	</div>
 
 <script type="text/javascript">
-
 	$(function() {
 		polarbear_files_onload();
 		polarbear_files_create_ajaxlinks("files");
 	});
-
 </script>
