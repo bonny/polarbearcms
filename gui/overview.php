@@ -100,7 +100,7 @@ function pb_get_ga_statistics() {
 	$gaID = polarbear_setting("GoogleAnalyticsReportID");
 	$gaEmail = polarbear_setting("GoogleAnalyticsEmail");
 	$gaPassword = polarbear_setting("GoogleAnalyticsPassword");
-	$maxAge = 300; // seconds to store data in cache
+	$maxAge = 600; // seconds to store data in cache
 	
 	if (empty($gaID) || empty($gaEmail) || empty($gaPassword)) {
 		echo "<p>Can not load statistics: no settings found.</p>";

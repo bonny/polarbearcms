@@ -4,6 +4,11 @@ font-size: 10px;
 text-transform: uppercase;
 }
 
+#polarbear-page-files-content, #files-nav, #polarbear-content-main {
+	z-index: 9999;
+}
+
+
 #files-nav {
 width: 150px;
 line-height: 1.3;
