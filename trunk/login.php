@@ -225,6 +225,8 @@ if (isset($_POST["forgot-password"])) {
 			var wrongLogin = <?php echo (int) $wrong_login ?>;
 			$(function() {
 				
+				$(".pb-login-webbrowser-requirements").hide();
+				
 				$(".fg-button").hover(function(){$(this).toggleClass("ui-state-hover");}, function(){$(this).toggleClass("ui-state-hover");});
 				
 				$("#login-email,#login-password").focus(function() {
@@ -239,6 +241,21 @@ if (isset($_POST["forgot-password"])) {
 					$("#login-form").effect("shake");
 				}
 				
+				var version = (parseFloat($.browser.version));
+				// lame browser check
+				var browserOk = true;
+				if ($.browser.mozilla && version >= 1.9) {
+					// ok
+				} else if ($.browser.safari && version >= 1.9) {
+				} else if ($.browser.msie && version >= 8) {
+				} else {
+					browserOk = false;
+				}
+				
+				if (browserOk == false) {
+					$(".pb-login-webbrowser-requirements").show();
+				}
+
 			});
 		</script>
 	</head>
@@ -307,6 +324,21 @@ if (isset($_POST["forgot-password"])) {
 		} else {
 			?>
 
+				<div class="pb-login-webbrowser-requirements">
+				<p>
+					PolarBear requires a modern webbrowser.
+				</p>
+				<p>
+					Recommended browsers:
+				</p>
+				<ul>
+					<li><a href="http://www.mozilla.com/firefox/ ">Firefox</a> version 3.5 or higher</li>
+					<li><a href="http://www.apple.com/safari/ ">Safari</a> 3 or higher</li>
+					<li><a href="http://www.microsoft.com/windows/internet-explorer/">Internet Explorer</a> 8 or higher</li>
+				</ul>
+			</div>
+
+
 			<form id="login-form" method="post" action="login.php">
 				<p>
 					<label for="login-email">Email</label>
@@ -328,6 +360,7 @@ if (isset($_POST["forgot-password"])) {
 					<input type="checkbox" class="checkbox" value="1" name="login-remember-me" id="login-remember-me" />
 					<label class="checkbox" for="login-remember-me">Remember me on this computer</label>
 				</p>
+
 				<p>
 					<input type="submit" value="Log in" class="submit fg-button ui-state-default ui-priority-primary ui-corner-all" name="login" />
 					or
