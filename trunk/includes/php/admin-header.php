@@ -10,7 +10,7 @@ header('Content-type: text/html; charset="utf-8"');
 	<title>PolarBear CMS</title>
 	<meta name="robots" content="noindex" />
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="<?php polarbear_webpath() ?>gui/combine.php?type=javascript&amp;files=jquery.jeditable.mini.js,jquery.cookie.js,jquery.listen.js,jquery.metadata.js,jquery.blockUI.js,jquery.layout-1.3.rc4.2.js,jquery.timePicker.js,jquery.query-2.1.6.js,swfobject.js"></script>
 	<script type="text/javascript" src="<?php polarbear_webpath() ?>includes/tree_component/tree_component.js"></script>
 	<script type="text/javascript" src="<?php polarbear_webpath() ?>includes/tree_component/css.js"></script>
