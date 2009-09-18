@@ -169,12 +169,12 @@ if (isset($_POST["forgot-password"])) {
 		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 		<title>Log in | PolarBear CMS</title>
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
-		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.0/jquery-ui.min.js"></script>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
 		<meta name="robots" content="noindex, nofollow" />
 		<style type="text/css" media="all">
 			@import url(<?php polarbear_webpath() ?>includes/css/reset.css);
 			@import url(<?php polarbear_webpath() ?>includes/css/styles.css);
-			@import url(http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.0/themes/base/jquery-ui.css);
+			@import url(http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/base/jquery-ui.css);
 						
 			#login-wrapper {
 				width: 400px;
