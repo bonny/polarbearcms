@@ -136,7 +136,6 @@ function pb_createAndUpdateTables() {
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 	
 	
-	DROP TABLE IF EXISTS `polarbear_storage`;
 	CREATE TABLE `polarbear_storage` (
 	  `id` int(10) unsigned NOT NULL auto_increment,
 	  `thekey` varchar(255) NOT NULL default '',
@@ -390,9 +389,10 @@ Finns tabell
 					echo "<br />Ok: is a writable directory.";
 					
 					// try to creae attach, cache and dwoo-dirs
-					mkdir(POLARBEAR_STORAGEPATH . "files");
-					mkdir(POLARBEAR_STORAGEPATH . "cache");
-					mkdir(POLARBEAR_STORAGEPATH . "dwoo");
+					// update: don't do this. problems with safe mode
+					#mkdir(POLARBEAR_STORAGEPATH . "files");
+					#mkdir(POLARBEAR_STORAGEPATH . "cache");
+					#mkdir(POLARBEAR_STORAGEPATH . "dwoo");
 					
 				} else {
 					echo "<br /><strong>Error: Is not a writable directory.</strong>";
