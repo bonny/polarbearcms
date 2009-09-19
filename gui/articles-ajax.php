@@ -254,7 +254,10 @@ if ($action == "articleEdit") {
 
 			<?php if ($editSource == "external") { ?>
 				$(function(){
-					polarbear_article_onload();
+					// safari does not work without timeout (yes, I know it's zero). very strange indeed.
+					setTimeout(function() {
+						polarbear_article_onload();
+					}, 0);
 				});
 			<?php } ?>
 
