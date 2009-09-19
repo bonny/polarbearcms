@@ -136,13 +136,15 @@ function pb_createAndUpdateTables() {
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 	
 	
+	DROP TABLE IF EXISTS `polarbear_storage`;
 	CREATE TABLE `polarbear_storage` (
 	  `id` int(10) unsigned NOT NULL auto_increment,
 	  `thekey` varchar(255) NOT NULL default '',
 	  `thevalue` text NOT NULL,
+	  `dateExpire` datetime default NULL,
 	  PRIMARY KEY  (`id`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
-	
+
 	
 	CREATE TABLE `polarbear_usergroups` (
 	  `id` int(10) unsigned NOT NULL auto_increment,
