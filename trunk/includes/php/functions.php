@@ -1101,8 +1101,8 @@ function polarbear_article_bootload() {
 				exit;
 			}
 			
-			// if we have preview=1 then find the current article's most recent preview version
-			if ($_GET["preview"]) {
+			// if we have pb-preview=1 then find the current article's most recent preview version
+			if ($_GET["pb-preview"]) {
 				$sql = "SELECT id FROM " . POLARBEAR_DB_PREFIX . "_articles WHERE isRevisionTo = " . $polarbear_a->getId() . " AND status = 'preview' ORDER BY dateChanged DESC LIMIT 1";
 				$previewArticleID = (int) $polarbear_db->get_var($sql);
 				if ($previewArticleID) {
@@ -1134,7 +1134,7 @@ function polarbear_article_bootload() {
 				($polarbear_a != false && $polarbear_a->isPublished())
 				||
 				// or it may have status=preview
-				(($polarbear_u!=false) && $polarbear_u->isAdmin() && $_GET["preview"]==1 && $polarbear_a->getStatus() == "preview")
+				(($polarbear_u!=false) && $polarbear_u->isAdmin() && $_GET["pb-preview"]==1 && $polarbear_a->getStatus() == "preview")
 			) {
 			// check for template
 			// @todo: assumes a file to load. what if a domain or such?
