@@ -1,6 +1,6 @@
 <?php
 /**
- * Owerview
+ * Overview
  */
 require realpath(dirname(__FILE__)."/../") . "/polarbear-boot.php";
 require realpath(dirname(__FILE__)."/../") . "/includes/php/gapi/gapi.class.php";
@@ -8,7 +8,6 @@ polarbear_require_admin();
 
 if ($_GET["action"] == "loadMoreActivites") {
 	$recentActivitiesPage = $_GET["recentActivitiesPage"];
-	#echo $recentActivitiesPage;
 	$page = $recentActivitiesPage+1;
 	pb_get_recent_activites(array("limitStartPage" => $page));
 	echo "
@@ -100,7 +99,7 @@ function pb_get_ga_statistics() {
 	$gaID = polarbear_setting("GoogleAnalyticsReportID");
 	$gaEmail = polarbear_setting("GoogleAnalyticsEmail");
 	$gaPassword = polarbear_setting("GoogleAnalyticsPassword");
-	$maxAge = 600; // seconds to store data in cache
+	$maxAge = 3600; // seconds to store data in cache. 3600 = one hour
 	
 	if (empty($gaID) || empty($gaEmail) || empty($gaPassword)) {
 		echo "<p>Can not load statistics: no settings found.</p>";
