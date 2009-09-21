@@ -54,7 +54,7 @@ $a->setFieldConnectorID($_POST["article-template-field-name-value"]);
 	status=preview
 	isRevisionTo=org articleID
 	save as new
-	goto articleURL+?preview=1
+	goto articleURL+?pb-preview=1
 */
 if ($isPreview) {
 	$a->prepareForCopy(); // unsets ID
@@ -170,7 +170,7 @@ pb_event_fire("article_saved", array("article"=>$a));
 $doHeaderRefresh = true;
 if ($isPreview) {
 	$url = $a->fullpath();
-	$url .= "?preview=1";
+	$url .= "?pb-preview=1";
 } elseif ($afterSave == "continueEditing") {
 	// just return. the tree will take us further...
 	// but we may not go back to tree, may go back to url instead
