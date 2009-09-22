@@ -895,7 +895,9 @@ class PolarBear_Article {
 			'sortDirection' => 'desc',
 			'limitStart' => 0,
 			'limitCount' => null,
-			'includeUnpublished' => false
+			'includeUnpublished' => false,
+			'tagsMustInclude' => null, // comma seperated?
+			'tagsMustNotInclude' => null
 		);
 		
 		$options =  polarbear_extend($defaults, $options);
@@ -921,6 +923,25 @@ class PolarBear_Article {
 		} else {
 			// don't include unpublished, remove'em
 			$sql .= " AND status = 'published' AND datePublish < now() AND (dateUnpublish > now() OR dateUnpublish IS NULL) ";
+		}
+		
+		// tags
+		if ($options["tagsMustInclude"]) {
+			$tagsMustInclude = explode(",", $options["tagsMustInclude"]);
+			$strTagArticleIds = "";
+			foreach($tagsMustInclude as $oneTagID) {
+				$oneTag = polarbear_tag::getInstance($oneTagID);
+				// fetch articles for this tag
+				$tagArticles = $oneTag->articles();
+				foreach ($tagArticles as $oneA) {
+					$strTagArticleIds .= $oneA->getId() . ",";
+				}
+			}
+			$strTagArticleIds = preg_replace("/,$/", "", $strTagArticleIds);
+			if (!empty($strTagArticleIds)) {
+				$strTagArticleIds = " AND id IN ($strTagArticleIds) ";
+			}
+			$sql .= $strTagArticleIds;
 		}
 		
 		$sql .= "ORDER BY $options[sort] $options[sortDirection] ";
