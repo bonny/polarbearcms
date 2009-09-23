@@ -1597,6 +1597,7 @@ function polarbear_boot() {
 	if (pb_article_is_autoloaded()) {
 		register_shutdown_function("pb_shutdown_function");
 		ob_start();
+		// @todo: when using cached version, don't run these?
 		pb_event_attach("pb_page_contents", "pb_add_site_edit");
 		pb_event_attach("pb_page_contents", "pb_add_site_stats");
 		pb_event_attach("pb_page_contents", "pb_add_pb_generator");
@@ -1623,7 +1624,11 @@ function polarbear_boot() {
 	define("POLARBEAR_ATTACHPATH", POLARBEAR_STORAGEPATH . "files/");
 	define("POLARBEAR_CACHEPATH", POLARBEAR_STORAGEPATH . 'cache/');
 	define("POLARBEAR_IMAGEMAGICK", polarbear_setting('imagemagickpath'));
-	define("POLARBEAR_CACHE_MAX_AGE", (int) polarbear_setting('cache_max_age'));
+	$cache_max_age = polarbear_setting('cache_max_age');
+	if (!is_numeric($cache_max_age)) {
+		$cache_max_age = 300;
+	}
+	define("POLARBEAR_CACHE_MAX_AGE", $cache_max_age);
 
 	// Try to determine what our domain is
 	if ($_SERVER['HTTP_HOST'] == 'localhost') {
@@ -1646,7 +1651,6 @@ function polarbear_boot() {
 		$cacheFilename = pb_cache_getFilename();
 		$etag = '"'.pb_cache_md5().'"';
 		if (is_readable($cacheFilename)) {
-
 			// cached file exists
 			$filemtime = filemtime($cacheFilename);
 			
@@ -2021,17 +2025,19 @@ function pb_add_pb_generator($args) {
 function pb_add_pb_seo_meta($args) {
 
 	global $polarbear_a;
-	$out = "";
-	if (strpos($args["buffer"], '<meta name="description"') === false || strpos($args["buffer"], "<meta name='description'") === false) {
-		$format = '{if $metaDescription}<meta name="description" content="{$metaDescription}" />{/if}';
-		$out .= $polarbear_a->output($format);
-	}
-	if (strpos($args["buffer"], '<meta name="keywords"') === false || strpos($args["buffer"], "<meta name='keywords'") === false) {
-		$format = '{if $metaKeywords}<meta name="keywords" content="{$metaKeywords}" />{/if}';
-		$out .= $polarbear_a->output($format);
-	}
 
-	$args["buffer"] = str_replace("</head>", "$out</head>", $args["buffer"]);
+	if ($polarbear_a !== NULL) {
+		$out = "";
+		if (strpos($args["buffer"], '<meta name="description"') === false || strpos($args["buffer"], "<meta name='description'") === false) {
+			$format = '{if $metaDescription}<meta name="description" content="{$metaDescription}" />{/if}';
+			$out .= $polarbear_a->output($format);
+		}
+		if (strpos($args["buffer"], '<meta name="keywords"') === false || strpos($args["buffer"], "<meta name='keywords'") === false) {
+			$format = '{if $metaKeywords}<meta name="keywords" content="{$metaKeywords}" />{/if}';
+			$out .= $polarbear_a->output($format);
+		}
+		$args["buffer"] = str_replace("</head>", "$out</head>", $args["buffer"]);
+	}
 
 	return $args;
 }
@@ -2770,7 +2776,22 @@ function pb_log($options) {
 
 function pb_cache_md5() {
 	$request = $_REQUEST;
-	unset($request["PHPSESSID"]); // kinda stupid actually. if we are using sessions, it must be reason for it?!
+	/*
+	Request looks something like this:
+	Array
+	(
+	    [__utma] => 229253385.585804425.1253546567.1253546567.1253546621.2
+	    [__utmb] => 229253385.96.10.1253546621
+	    [__utmc] => 229253385
+	    [__utmz] => 229253385.1253546567.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none)
+	    [PHPSESSID] => fa69b7efb3a1fe7c1b8fdb76b5c990d4
+	)
+	*/
+	unset($request["PHPSESSID"]); // kinda stupid actually. if we are using sessions, it must be reason for it?! @todo: check this up. really!
+	unset($request["__utma"]); // Google Analytics stuff.
+	unset($request["__utmb"]);
+	unset($request["__utmc"]);
+	unset($request["__utmz"]);
 	$cacheMD5 = md5(POLARBEAR_DOMAIN . $_SERVER["REQUEST_URI"] . serialize($request));
 	return $cacheMD5;
 }
