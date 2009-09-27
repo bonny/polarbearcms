@@ -2036,7 +2036,7 @@ function pb_add_pb_seo_meta($args) {
 		return;
 	} else {
 		global $polarbear_a;
-		if ($polarbear_a !== NULL) {
+		if ($polarbear_a) {
 			$out = "";
 			if (strpos($args["buffer"], '<meta name="description"') === false || strpos($args["buffer"], "<meta name='description'") === false) {
 				$format = '{if $metaDescription}<meta name="description" content="{$metaDescription}" />{/if}';
