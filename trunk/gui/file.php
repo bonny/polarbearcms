@@ -32,7 +32,7 @@ if (empty($file->size) || !file_exists($file->filepath)) {
 $isImage = $file->isImage();
 
 // De parametrar en bild kan ha
-$arrImageOptions = array('size', 'unsharp', 'w', 'h');
+$arrImageOptions = array('size', 'unsharp', 'w', 'h', 'q');
 
 // kolla om någon av parametrarna finns i GET
 $imageOptionsExists = false;
@@ -169,7 +169,7 @@ if (!$imageOptionsExists) {
 
 		$width = (isset($_GET['w']) && is_numeric($_GET['w']) && $_GET['w']>0) ? $_GET['w'] : '';
 		$height = (isset($_GET['h']) && is_numeric($_GET['h']) && $_GET["h"]>0) ? $_GET['h'] : '';
-		$quality = isset($_GET['q']) ? (int) $_GET['q'] : 80;
+		$quality = isset($_GET['q']) ? (int) $_GET['q'] : 85;
 				
 		// check if imagemagick is set and is executable
 		$imagemagick = POLARBEAR_IMAGEMAGICK;
