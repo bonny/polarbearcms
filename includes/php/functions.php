@@ -1540,8 +1540,8 @@ function polarbear_scaleImageWithGD($file, $destFile, $max_width=null, $max_heig
     switch ($image_type)
     {
         case 1: imagegif($tmp, $destFile); break;
-        case 2: imagejpeg($tmp, $destFile, 100);  break; // best quality
-        case 3: imagepng($tmp, $destFile, 0); break; // no compression
+        case 2: imagejpeg($tmp, $destFile, 85);  break; // best quality
+        case 3: imagepng($tmp, $destFile, 9); break; // no compression
         default: return false;
     }
 
