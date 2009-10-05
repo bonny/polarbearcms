@@ -197,7 +197,7 @@ function polarbear_require_admin() {
 	if (is_object($polarbear_u) && $polarbear_u->isAdmin()) {
 		return true;
 	} else {
-		header("Location: " . POLARBEAR_WEBPATH . "login.php");
+		header("Location: http://" . POLARBEAR_DOMAIN . POLARBEAR_WEBPATH . "login.php");
 		exit;
 	}
 	
@@ -1097,7 +1097,9 @@ function polarbear_article_bootload() {
 			#echo "<br>uri: $uri";echo "<br>uriToCheck: $uriToCheck";echo "<br>qs: $qs";exit;
 			if ($uriToCheck != $polarbear_a->fullPath()) {
 				// issue a 301 and go to the full path of the real articles
-				header("Location: " . $polarbear_a->fullPath(), true, 301);
+				// problems occure if cached/getting cached. make sure not cached..
+				pb_cache_disable();
+				header("Location: http://" . POLARBEAR_DOMAIN . $polarbear_a->fullPath(), true, 301);
 				exit;
 			}
 			
