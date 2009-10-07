@@ -1860,6 +1860,7 @@ function pb_add_site_edit($args) {
 					$showHideIcons
 					<br />
 					<br /><strong>Go to</strong>
+					<br /><a href='" . POLARBEAR_WEBPATH . "?treepage=gui/overview.php'>Overview</a>
 					<br /><a href='" . POLARBEAR_WEBPATH . "?treepage=gui/overview.php'>Articles</a>
 					<br /><a href='" . POLARBEAR_WEBPATH . "?treepage=gui/files.php'>Images</a>
 					<br /><a href='" . POLARBEAR_WEBPATH . "?treepage=gui/users.php'>Users</a>
