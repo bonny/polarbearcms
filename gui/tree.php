@@ -12,7 +12,20 @@ $type = (isset($_GET["type"])) ? $_GET["type"] : null; // can be "filebrowser"
 if ($id == "0") {
 	?>
 	[
-		{ 
+		{
+			data: {
+				title: "Overview",
+				icon: "<?php polarbear_webpath() ?>images/silkicons/layout_header.png",
+				attributes: {
+					href: "gui/overview.php"
+				}
+			
+			},
+			attributes: {
+				id: "categoryOverview"
+			}
+		},
+		{
 			attributes: { id : "root", data: "{type: \"root\", deletable: false, renameable: false, draggable: false, dropable: false, droppable: false, clickable: true }" }, 
 			state: "open", 
 			data: {

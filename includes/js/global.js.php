@@ -321,20 +321,24 @@ function polarbear_page_users_onload() {
 	$(".button-group-edit").click(function(){
 		if (!$(this).hasClass("ui-state-disabled")) {
 			var oldName = $("#users-groups a.group-active").text();
-			var newName = prompt("Enter new name", oldName);
-			var groupID = users_get_selected_group_id();
-			newName = $.trim(newName);
-			if (newName) {
-				pb_showMessage("<p>Group saved</p>");
-				$("#users-group-list").load("gui/users.php", {
-					action: "users_group_rename",
-					groupID: groupID,
-					newGroupName: newName
-				}, function(){
-					users_add_listener();
-					users_select_group(groupID);
-				});
-			}
+			
+			jPrompt("Enter new name", oldName, "", function(newName) {
+				
+				var groupID = users_get_selected_group_id();
+				newName = $.trim(newName);
+				if (newName) {
+					pb_showMessage("<p>Group saved</p>");
+					$("#users-group-list").load("gui/users.php", {
+						action: "users_group_rename",
+						groupID: groupID,
+						newGroupName: newName
+					}, function(){
+						users_add_listener();
+						users_select_group(groupID);
+					});
+				}
+
+			});
 
 		}
 	});
@@ -342,62 +346,73 @@ function polarbear_page_users_onload() {
 	// ta bort grupp
 	$(".button-group-delete").click(function(){
 		if (!$(this).hasClass("ui-state-disabled")) {
-			if (confirm("Delete group?")) {
-				pb_showMessage("<p>Group deleted</p>");
-				var groupID = users_get_selected_group_id();
-				$(".button-group-edit").addClass("ui-state-disabled");
-				$(".button-group-delete").addClass("ui-state-disabled");
-				$.post("gui/users.php", {
-					action: "users_group_delete",
-					groupID: groupID
-				}, function(){
-					$("#users-group-list").load("gui/users.php", {
-						action: "users_getUserGroupList"
+			
+			jConfirm("Delete group?", "", function(r) {
+
+				if (r) {
+					pb_showMessage("<p>Group deleted</p>");
+					var groupID = users_get_selected_group_id();
+					$(".button-group-edit").addClass("ui-state-disabled");
+					$(".button-group-delete").addClass("ui-state-disabled");
+					$.post("gui/users.php", {
+						action: "users_group_delete",
+						groupID: groupID
 					}, function(){
-						users_add_listener();
+						$("#users-group-list").load("gui/users.php", {
+							action: "users_getUserGroupList"
+						}, function(){
+							users_add_listener();
+						});
 					});
-				});
-			}
+				}
+				
+			});
+
 		}
 
 	});
 
 	// vid klick på ny-gruppp-knapp
 	$(".button-group-new").click(function(){
-		var name = prompt("Enter name of new group");
-		name = $.trim(name);
-		if (name) {
-			pb_showMessage("<p>Group added</p>");
-			$.post("gui/users.php", {
-				action: "users_createNewGroup",
-				groupName: name
-			}, function(data){
-				$("#users-group-list").load("gui/users.php", {
-					action: "users_getUserGroupList"
-				}, function(){
-					users_add_listener();
-					users_select_group(data);
+		jPrompt("Enter name of new group", "", "PolarBear CMS", function(name) {
+			name = $.trim(name);
+			if (name) {
+				pb_showMessage("<p>Group added</p>");
+				$.post("gui/users.php", {
+					action: "users_createNewGroup",
+					groupName: name
+				}, function(data){
+					$("#users-group-list").load("gui/users.php", {
+						action: "users_getUserGroupList"
+					}, function(){
+						users_add_listener();
+						users_select_group(data);
+					});
 				});
-			});
-		}
+			}
+		});
+		return false;
 	});
 
 	// radera användare
 	$(".button-user-delete").click(function() {
 		if (!$(this).hasClass("ui-state-disabled")) {
-			if (confirm("Delete user?")) {
 
-				var userID = users_get_selected_user_id();
-				var groupID = users_get_selected_group_id();
-				$.post("gui/users.php", { action: "users_deleteUser", userID: userID }, function() {
-					// användaren raderad. ladda om grupper och så
-					pb_showMessage("<p>User deleted</p>");
-					$("#users-group-list").load("gui/users.php", { action: "users_getUserGroupList" }, function() {
-						users_add_listener();
-						users_select_group(groupID);
+			jConfirm("Delete user?", "", function(r){
+				if (r) {
+					var userID = users_get_selected_user_id();
+					var groupID = users_get_selected_group_id();
+					$.post("gui/users.php", { action: "users_deleteUser", userID: userID }, function() {
+						// användaren raderad. ladda om grupper och så
+						pb_showMessage("<p>User deleted</p>");
+						$("#users-group-list").load("gui/users.php", { action: "users_getUserGroupList" }, function() {
+							users_add_listener();
+							users_select_group(groupID);
+						});
 					});
-				});
-			}
+				}
+			});
+
 		}
 	});
 
@@ -483,7 +498,7 @@ function polarbear_page_users_onload() {
 			email = $.trim(email);
 
 			if (!firstname && !lastname && !email) {
-				alert("Please give the user a name or an email address");
+				jAlert("Please give the user a name or an email address");
 				return false;
 			}
 
@@ -494,7 +509,7 @@ function polarbear_page_users_onload() {
 				if (newPassword == newPasswordRepeat) {
 					// ok, nya lösenorden är lika
 				} else {
-					alert("The passwords you entered are not the same.");
+					jAlert("The passwords you entered are not the same.");
 					return false;
 				}
 			}

@@ -357,7 +357,7 @@ if (isset($_POST["forgot-password"])) {
 				</p>
 				-->
 				<p>
-					<input type="checkbox" class="checkbox" value="1" name="login-remember-me" id="login-remember-me" />
+					<input type="checkbox" class="checkbox" value="1" name="login-remember-me" id="login-remember-me" checked="checked" />
 					<label class="checkbox" for="login-remember-me">Remember me on this computer</label>
 				</p>
 

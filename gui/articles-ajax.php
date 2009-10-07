@@ -258,19 +258,18 @@ if ($action == "articleEdit") {
 					setTimeout(function() {
 						polarbear_article_onload();
 					}, 0);
+
 				});
 			<?php } ?>
+
+			<?php
+			if ($_GET["okmsg"] == "ArticleSaved") { ?>pb_showMessage("<p>Article saved</p>");<? }
+			?>
 
 		</script>
 
 		<form target="" id="article-edit-form" class="" method="post" action="<?php polarbear_webpath() ?>gui/articles-save.php">
 
-			<?php
-			if (isset($_GET["okmsg"])) {
-				polarbear_infomsg($_GET["okmsg"]);
-			}
-			?>
-		
 			<div class="primary module">
 				
 				<input type="hidden" name="article-id" id="article-id" value="<?php echo $a->getId() ?>" />
@@ -493,6 +492,8 @@ if ($action == "articleEdit") {
 										<input type="hidden" id="article-datePublish-valM" value="<?php echo (int) (date("m", $datePublish)-1) ?>" />
 										<input type="hidden" id="article-datePublish-valD" value="<?php echo (int) date("d", $datePublish) ?>" />
 										<input type="hidden" id="article-datePublish-valHM" value="<?php echo date("H:i", $datePublish) ?>" />
+										<input type="hidden" id="article-datePublish-valHours" value="<?php echo date("H", $datePublish) ?>" />
+										<input type="hidden" id="article-datePublish-valMins" value="<?php echo date("i", $datePublish) ?>" />
 									</div>
 									<div>
 										Until:
@@ -514,7 +515,8 @@ if ($action == "articleEdit") {
 										<input type="hidden" id="article-dateUnpublish-valM" value="<?php echo (int) (date("m", $dateUnpublish)-1) ?>" />
 										<input type="hidden" id="article-dateUnpublish-valD" value="<?php echo (int) date("d", $dateUnpublish) ?>" />
 										<input type="hidden" id="article-dateUnpublish-valHM" value="<?php echo date("H:i", $dateUnpublish) ?>" />
-
+										<input type="hidden" id="article-dateUnpublish-valHours" value="<?php echo date("H", $dateUnpublish) ?>" />
+										<input type="hidden" id="article-dateUnpublish-valMins" value="<?php echo date("i", $dateUnpublish) ?>" />
 									</div>
 
 									<!-- publish dialog -->
@@ -526,8 +528,28 @@ if ($action == "articleEdit") {
 											<input type="hidden" value="" name="article-datePublish-selecteddate" />
 											<div id="article-datePublish-datepicker"></div>
 											<div>Time</div>
-											<div style="position: relative;">
-												<input class="ui-widget-content ui-corner-all" type="text" value="" name="article-datePublish-selectedtime" size="4" maxlength="5" />
+											<div>
+												<select id="article-datePublish-selectedtime-hh">
+													<?php
+													// here. 2 dropdowns: 1 hh, 2 mm
+													for ($i=0; $i<24; $i++) {
+														?>
+														<option value="<?php echo $i ?>"><?php echo sprintf("%02d", $i) ?></option>
+														<?php
+													}
+													?>
+												</select>
+												:
+												<select id="article-datePublish-selectedtime-mm">
+													<?php
+													// here. 2 dropdowns: 1 hh, 2 mm
+													for ($i=0; $i<60; $i=$i+15) {
+														?>
+														<option value="<?php echo $i ?>"><?php echo sprintf("%02d", $i) ?></option>
+														<?php
+													}
+													?>
+												</select>
 											</div>
 										</div>
 									</div>
@@ -541,9 +563,30 @@ if ($action == "articleEdit") {
 											<input type="hidden" value="" name="article-dateUnpublish-selecteddate" />
 											<div id="article-dateUnpublish-datepicker"></div>
 											<div>Time</div>
-											<div style="position: relative;">
-												<input class="ui-widget-content ui-corner-all" type="text" value="" name="article-dateUnpublish-selectedtime" size="4" maxlength="5" />
+											<div>
+												<select id="article-dateUnpublish-selectedtime-hh">
+													<?php
+													// here. 2 dropdowns: 1 hh, 2 mm
+													for ($i=0; $i<24; $i++) {
+														?>
+														<option value="<?php echo $i ?>"><?php echo sprintf("%02d", $i) ?></option>
+														<?php
+													}
+													?>
+												</select>
+												:
+												<select id="article-dateUnpublish-selectedtime-mm">
+													<?php
+													// here. 2 dropdowns: 1 hh, 2 mm
+													for ($i=0; $i<60; $i=$i+15) {
+														?>
+														<option value="<?php echo $i ?>"><?php echo sprintf("%02d", $i) ?></option>
+														<?php
+													}
+													?>
+												</select>
 											</div>
+
 										</div>
 									</div>
 																		
@@ -711,7 +754,8 @@ if ($action == "articleEdit") {
 				$deleteURL = POLARBEAR_WEBPATH . "gui/articles-ajax.php?action=articleDelete&amp;articleID=$articleID&amp;editSource=$editSource&amp;editSourceURL=$editSourceURL";
 				?>
 				<p>
-					<a id="polarbear-article-edit-delete" href="<?php echo $deleteURL ?>" class="fg-button fg-button-icon-left">
+					<input type="hidden" id="polarbear-article-edit-delete-url" value="<?php echo $deleteURL ?>" />
+					<a id="polarbear-article-edit-delete" href="#" class="fg-button fg-button-icon-left">
 						<span class="ui-icon ui-icon-trash"></span>
 						Delete
 					</a>
@@ -725,19 +769,6 @@ if ($action == "articleEdit") {
 
 		
 		<!-- change official author, to be used with blockUI -->
-		<style type="text/css">
-			#official-author-window {
-				text-align: left;
-				padding: 1em;
-			}
-			#official-author-window .or {
-				font-size: 2em;
-				padding-top: 1em;
-				padding-bottom: 1em;
-				clear: both;
-				color: #888;
-			}
-		</style>
 		<div id="official-author-window" style="display: none; cursor: default;" class="module">
 			<div>
 				<input checked="checked" type="radio" name="author-type" id="official-author-type-none" value="none" /><label for="official-author-type-none"> Do not use an official author</label>

@@ -178,7 +178,7 @@ if ($isPreview) {
 	if ($editSource == "external") {
 		$url = $pageURL;
 	} else {
-		$okmsg = urlencode("Article saved");
+		$okmsg = "ArticleSaved";
 		$url = polarbear_treepage("gui/articles-ajax.php?action=articleEdit&articleID=" . $articleID . "&okmsg=$okmsg");
 	}
 } else if ($afterSave == "overview") {

@@ -197,7 +197,8 @@ function polarbear_require_admin() {
 	if (is_object($polarbear_u) && $polarbear_u->isAdmin()) {
 		return true;
 	} else {
-		header("Location: http://" . POLARBEAR_DOMAIN . POLARBEAR_WEBPATH . "login.php");
+		#header("Location: http://" . POLARBEAR_DOMAIN . POLARBEAR_WEBPATH . "login.php");
+		header("Location: " . POLARBEAR_WEBPATH . "login.php");
 		exit;
 	}
 	
@@ -1642,6 +1643,12 @@ function polarbear_boot() {
 			$polarbear_domain .= $arrPolarbear_domain["subdomain"] . ".";
 		}
 		$polarbear_domain .= $arrPolarbear_domain['domain'] . $arrPolarbear_domain['extension']; // todo: denna måste testas på riktigt
+		
+		// if empty, use ip-number instead
+		if (empty($polarbear_domain)) {
+			$polarbear_domain = $arrPolarbear_domain["ip"];
+		}
+		
 		DEFINE('POLARBEAR_DOMAIN', $polarbear_domain);
 	}
 
