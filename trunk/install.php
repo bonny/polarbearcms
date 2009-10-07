@@ -4,8 +4,11 @@ require_once("./polarbear-boot.php");
 // phpinfo();
 // SELECT VERSION()
 
-// Create tables and columns that don't exist
-function pb_createAndUpdateTables() {
+/*
+ * Create tables and columns that don't exist
+ * $action check | perform
+ */
+function pb_createAndUpdateTables($action = "check", & $whatToBeDone = null) {
 	$tables = "
 	CREATE TABLE `polarbear_article_tag_relation` (
 	  `articleID` int(10) unsigned NOT NULL default '0',
@@ -198,8 +201,21 @@ function pb_createAndUpdateTables() {
 	  PRIMARY KEY  (`id`),
 	  KEY `date` (`date`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
+	
+	CREATE TABLE `polarbear_test` (
+	  `id` int(10) unsigned NOT NULL auto_increment,
+	  `date` datetime NOT NULL,
+	  `objectName` varchar(255) collate utf8_swedish_ci NOT NULL,
+	  PRIMARY KEY  (`id`),
+	  KEY `date` (`date`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
+	
+
+	
 	";
 	$didSomething = false;
+	$somethingNeedsToBeDone = false;
+	$somethingNeedsToBeDoneStr = "<ul>";
 	$arrTables = explode("CREATE TABLE ", $tables);
 	$arrTablesFixed = array();
 	foreach ($arrTables as $oneTable) {
@@ -216,11 +232,18 @@ function pb_createAndUpdateTables() {
 			$sql = "show tables like '$tableName'";
 			$rs = mysql_query($sql) or die(mysql_error());
 			if (mysql_num_rows($rs) == 0) {
-				echo "<br><strong>$tableName did not exist</strong>, so I will now create it.";
-				$oneTable = str_replace("polarbear_", POLARBEAR_DB_PREFIX . "_", $oneTable);
-				$sql = "CREATE TABLE $oneTable";
-				mysql_query($sql) or die(mysql_error());
-				$didSomething = true;
+			
+				if ($action == "perform") {
+					#echo "<br><strong>$tableName did not exist</strong>, so I will now create it.";
+					$oneTable = str_replace("polarbear_", POLARBEAR_DB_PREFIX . "_", $oneTable);
+					$sql = "CREATE TABLE $oneTable";
+					mysql_query($sql) or die(mysql_error());
+					$didSomething = true;
+				} else {
+					$somethingNeedsToBeDoneStr .= "<li>Table <strong>$tableName</strong></li>";
+					$somethingNeedsToBeDone = true;
+				}
+
 			} else {
 				#echo "<br><br>$tableName did exist. Checking if all fields also exist.";
 				// ta bort första och sista raden
@@ -245,11 +268,16 @@ function pb_createAndUpdateTables() {
 							}
 						}
 						if ($foundField == false) {
-							echo "<br><strong>Field $fieldName does not exist</strong>, so I will now create it.";
-							$sqlAddField = "ALTER table $tableName ADD column $oneCol";
-							echo $sqlAddField;
-							$rsAddField = mysql_query($sqlAddField) or die(mysql_error());
-							$didSomething = true;
+							if ($action == "perform") {
+								#echo "<br><strong>Field $fieldName does not exist</strong>, so I will now create it.";
+								$sqlAddField = "ALTER table $tableName ADD column $oneCol";
+								#echo $sqlAddField;
+								$rsAddField = mysql_query($sqlAddField) or die(mysql_error());
+								$didSomething = true;
+							} else {
+								$somethingNeedsToBeDoneStr .= "<li>Field <strong>$fieldName</strong> (in table $tableName)</li>";
+								$somethingNeedsToBeDone = true;
+							}
 						}
 
 					}
@@ -259,8 +287,14 @@ function pb_createAndUpdateTables() {
 			
 		}
 	}
-
-	return $didSomething;
+	
+	if ($action == "peform") {
+		return $didSomething;
+	} else {
+		$somethingNeedsToBeDoneStr .= "</ul>";
+		$whatToBeDone = $somethingNeedsToBeDoneStr;
+		return $somethingNeedsToBeDone;
+	}
 
 } // end function
 		
@@ -288,14 +322,26 @@ Finns tabell
 	
 		<h1>PolarBear CMS Setup/Install</h1>
 		
-		<p style="infomsg"><strong>Please note: When you are done setting upp PolarBear CMS you must delete this file.</strong></p>
+		<p class="infomsg">Please note: When you are done setting upp PolarBear CMS you must delete this file.</p>
 
 		<h2>Create/Update database</h2>
 		<?
-		if (pb_createAndUpdateTables()) {
-			echo "<p>Tables or fields where added to the database.</p>";
+		if ($_POST["action"] == "databasePerformUpdate") {
+			pb_createAndUpdateTables("perform");
+			echo "<p class='okmsg'>Updated database</p>";
+		}
+		
+		if (pb_createAndUpdateTables("check", $returnWhat)) {
+			echo "
+				<p>The following tables or fields needs to be updated:</p>
+				$returnWhat
+				<form method='post' action='install.php'>
+					<input type='submit' value='Perform update' />
+					<input type='hidden' name='action' value='databasePerformUpdate' />
+				</form>
+			";
 		} else {
-			echo "<p>The database was not touched.</p>";
+			echo "<p>The database seems to be up to date.</p>";
 		}
 		?>
 
@@ -327,7 +373,7 @@ Finns tabell
 			$newUser->changePassword($password);
 			$newUser->addToGroup($adminGroupID);
 			
-			echo "<p class='okmsg'>Administrator created</p>";
+			echo "<p class='okmsg'>Created administrator \"$firstname $lastname\"</p>";
 			
 		}
 		?>
@@ -336,21 +382,25 @@ Finns tabell
 
 			<p>
 				<label for="firstname">First name</label>
+				<br />
 				<input type="text" name="firstname" id="firstname" />
 			</p>
 			
 			<p>
 				<label for="lastname">Last name</label>
+				<br />
 				<input type="text" name="lastname" id="lastname" />
 			</p>
 			
 			<p>
 				<label for="email">Email</label>
+				<br />
 				<input type="text" name="email" id="email" />
 			</p>
 			
 			<p>
 				<label for="password">Password</label>
+				<br />
 				<input type="text" name="password" id="password" />
 			</p>
 			
@@ -362,6 +412,7 @@ Finns tabell
 		</form>
 		
 
+		<!--
 		<h2>Attach- and cachepaths</h2>
 		<dl>
 
@@ -441,9 +492,9 @@ Finns tabell
 				?>
 			</dd>		
 			
-			
-			
 		</dl>
+		
+		-->
 	
 	</body>
 </html>

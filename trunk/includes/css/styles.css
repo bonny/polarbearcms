@@ -102,7 +102,7 @@ h2 {
 	padding: .5ex;
 }
 
-.okmsg, .errmsg {
+.okmsg, .errmsg, .infomsg {
 	padding: 1em;
 	font-weight: bold;
 	margin-top: 1em;
@@ -116,6 +116,12 @@ h2 {
 	background-color:#CFEEC8;
 	border: 2px solid #aaa;
 }
+.infomsg {
+	background-color: #e0e0e0;
+	border: 2px solid #bbb;
+}
+
+
 
 p {
 	margin-top: 1em;
