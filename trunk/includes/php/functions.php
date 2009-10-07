@@ -1900,7 +1900,7 @@ function pb_add_site_edit($args) {
 							<input id='pb-login-password' name='login-password' type='password' size='20' class='password text ui-widget-content ui-corner-all' />
 						</p>
 						<p>
-							<input type='checkbox' class='checkbox' value='1' name='login-remember-me' id='pb-login-remember-me' />
+							<input type='checkbox' class='checkbox' value='1' name='login-remember-me' id='pb-login-remember-me' checked='checked' />
 							<label class='checkbox' for='pb-login-remember-me'>Remember me on this computer</label>
 						</p>						
 						<p>
