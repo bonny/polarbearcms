@@ -446,7 +446,7 @@ if ($action == "articleEdit") {
 					</a>
 					<span class="polarbear-afterbuttons">
 						or 
-						<a href="<?php echo polarbear_treepage("overview.php") ?>" class="polarbear-article-edit-button-cancel">Cancel</a>
+						<a href="<?php echo $cancelURL ?>" class="polarbear-article-edit-button-cancel">Cancel</a>
 					</span>
 				</div>
 
