@@ -280,7 +280,7 @@ var majTags = function () {
 		html += "<ul>";
 		
 		tags.each(function(i) {
-//alert("id: " + this.id + ", parentID: " + this.parentID);
+
 			// ta bara med de som är på översta nivån
 			var doAdd = false;
 			if (parentID === null && this.parentID === null) {
@@ -344,9 +344,6 @@ var majTags = function () {
 			objTags["tags[" + oneTag.id  + "][parentID]"] = oneTag.parentID,
 			objTags["tags[" + oneTag.id  + "][prio]"] = oneTag.prio
 		}
-		//if (oneTag.name == "Medel") {
-		//	alert(oneTag.selected);
-		//}
 		return $.param(objTags);
 	}
 
@@ -546,40 +543,3 @@ var majTags = function () {
 	}
 	
 }
-
-/*
-$(function() {
-	var t = new majTags();
-	t.attachTo("#tag-container");
-	t.addTag("Blogg", null, 1);
-	t.addTag("Musik", 1, 2);
-	t.addTag("Söder", 1, 3);
-	t.addTag("Bar", 1, 4);
-	t.addTag("Lokal", 1, 5);
-	t.addTag("Portfolio", 1, 7);
-	t.addTag("En tagg", null, 13);
-	t.addTag("En sub-tagg", 13, 15);
-	t.addTag("En ny tagg");
-	t.addTag("Recept", null, 20);
-	t.addTag("Typ", 20, 21);
-	t.addTag("Fågel", 21, 22);
-	t.addTag("Fisk", 21, 23);
-	t.addTag("Kött", 21, 24);
-	t.addTag("Vegetarisk", 21, 25);
-	t.addTag("Svårighetsgrad", 20, 26);
-	t.addTag("Lätt", 26, 27);
-	t.addTag("Medel", 26, 28);
-	t.addTag("Svår", 26, 29);
-	
-	t.update();
-});
-
-
-
-
-
-
-x = $("[name='maj-tags-serialized']").val();
-alert(unescape(x));
-
-*/

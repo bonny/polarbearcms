@@ -24,6 +24,7 @@ if ($_POST["action"] == "loadGaAnalytics") {
 }
 
 $page_class = "polarbear-page-overview";
+pb_must_come_through_tree();
 ?>
 
 <div class="polarbear-content-main-inner">
@@ -240,8 +241,10 @@ function pb_get_ga_statistics() {
 					foreach($ga->getResults() as $result) {
 						if ($result == "(not set)") { continue; }
 						if ($loopNum > 10) { break; }
+						echo "<tr>";
 						echo "<td>$result</td>";
 						echo "<td>" . $result->getPageviews() . "</tr>";
+						echo "</tr>";
 						$loopNum++;
 					}
 					?>
@@ -268,8 +271,10 @@ function pb_get_ga_statistics() {
 					foreach($ga->getResults() as $result) {
 						if ($result == "(direct)") { continue; }
 						if ($loopNum > 10) { break; }
+						echo "<tr>";
 						echo "<td>$result</td>";
 						echo "<td>" . $result->getPageviews() . "</tr>";
+						echo "</tr>";
 						$loopNum++;
 					}
 					?>

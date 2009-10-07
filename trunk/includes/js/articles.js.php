@@ -184,7 +184,6 @@ $("#official-author-change").live("click", function() {
 				*/
 				// start button ok
 				var type = $("#official-author-window input[name='author-type']:checked");
-				// alert(type.val()); // none | text | user
 				var authorType = type.val();
 				var authorText = "";
 				var authorUserID = "";
@@ -193,7 +192,7 @@ $("#official-author-change").live("click", function() {
 					// om text - se till att något är inskrivet
 					var customName = $.trim($("#official-author-window input[name='author-type-custom-name']").val());
 					if (customName=="") {
-						alert("Please enter a name");
+						jAlert("Please enter a name");
 						ok = false;
 					} else {
 						authorText = customName;
@@ -202,7 +201,7 @@ $("#official-author-change").live("click", function() {
 					// kontrollera att en användare är valt
 					var selectedUser = $("#users-userlist a.selected");
 					if (selectedUser.length == 0) {
-						alert("Please choose a user");
+						jAlert("Please choose a user");
 						ok = false;
 					} else {
 						authorText = selectedUser.text();
@@ -276,6 +275,7 @@ $("#article-edit-choose-author-users-groups").live("click", function(e) {
 $("#article-datePublish-change").live("click",function() {
 
 	$("#article-datePublish-window").dialog({
+		width: 400,
 		modal: true,
 		title: "When should this article be published",
 		buttons: {
@@ -287,20 +287,14 @@ $("#article-datePublish-change").live("click",function() {
 				var val = "";
 				if (type=="date") {
 					var date = $("#article-datePublish-window input[name='article-datePublish-selecteddate']").val();
-					var time = $("#article-datePublish-window input[name='article-datePublish-selectedtime']").val();
-					var re = /[\d]+:[\d]+/;
-					var timeOK = (time.match(re) != null);
-					if (date=="" && timeOK==false ) {
-						alert("You must select a date and a time");
+					var hh = $("#article-datePublish-selectedtime-hh option:selected").text();
+					var mm = $("#article-datePublish-selectedtime-mm option:selected").text();
+					var time = hh + ":" + mm;
+					if (date == "") {
 						ok = false;
-					} else if (date == "") {
-						ok = false;
-						alert("You must select a date");
-					} else if (!timeOK) {
-						ok = false;
-						alert("You must enter a time");
+						jAlert("You must select a date");
 					} else {
-						// ok, skriv värde i klartext
+						// ok, skriv värde i klartext + de olika selectarna så det blir rätt när vi tar upp dialogen igen utan att spara emellan
 						$("#article-datePublish-when-text").text(date + " " + time);
 						val = date + " " + time;
 					}
@@ -314,6 +308,8 @@ $("#article-datePublish-change").live("click",function() {
 					$("#article-datePublish-valM").val(selectedDate.getMonth());
 					$("#article-datePublish-valD").val(selectedDate.getDate());
 					$("#article-datePublish-valHM").val(time);
+					$("#article-datePublish-valHours").val(hh);
+					$("#article-datePublish-valMins").val(mm);
 					$("#article-datePublish-window").dialog("close");
 				}
 				// end ok-button
@@ -344,7 +340,7 @@ $("#article-datePublish-change").live("click",function() {
 			$("#article-datePublish-window input[name='article-datePublish-selecteddate']").val(date);
 		}
 	});
-	$("#article-datePublish-window input[name='article-datePublish-selectedtime']").timePicker();
+
 	if (val=="") {
 		$("#article-datePublish-when-never").click();
 	} else {
@@ -352,11 +348,17 @@ $("#article-datePublish-change").live("click",function() {
 		var y = parseInt($("#article-datePublish-valY").val());
 		var m = parseInt($("#article-datePublish-valM").val());
 		var d = parseInt($("#article-datePublish-valD").val());
+		var hours = parseInt($("#article-datePublish-valHours").val());
+		var mins = parseInt($("#article-datePublish-valMins").val());
 		var hm = $("#article-datePublish-valHM").val();
 		$("#article-datePublish-datepicker").datepicker("setDate", new Date(y, m, d) );
-		// todo här blir det fel..
+
 		$("#article-datePublish-window input[name='article-datePublish-selecteddate']").val(y + "-" + (m+1) + "-" + d);
-		$("#article-datePublish-window input[name='article-datePublish-selectedtime']").val(hm);
+
+		// select/check the correct values in the drop down
+		$("#article-datePublish-selectedtime-hh option[value=" + hours + "]").attr("selected", "selected");
+		$("#article-datePublish-selectedtime-mm option[value=" + mins + "]").attr("selected", "selected");
+		
 	}
 }); // publish
 
@@ -367,6 +369,7 @@ $("#article-datePublish-change").live("click",function() {
 $("#article-dateUnpublish-change").live("click", function() {
 	
 	$("#article-dateUnpublish-window").dialog({
+		width: 400,
 		modal: true,
 		title: "When should this article be unpublished",
 		buttons: {
@@ -377,18 +380,13 @@ $("#article-dateUnpublish-change").live("click", function() {
 				var val = "";
 				if (type=="date") {
 					var date = $("#article-dateUnpublish-window input[name='article-dateUnpublish-selecteddate']").val();
-					var time = $("#article-dateUnpublish-window input[name='article-dateUnpublish-selectedtime']").val();
-					var re = /[\d]+:[\d]+/;
-					var timeOK = (time.match(re) != null);
-					if (date=="" && timeOK==false ) {
+					var hh = $("#article-dateUnpublish-selectedtime-hh option:selected").text();
+					var mm = $("#article-dateUnpublish-selectedtime-mm option:selected").text();
+					var time = hh + ":" + mm;
+
+					if (date == "") {
 						ok = false;
-						alert("You must select a date and a time");
-					} else if (date == "") {
-						ok = false;
-						alert("You must select a date");
-					} else if (!timeOK) {
-						ok = false;
-						alert("You must enter a time");
+						jAlert("You must select a date");
 					} else {
 						// ok, skriv värde i klartext
 						$("#article-dateUnpublish-when-text").text(date + " " + time);
@@ -404,6 +402,9 @@ $("#article-dateUnpublish-change").live("click", function() {
 					$("#article-dateUnpublish-valY").val(selectedDate.getFullYear());
 					$("#article-dateUnpublish-valM").val(selectedDate.getMonth());
 					$("#article-dateUnpublish-valD").val(selectedDate.getDate());
+					$("#article-dateUnpublish-valHM").val(time);
+					$("#article-dateUnpublish-valHours").val(hh);
+					$("#article-dateUnpublish-valMins").val(mm);
 					$("#article-dateUnpublish-valHM").val(time);
 					$("#article-dateUnpublish-window").dialog("close");
 				}
@@ -426,7 +427,7 @@ $("#article-dateUnpublish-change").live("click", function() {
 			$("#article-dateUnpublish-window input[name='article-dateUnpublish-selecteddate']").val(date);
 		}
 	});
-	$("#article-dateUnpublish-window input[name='article-dateUnpublish-selectedtime']").timePicker();
+
 	if (val=="") {
 		$("#article-dateUnpublish-when-never").click();
 	} else {
@@ -435,9 +436,16 @@ $("#article-dateUnpublish-change").live("click", function() {
 		var m = parseInt($("#article-dateUnpublish-valM").val());
 		var d = parseInt($("#article-dateUnpublish-valD").val());
 		var hm = $("#article-dateUnpublish-valHM").val();
+		var hours = parseInt($("#article-dateUnpublish-valHours").val());
+		var mins = parseInt($("#article-dateUnpublish-valMins").val());
+		
 		$("#article-dateUnpublish-datepicker").datepicker("setDate", new Date(y, m, d) );
 		$("#article-dateUnpublish-window input[name='article-dateUnpublish-selecteddate']").val(y + "-" + (m+1) + "-" + d);
-		$("#article-dateUnpublish-window input[name='article-dateUnpublish-selectedtime']").val(hm);
+		
+		//$("#article-dateUnpublish-window input[name='article-dateUnpublish-selectedtime']").val(hm);
+		$("#article-dateUnpublish-selectedtime-hh option[value=" + hours + "]").attr("selected", "selected");
+		$("#article-dateUnpublish-selectedtime-mm option[value=" + mins + "]").attr("selected", "selected");
+
 	}
 }); // unpublish
 
@@ -600,6 +608,17 @@ $(".polarbear-article-edit-fields-add").live("click", function () {
 
 // delete article
 $("#polarbear-article-edit-delete").live("click", function() {
+
+	jConfirm("Delete article? All sub-articles will also be deleted.", "PolarBear CMS", function(r) {
+		if (r) {
+			// yeah, delete
+			document.location = $("#polarbear-article-edit-delete-url").val();
+		} else {
+			// no delete
+		}
+	});
+	return false;
+	/*
 	if (confirm("Delete article? All sub-articles will also be deleted.")) {
 		// where to go?
 		// overview.php?action=deleted
@@ -607,6 +626,7 @@ $("#polarbear-article-edit-delete").live("click", function() {
 	} else {
 		return false;
 	}
+	*/
 });
 
 
