@@ -97,8 +97,9 @@ if ($action == "getValidatedShortname") {
 
 /**
  * article is created
+ * http://localhost/polarbearcms/gui/articles-ajax.php?action=articleCreateChild&articleID=434&editsource=external&editsourceurl=%2Fnews%2F
  */
-if ($action == "articleCreate") {
+if ($action == "articleCreate" || $action == "articleCreateChild") {
 
 	if ($_GET["editsource"] == "external") {
 		// create from site
@@ -111,6 +112,12 @@ if ($action == "articleCreate") {
 		$a->setStatus("published");
 		$a->save();
 		$newArticleID = $a->getId();
+
+		// if creating a sub-article, move it
+		if ($action == "articleCreateChild") {
+			$a->move($refArticle, "inside");
+		}
+			
 		$editlink = POLARBEAR_WEBPATH . "gui/articles-ajax.php?action=articleEdit&articleID=$newArticleID&editsource=external&editsourceurl=$editSourceURL";
 		header("Location: $editlink");
 		exit;
@@ -133,8 +140,12 @@ if ($action == "articleCreate") {
 	
 		if ($refarticle) {
 			$a->move($refarticle, $type);
-			#$a->setParent($parent);
 		}
+
+		#if ($action == "articleCreateChild") {
+		#	$a->setParent($parent);
+		#}
+		
 		echo $a->getId();
 		exit;
 	}

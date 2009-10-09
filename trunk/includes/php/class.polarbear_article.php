@@ -523,7 +523,14 @@ class PolarBear_Article {
 	function move($targetArticleID, $positionType) {
 
 		global $polarbear_db;
-		$targetArticle = PolarBear_Article::getInstance($targetArticleID);
+		if (ctype_digit($targetArticleID)) {
+			// integer, instanstiate article
+			$targetArticle = PolarBear_Article::getInstance($targetArticleID);			
+		} else {
+			// assume it's a polarbear_article
+			$targetArticle = $targetArticleID;
+		}
+
 		$targetPrio = (int) $targetArticle->getPrio();
 		$targetParent = $targetArticle->getParent();
 		$positionType = strtolower($positionType);
@@ -1487,6 +1494,7 @@ class PolarBear_Article {
 			$data->assign('edit', $this->getEditString());
 			$data->assign('editPrio', $this->getEditPrioString());
 			$data->assign('editAdd', $this->getEditAddString());
+			$data->assign('editAddChild', $this->getEditAddChildString());
 		}
 
 		$SEOMetaTags = "";
@@ -1600,6 +1608,17 @@ class PolarBear_Article {
 			$articleID = $this->getId();
 			$link = POLARBEAR_WEBPATH . "gui/articles-ajax.php?action=articleCreate&amp;articleID=$articleID&amp;editsource=external&amp;editsourceurl=$requestURI";
 			$out .= "<span class='polarbear-edit polarbear-edit-prio'><a href='$link' title='Add article'><img width='16' height='16' border='0' src='" . POLARBEAR_WEBPATH . "images/polarbear/plus.png' alt='Arrow down' /></a></span>";
+		}
+		return $out;
+	}
+
+	function getEditAddChildString() {
+		$out = "";
+		if (polarbear_user_can("edit_article") && pb_is_site_edit_enabled()) {
+			$requestURI = urlencode($_SERVER["REQUEST_URI"]);
+			$articleID = $this->getId();
+			$link = POLARBEAR_WEBPATH . "gui/articles-ajax.php?action=articleCreateChild&amp;articleID=$articleID&amp;editsource=external&amp;editsourceurl=$requestURI";
+			$out .= "<span class='polarbear-edit polarbear-edit-prio'><a href='$link' title='Add sub-article'><img width='16' height='16' border='0' src='" . POLARBEAR_WEBPATH . "images/polarbear/plus.png' alt='Arrow down' /></a></span>";
 		}
 		return $out;
 	}
