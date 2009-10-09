@@ -320,8 +320,10 @@ Finns tabell
 	</head>
 	<body>
 	
-		<h1>PolarBear CMS Setup/Install</h1>
+		<p><img src="images/polarbear/polarbear-logo.gif" alt="PolarBear CMS logotype" /></p>
 		
+		<h1>PolarBear CMS Setup/Install</h1>
+	
 		<p class="infomsg">Please note: When you are done setting upp PolarBear CMS you must delete this file.</p>
 
 		<h2>Create/Update database</h2>
