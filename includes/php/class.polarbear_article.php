@@ -1453,7 +1453,7 @@ class PolarBear_Article {
 	 * @return string output
 	 */
 	function output($template) {
-		global $polarbear_u;
+		global $polarbear_u, $polarbear_a;
 
 		$isOk = false;
 
@@ -1508,9 +1508,16 @@ class PolarBear_Article {
 		}
 		$data->assign('SEOMetaTags', $SEOMetaTags);
 
+		// $isCurrentArticle, good for using i lists
+		$isCurrentArticle = false;
+		if ($polarbear_a->getId() == $this->getId()) {
+			$isCurrentArticle = true;
+		}
+		$data->assign('isCurrentArticle', $isCurrentArticle);
+		
+
 		// fetch parent so vi easily can check if current article is child of some article
 		// todo: since these are the same as for the current article maybe we could make a wrapper for it.. somehow
-
 		$parentA = PolarBear_Article::getInstance($this->parentID);
 		$data->assign('parentId', $parentA->getId());
 		$data->assign('parentTitleArticle', htmlspecialchars($parentA->getTitleArticle(), ENT_COMPAT, "UTF-8"));
