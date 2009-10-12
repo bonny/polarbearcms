@@ -1,5 +1,8 @@
 <?php
-require_once("./polarbear-boot.php");
+#require_once("./polarbear-boot.php");
+
+require_once("./polarbear-config.php");
+require_once("./includes/php/class.ezsql_mysql.php");
 
 // phpinfo();
 // SELECT VERSION()
@@ -324,11 +327,36 @@ Finns tabell
 		
 		<h1>PolarBear CMS Setup/Install</h1>
 	
-		<p class="infomsg">Please note: When you are done setting upp PolarBear CMS you must delete this file.</p>
+		<p class="xinfomsg">Please note: When you are done setting upp PolarBear CMS <strong>you must delete this file</strong>.</p>
 
+
+		<?php
+			// check database connection and stuff like that
+			$polarbear_db = new ezSQL_mysql();
+			$polarbear_db->show_errors=false; // @todo: should be false, right? or set through config
+			if (!$polarbear_db->connect(POLARBEAR_DB_USER, POLARBEAR_DB_PASSWORD, POLARBEAR_DB_SERVER)) {
+				?>
+				<h2>Check your config</h2>
+				<p>I could not connect to the database.</p>
+				<p>Please make sure that servername, username, password and database are correct.</p>
+				</body></html>
+				<?php
+				exit;
+			} else {
+				if (!$polarbear_db->select(POLARBEAR_DB_DATABASE)) {
+					?>
+					<h2>Check your config</h2>
+					<p>I could not select the database "<?php echo POLARBEAR_DB_DATABASE ?>".</p>
+					</body></html>
+					<?php
+					exit;
+				}
+			}
+		?>
+		
 		<h2>Create/Update database</h2>
 		<?
-		if ($_POST["action"] == "databasePerformUpdate") {
+		if (isset($_POST["action"]) && $_POST["action"] == "databasePerformUpdate") {
 			pb_createAndUpdateTables("perform");
 			echo "<p class='okmsg'>Updated database</p>";
 		}
@@ -351,7 +379,7 @@ Finns tabell
 
 		<?php		
 		if ($_POST["action"]== "addAdmin") {
-
+			
 			// make sure admin-group exists
 			$sql = "SELECT count(id) FROM " . POLARBEAR_DB_PREFIX . "_usergroups WHERE name = 'Administrators'";
 			if ($polarbear_db->get_var($sql) == 0) {
@@ -362,20 +390,30 @@ Finns tabell
 			$sql = "SELECT id FROM " . POLARBEAR_DB_PREFIX . "_usergroups WHERE name = 'Administrators'";
 			$adminGroupID = $polarbear_db->get_var($sql);
 
-			$firstname = $_POST["firstname"];
-			$lastname = $_POST["lastname"];
-			$email = $_POST["email"];
-			$password = $_POST["password"];
+			$firstname = trim($_POST["firstname"]);
+			$lastname = trim($_POST["lastname"]);
+			$email = trim($_POST["email"]);
+			$password = trim($_POST["password"]);
 			
-			$newUser = new PolarBear_User();
-			$newUser->firstname = $firstname;
-			$newUser->lastname = $lastname;
-			$newUser->email = $email;
-			$newUser->save();
-			$newUser->changePassword($password);
-			$newUser->addToGroup($adminGroupID);
+			if ($firstname && $lastname && $email && $password) {
+						
+				$newUser = new PolarBear_User();
+				$newUser->firstname = $firstname;
+				$newUser->lastname = $lastname;
+				$newUser->email = $email;
+				$newUser->save();
+				$newUser->changePassword($password);
+				$newUser->addToGroup($adminGroupID);
+
+				echo "<p class='okmsg'>Created administrator \"$firstname $lastname\"</p>";
+
+			} else {
+				
+				echo "<p class='errmsg'>Please fill in all fields</p>";
+
+			}
 			
-			echo "<p class='okmsg'>Created administrator \"$firstname $lastname\"</p>";
+
 			
 		}
 		?>

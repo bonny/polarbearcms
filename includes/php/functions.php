@@ -1397,7 +1397,7 @@ function polarbear_connect_db() {
 
 	pb_event_fire("pb_connect_db_start");
 	$polarbear_db = new ezSQL_mysql();
-	$polarbear_db->show_errors=true;
+	$polarbear_db->show_errors=true; // @todo: should be false, right? or set through config
 	$dbok = $polarbear_db->quick_connect(POLARBEAR_DB_USER,POLARBEAR_DB_PASSWORD,POLARBEAR_DB_DATABASE,POLARBEAR_DB_SERVER);
 	if (!$dbok) {
 		$content = "
