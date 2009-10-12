@@ -2735,6 +2735,13 @@ function pb_users_values_all_unique_labels() {
 
 /**
  * adds something to the log/"recent activities"
+ * @todo: support for custom logs (for plugins etc.)
+ *
+ * @param array $options(
+ 	event => pb_article_deleted | pb_article_saved | pb_user_saved | pb_user_deleted | pb_file_saved | pb_file_deleted |
+	objectName => 
+	article | file | user =>
+ *		
  */
 function pb_log($options) {
 
@@ -2755,25 +2762,36 @@ function pb_log($options) {
 		$type = "delete";
 		$objectType = "article";
 		$objectID = $options["article"]->getId();
+
 	} elseif ($options["event"] == "pb_article_saved") {
 		$type = "update";
 		if ($options["isNew"]) { $type = "create"; }
 		$objectType = "article";
 		$objectID = $options["article"]->getId();
+		$status = $options["status"];
+		if ($status == "preview") {
+			// don't add previewing of articles
+			return;
+		}
+
+
 	} elseif ($options["event"] == "pb_user_saved") {
 		$type = "update";
 		if ($options["isNew"]) { $type = "create"; }
 		$objectType = "user";
 		$objectID = $options["user"]->id;
+
 	} elseif ($options["event"] == "pb_user_deleted") {
 		$type = "delete";
 		$objectType = "user";
 		$objectID = $options["userID"];
+
 	} elseif ($options["event"] == "pb_file_saved") {
 		$type = "update";
 		$objectType = "file";
 		$objectID = $options["file"]->id;
 		if ($options["isNew"]) { $type = "create"; $user = $options["file"]->uploaderID; }
+
 	} elseif ($options["event"] == "pb_file_deleted") {
 		$type = "delete";
 		$objectType = "file";
@@ -2790,7 +2808,6 @@ function pb_log($options) {
 	$objectID = (int) $objectID;
 
 	$sql = "INSERT INTO " . POLARBEAR_DB_PREFIX . "_log SET date = now(), user = $user, type = '$type', objectType='$objectType', objectID = $objectID $sqlObjectName ";
-
 	$polarbear_db->query($sql);
 
 }

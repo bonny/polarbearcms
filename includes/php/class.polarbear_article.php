@@ -448,8 +448,10 @@ class PolarBear_Article {
 		$args = array(
 			"article" => $this,
 			"isNew" => $isNew,
-			"objectName" => $this->getTitleArticle()
+			"objectName" => $this->getTitleArticle(),
+			"status" => $this->getStatus()
 		);
+		// getStatus
 		pb_event_fire("pb_article_saved", $args);
 		
 	}

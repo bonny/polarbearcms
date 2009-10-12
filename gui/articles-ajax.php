@@ -109,7 +109,8 @@ if ($action == "articleCreate" || $action == "articleCreateChild") {
 		$a = new PolarBear_Article();
 		$a->setTitleArticle("");
 		$a->setParent($refArticle->getParentId());
-		$a->setStatus("published");
+		#$a->setStatus("published");
+		$a->setStatus("new");
 		$a->save();
 		$newArticleID = $a->getId();
 

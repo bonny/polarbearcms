@@ -33,7 +33,7 @@ if ($id == "0") {
 				icon: "<?php polarbear_webpath() ?>images/silkicons/folder_page_white.png"
 			},
 			children: <?php
-				$sql = "SELECT * FROM " . POLARBEAR_DB_PREFIX . "_articles WHERE parentID IS NULL AND status <> 'deleted' AND status <> 'revision' ORDER BY prio DESC";
+				$sql = "SELECT * FROM " . POLARBEAR_DB_PREFIX . "_articles WHERE parentID IS NULL AND status <> 'deleted' AND status <> 'revision' AND status <> 'new' AND status <> 'preview' ORDER BY prio DESC";
 				if ($r = $polarbear_db->get_results($sql)) {
 					$rowNum = 0;
 					echo "[";
@@ -165,7 +165,7 @@ if ($id == "0") {
 	//parent=article-20
 	$parentID = str_replace("article-", "", $id);
 	// klickat på en artikel-nod
-	$sql = "SELECT * FROM " . POLARBEAR_DB_PREFIX . "_articles WHERE parentID = '$parentID' AND status <> 'deleted' AND status <> 'revision' AND status <> 'preview' ORDER BY prio DESC";
+	$sql = "SELECT * FROM " . POLARBEAR_DB_PREFIX . "_articles WHERE parentID = '$parentID' AND status <> 'deleted' AND status <> 'revision' AND status <> 'preview' AND status <> 'new' ORDER BY prio DESC";
 	if ($r = $polarbear_db->get_results($sql)) {
 		$rowNum = 0;
 		echo "[";
