@@ -26,7 +26,10 @@ $a->setOfficialAuthorType($_POST["official-author-type"]);
 $a->setOfficialAuthorText($_POST["official-author-text"]);
 $a->setOfficialAuthorID($_POST["official-author-userID"]);
 
-if (!$isPreview) {
+if ($isPreview) {
+	// create a preview shortname
+	$a->setShortName($_POST["article-shortName"] . "-preview");
+} else {
 	$a->setShortName($_POST["article-shortName"]);
 }
 
@@ -169,6 +172,8 @@ pb_event_fire("article_saved", array("article"=>$a));
 
 $doHeaderRefresh = true;
 if ($isPreview) {
+
+	// if $a is not published, this will fail
 	$url = $a->fullpath();
 	$url .= "?pb-preview=1";
 } elseif ($afterSave == "continueEditing") {

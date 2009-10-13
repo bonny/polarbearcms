@@ -473,6 +473,7 @@ if ($action == "articleEdit") {
 						<h3><a href="#">Article status</a></h3>
 						<div>
 							<?php
+							// If new article, then status = new
 							$status = $a->getStatus();
 							?>
 							<div>
@@ -480,7 +481,7 @@ if ($action == "articleEdit") {
 									<input <?php echo ($status=='draft') ? "checked='checked'" : "" ?> type="radio" name="article-status" id="article-status-draft" value="draft" /><label class="for-radio" for="article-status-draft"> Draft</label>
 								</div>
 								<div>
-									<input <?php echo ($status=='published') ? "checked='checked'" : "" ?> type="radio" name="article-status" id="article-status-published" value="published" /><label class="for-radio" for="article-status-published"> Published</label>
+									<input <?php echo ($status=='published' || $status=='new') ? "checked='checked'" : "" ?> type="radio" name="article-status" id="article-status-published" value="published" /><label class="for-radio" for="article-status-published"> Published</label>
 								</div>
 								<div style="margin-left: 25px;">
 									<div>
