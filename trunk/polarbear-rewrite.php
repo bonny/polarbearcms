@@ -34,8 +34,12 @@ function polarbear_rewrite() {
 			$fileID = $_GET["fileID"] =  (int) $matches[1][1];
 			
 			if ($matches[1][0] == "image") {
-				$_GET["w"] = $matches[1][2];
-				$_GET["h"] = $matches[1][3];
+				if (isset($matches[1][2])) {
+					$_GET["w"] = $matches[1][2];
+				}
+				if (isset($matches[1][3])) {
+					$_GET["h"] = $matches[1][3];
+				}
 			} elseif ($matches[1][0] == "file") {
 				if ($matches[1][2] == "attachment") {
 					$_GET['cd'] = "attachment";

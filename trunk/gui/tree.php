@@ -12,6 +12,7 @@ $type = (isset($_GET["type"])) ? $_GET["type"] : null; // can be "filebrowser"
 if ($id == "0") {
 	?>
 	[
+		<?php if($type!="filebrowser") { ?>
 		{
 			data: {
 				title: "Overview",
@@ -25,6 +26,7 @@ if ($id == "0") {
 				id: "categoryOverview"
 			}
 		},
+		<?php } ?>
 		{
 			attributes: { id : "root", data: "{type: \"root\", deletable: false, renameable: false, draggable: false, dropable: false, droppable: false, clickable: true }" }, 
 			state: "open", 

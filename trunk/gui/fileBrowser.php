@@ -31,17 +31,15 @@ $type = $_GET["type"];
 <div id="tabs" class="xui-layout-content">
 	
 	<style type="text/css">
-	.tree li a,
-	.tree .tree-default li a, .tree .tree-default li span
-	{
-		background-image:url("<?php polarbear_webpath() ?>includes/tree_component/images/file.png");
-		background-image:url("<?php polarbear_webpath() ?>images/silkicons/page_white_text.png");
-	}
-	.polarbear-page-fileBrowser #polarbear-filebrowser-iframe-files,
-	.polarbear-page-fileBrowser #articles-tree
-	{
-		width: 650px; height: 365px;	
-	}
+		.tree li a, .tree .tree-default li a, .tree .tree-default li span
+		{
+			background-image:url("<?php polarbear_webpath() ?>images/silkicons/page_white_text.png");
+		}
+		.polarbear-page-fileBrowser #polarbear-filebrowser-iframe-files,
+		.polarbear-page-fileBrowser #articles-tree
+		{
+			width: 650px; height: 365px;	
+		}
 	</style>
 	<script type="text/javascript" src="<?php polarbear_webpath(); ?>includes/tiny_mce/tiny_mce_popup.js"></script>
 	<script type="text/javascript">
@@ -56,11 +54,14 @@ $type = $_GET["type"];
 
 			// init browser
 			var treeOptions = {
-				path: "<?php polarbear_webpath() ?>includes/tree_component/",
+				path: "<?php polarbear_webpath() ?>includes/jstree/",
 				data: {
 					type	: "json",
 					async 	: true,
-					url   	: "<?php polarbear_webpath() ?>gui/tree.php?type=filebrowser"
+					url   	: "<?php polarbear_webpath() ?>gui/tree.php?type=filebrowser",
+					opts	: {
+						url	: "<?php polarbear_webpath() ?>gui/tree.php?type=filebrowser"
+					}
 				},
 				cookies	: false,
 				ui: {
