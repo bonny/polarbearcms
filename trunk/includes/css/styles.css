@@ -379,12 +379,6 @@ margin-top: 0;
 	margin-top: .5em;
 }
 
-.tree li a,
-.tree .tree-default li a, .tree .tree-default li span
- {
-
-}
-
 input.text {
 	padding: .3em;
 }
@@ -703,4 +697,8 @@ border-color: #c3c694;
 	padding-bottom: 1em;
 	clear: both;
 	color: #888;
+}
+
+.tree-default li a, .tree-default li span {
+	background-image: none;
 }
