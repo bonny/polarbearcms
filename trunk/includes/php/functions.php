@@ -1747,7 +1747,7 @@ function polarbear_user_can($what) {
  * Returns an array of words that are reserved for shortname use
  */
 function pb_shortname_reserved_words() {
-	return array("image","images","article","articles","file","files","polarbear","pb","tag");
+	return array("image","images","article","articles","file","files","polarbear","pb","tag","inc","css");
 }
 
 /**
