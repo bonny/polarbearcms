@@ -166,7 +166,8 @@ var majTags = function () {
 			// hur? hämta alla li i trädet, loopa igenom (för vi får väl dom i ordning?)
 			// hämta id på varje och öka prio med ett för varje loop
 			// uppdatera prio på varje tag i tags
-			var j = tree_edit.getJSON(element.find("div.tree li"));
+			//var j = tree_edit.getJSON(element.find("div.tree li"));
+			var j = tree_edit.get(element.find("div.tree li"), "json");
 			j = $(j);
 			var prio = 0;
 			j.each(function() {
@@ -301,7 +302,7 @@ var majTags = function () {
 
 				if (isEditMode) {
 					html += "<li rel='tag' id='maj-tags-edit-tag-" + this.id + "'>";
-					html += "<a href='#' style='background-image: url(<?php polarbear_webpath() ?>/images/silkicons/tag_blue.png)'>";
+					html += "<a href='#' style='background-image: url(<?php polarbear_webpath() ?>/images/silkicons/tag_blue.png);background-repeat: no-repeat;padding-left:20px;'>";
 					html += this.name;
 					html += "</a>";
 				} else {
@@ -366,7 +367,7 @@ var majTags = function () {
 		html += "</div>";
 		html += "<div class='maj-tag-edit-tree'>";
 		html += "<ul>";
-		html += "<li id='maj-tags-edit-roottag' rel='tagroot'><a href='#' style='background-image: url(<?php polarbear_webpath() ?>images/silkicons/tag_blue.png);'>Tags</a>";
+		html += "<li id='maj-tags-edit-roottag' rel='tagroot'><a href='#' style='background-image: url(<?php polarbear_webpath() ?>images/silkicons/tag_blue.png);background-repeat:no-repeat;padding-left: 20px;'>Tags</a>";
 		html += t.getList(null, true);
 		html += "</li></ul>";
 		html += "</div>";
@@ -383,7 +384,7 @@ var majTags = function () {
 			},
 			ui: {
 				xxxcontext: false,
-				theme_path: "/maj/includes/tree_component/themes/"
+				theme_path: "/maj/includes/jstree/themes/"
 			},
 			lang: {
 				new_node: "New tag"
@@ -495,7 +496,7 @@ var majTags = function () {
 		
 		var tagsNorth = element.find(".maj-tags-north");
 		tagsNorth.hide().html(html).fadeIn("fast");
-		tree_edit = $.tree_create();
+		tree_edit = $.tree.create();
 		tree_edit.init(tagsNorth.find(".maj-tag-edit-tree"), treeOptions);
 		tree_edit.open_all();
 		

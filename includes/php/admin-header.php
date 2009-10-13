@@ -12,8 +12,6 @@ header('Content-type: text/html; charset="utf-8"');
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="<?php polarbear_webpath() ?>gui/combine.php?type=javascript&amp;files=jquery.jeditable.mini.js,jquery.cookie.js,jquery.listen.js,jquery.metadata.js,jquery.blockUI.js,jquery.layout-1.3.rc4.2.js,jquery.timePicker.js,jquery.query-2.1.6.js,swfobject.js,jquery.alerts.js"></script>
-	<!-- <script type="text/javascript" src="<?php polarbear_webpath() ?>includes/tree_component/tree_component.js"></script> -->
-	<!-- <script type="text/javascript" src="<?php polarbear_webpath() ?>includes/tree_component/css.js"></script> -->
 	<script type="text/javascript" src="<?php polarbear_webpath() ?>includes/jstree/jquery.tree.min.js"></script>
 	<script type="text/javascript" src="<?php polarbear_webpath() ?>includes/jstree/plugins/jquery.tree.cookie.js"></script>
 	<script type="text/javascript" src="<?php polarbear_webpath() ?>includes/js/global.js.php"></script>
@@ -24,8 +22,8 @@ header('Content-type: text/html; charset="utf-8"');
 
 	<style type="text/css" media="all">
 		@import url(http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.0/themes/base/jquery-ui.css);
-		@import url(<?php polarbear_webpath() ?>includes/tree_component/tree_component.css);
-		@import url(<?php polarbear_webpath() ?>includes/tree_component/themes/default/style.css);
+		@import url(xx<?php polarbear_webpath() ?>includes/tree_component/tree_component.css);
+		@import url(xx<?php polarbear_webpath() ?>includes/tree_component/themes/default/style.css);
 	</style>
 
 	<link rel="stylesheet" type="text/css" href="<?php polarbear_webpath() ?>gui/combine.php?type=css&amp;files=reset.css,files.css,timePicker.css,styles.css" />
