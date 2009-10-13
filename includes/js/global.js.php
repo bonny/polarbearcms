@@ -16,13 +16,16 @@ var articleStatus; // status for article beeing/just been edited
 $(function() {
 
 	var treeOptions = {
-		path: "<?php polarbear_webpath() ?>includes/tree_component/",
+		path: "<?php polarbear_webpath() ?>includes/jstree/",
 		data: {
 			type	: "json",
 			async 	: true,
-			url   	: "gui/tree.php"
+			url   	: "gui/tree.php",
+			opts	: {
+				url   	: "gui/tree.php"
+			}
 		},
-		cookies	: {
+		xcookies	: {
 			prefix	: "articles"				
 		},
 		ui: {
@@ -49,14 +52,18 @@ $(function() {
 			onrename : treeOnRename,
 			onmove   : treeOnMove,
 			onload	 : treeOnLoad
+		},
+		plugins: {
+			cookie : { prefix: "articles" }
 		}
 
+
 	}
-	
+
 	// Initialize article tree
 	if ($("#tree-articles").length==1) {
-		tree = $.tree_create();
-		tree.init($("#tree-articles"),treeOptions);
+		tree = $.tree.create();
+		tree.init($("#tree-articles"), treeOptions);
 	}
 
 	// button "new article"
@@ -159,7 +166,7 @@ function treeOnChange(node,tree) {
 		// return false;
 		treepage = "gui/overview.php";
 	}
-	
+
 	var polarbearContentMain = $("#polarbear-content-main");
 	polarbearContentMain.attr("scrollTop", 0);
 
@@ -176,24 +183,26 @@ function treeOnChange(node,tree) {
 
 	// if treepage is set to something, that's where we're goin in the first place
 	if (treepage != "") {
+		
+		// if treepage contains gui/overview.php make sure first branch is selected (it doesn't get selected when we for example save and article)
+		if (treepage.indexOf("gui/overview.php") >= 0) {
+			if (tree.selected[0].id != "categoryOverview") {
+				tree.select_branch("#categoryOverview");
+				return false;
+			}
+		}
+		
 		polarbearContentMain.load(treepage, function() { polarbear_article_onload(); });
 		treepage = ""; // we have to clear it so we can go elsewhere in the tree afterwards
 		return true;
 	}
-
 	var node = $(node);
 
 	// if href is a link, go to that link
 	var href = node.find("a").attr("href");
-	if (href!="#") {
+	if (href != "#" && href != "") {
 		var hrefTree = "<?php polarbear_webpath() ?>?treepage=" + href;		
-		// polarbearContentMain.hide();
-		//polarbearContentMain.load(href);
 		document.location = hrefTree;
-		return false;
-	}
-	
-	if (nodeId == "categorySettings") {
 		return false;
 	}
 
@@ -204,9 +213,12 @@ function treeOnChange(node,tree) {
 		// check if articleStatus has a value. if we clicked on just "save" 
 		// we just want to go to the overview and show a message insetad of editing the article
 		if (articleStatus == "articleEditSaved") {
+			// @todo: all inside this if is never executed?
 			href = "<?php echo polarbear_webpath() ?>overview.php?from=articleEditSaved";
 			//iframe.attr("src", href);
 			articleStatus = "";
+			// select
+			//tree.select_branch("#categoryOverview");
 			return false;
 		}
 		$("#button-article-new").removeClass("ui-state-disabled");
@@ -215,12 +227,12 @@ function treeOnChange(node,tree) {
 	}
 
 	// No special cases, go ahead and load article edit
-	tree.close_branch($("#categorySettings")); // make sure settings is closed. seems to be a bug in jstree with multiple branches open
+	//tree.close_branch($("#categorySettings")); // make sure settings is closed. seems to be a bug in jstree with multiple branches open
 	$("#polarbear-article-edit-dialog-loading").dialog({modal:true, resizable: false, title: "Loading"}).dialog("open");
 	articleStatus = "articleEditInProgress";	
 	href = "gui/articles-ajax.php?action=articleEdit&articleID=" + nodeId;
 	polarbearContentMain.load(href, {}, function() { polarbear_article_onload(); });
-
+	return false;
 	
 } // end treeOnChange
 
