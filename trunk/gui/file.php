@@ -228,6 +228,3 @@ if (!$imageOptionsExists) {
 	}
 
 }
-
-
-// session_cache_limiter('');

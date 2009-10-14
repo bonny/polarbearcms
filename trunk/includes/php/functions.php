@@ -2831,8 +2831,8 @@ function pb_cache_md5() {
 	unset($request["__utmc"]);
 	unset($request["__utmz"]);
 	$cacheMD5 = md5(POLARBEAR_DOMAIN . $_SERVER["REQUEST_URI"] . serialize($request));
-#pb_d($request);
-#echo "<br>cacheMD5: $cacheMD5";
+	#pb_d($request);
+	#echo "<br>cacheMD5: $cacheMD5";
 	return $cacheMD5;
 }
 
@@ -2918,7 +2918,7 @@ function pb_cache($args) {
 		$filemtime = filemtime($cacheFileName);
 		header('Last-Modified: '.gmdate('D, d M Y H:i:s', $filemtime).' GMT');
 		header("Etag: $etag");
-		header("Cache-Control: max-age=300");
+		header("Cache-Control: max-age=30");
 	} else {
 		$str = "\n<!-- Caching of file was not allowed -->";
 		#$args["buffer"] = $args["buffer"] . $str;
