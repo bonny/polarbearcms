@@ -169,9 +169,12 @@ function polarbear_parseUrl($url) {
  */ 
 function polarbear_user_login_from_cookie() {
 	global $polarbear_db;
-	if (isset($_COOKIE['polarbear_user']) && isset($_COOKIE['polarbear_token'])) {
-		$userID = $polarbear_db->escape($_COOKIE['polarbear_user']);
-		$userToken = $polarbear_db->escape($_COOKIE['polarbear_token']);
+	#if (isset($_COOKIE['polarbear_user']) && isset($_COOKIE['polarbear_token'])) {
+	if (pb_cookie('polarbear_user') && pb_cookie('polarbear_token')) {
+		#$userID = $polarbear_db->escape($_COOKIE['polarbear_user']);
+		$userID = $polarbear_db->escape(pb_cookie('polarbear_user'));
+		#$userToken = $polarbear_db->escape($_COOKIE['polarbear_token']);
+		$userToken = $polarbear_db->escape(pb_cookie('polarbear_token'));
 		$sql = "SELECT id FROM " . POLARBEAR_DB_PREFIX . "_users WHERE id = '$userID' AND loginToken = '$userToken' AND isDeleted = 0 AND loginToken <> ''";
 		if ($r = $polarbear_db->get_var($sql)) {
 			// mark this user as seen
@@ -1700,16 +1703,9 @@ function polarbear_boot() {
 	}
 
 	/*
-		starta session
-		@todo: behöver vi sessionen? använda $polarbear_u för att lagra saker i istället? 
-		vore coolt.. och bra?! problem med session: tas bort hux-flux. fördel med session: om man behöver kundvagnar etc..
-		session_cache_limiter('private');
+		Here is a good place to start sessions
+		It's after the cache so it won't mess with the headers
 	*/
-	global $polarbear_cache_allow_client_caching;	
-	if ($polarbear_cache_allow_client_caching) {
-		session_cache_limiter('private_no_expire');
-	}
-	session_start();
 	
 	// fetch settings
 	$polarbear_settings = polarbear_getGlobalSettings();
@@ -1755,7 +1751,8 @@ function pb_shortname_reserved_words() {
  * @return bool
  */
 function pb_is_site_edit_enabled() {
-	return (bool) $_COOKIE["pb_site_edit_icons_enabled"];
+	#return (bool) $_COOKIE["pb_site_edit_icons_enabled"];
+	return (bool) pb_cookie("pb_site_edit_icons_enabled");
 }
 
 
@@ -1817,18 +1814,21 @@ function pb_add_site_edit($args) {
 	}
 
 	global $polarbear_u;
-	$pb_been_logged_in = (bool) $_COOKIE["pb_been_logged_in"];
+	#$pb_been_logged_in = (bool) $_COOKIE["pb_been_logged_in"];
+	$pb_been_logged_in = (bool) pb_cookie("pb_been_logged_in");
+	
 	$visibleStyle = "";
 	$includeJS = false;
 
-	$pb_show_site_edit_tab = (isset($_SESSION["pb_show_site_edit_tab"])) ? $_SESSION["pb_show_site_edit_tab"] : null;
-	$pb_wrong_login = (isset($_SESSION["pb_wrong_login"])) ? $_SESSION["pb_wrong_login"] : null;
-	$pb_ok_login = (isset($_SESSION["pb_ok_login"])) ? $_SESSION["pb_ok_login"] : null;
-	$pb_logged_out = (isset($_SESSION["pb_logged_out"])) ? $_SESSION["pb_logged_out"] : null;
-	unset($_SESSION["pb_show_site_edit_tab"]);
-	unset($_SESSION["pb_wrong_login"]);
-	unset($_SESSION["pb_ok_login"]);
-	unset($_SESSION["pb_logged_out"]);
+	$pb_show_site_edit_tab = (bool) pb_cookie("pb_show_site_edit_tab");
+	$pb_wrong_login = (bool) pb_cookie("pb_wrong_login");
+	$pb_ok_login = (bool) pb_cookie("pb_ok_login");
+	$pb_logged_out = (bool) pb_cookie("pb_logged_out");
+
+	pb_cookie_unset("pb_show_site_edit_tab");
+	pb_cookie_unset("pb_wrong_login");
+	pb_cookie_unset("pb_ok_login");
+	pb_cookie_unset("pb_logged_out");
 
 	// make the pb-box visible if we a) just (tried) logged in or b) just logged out
 	if ($pb_show_site_edit_tab == "1") {
@@ -1876,11 +1876,11 @@ function pb_add_site_edit($args) {
 	
 		// not currently logged in, but has been
 		$wrongLoginTxt = "";
-		if ($pb_wrong_login == "1") {
+		if ($pb_wrong_login) {
 			$wrongLoginTxt = "<p class='pb-site-edit-msg'>Wrong email or password. Please try again.</p>";
 		}
 		$loggedOutTxt = "";
-		if ($pb_logged_out == "1") {
+		if ($pb_logged_out) {
 			$loggedOutTxt = "<p class='pb-site-edit-msg'>You have been logged out.</p>";
 		}
 		$out .= "
@@ -2854,7 +2854,7 @@ function pb_cache_isAllowed() {
 	// - session is in use (@todo actually do what I say here..)
 	// - cache is set to disabled by script och by article level
 	// - request is a post request
-	if (is_object($polarbear_u) || $pb_cache_disabled == true || sizeof($_POST)>0 || $_COOKIE["pb_been_logged_in"]) {
+	if (is_object($polarbear_u) || $pb_cache_disabled == true || sizeof($_POST)>0 || pb_cookie("pb_been_logged_in") || session_id()) {
 		$isOk = false;
 	}
 	return $isOk;
@@ -2986,6 +2986,28 @@ function pb_must_come_through_tree() {
 		header("Location: $url");
 		exit;
 	}
+}
+
+/**
+ * Simplified cookie getter/setter
+ * @param string $key
+ * @param string $val optional
+ * @return value of cookie
+ */
+function pb_cookie($key, $val = null) {
+	if (isset($val)) {
+		setcookie($key, $val, time()+60*60*24*30, "/");
+		return $val;
+	} else {
+		return $_COOKIE[$key];
+	}
+}
+
+/**
+ * Removed a cookie
+ */
+function pb_cookie_unset($key) {
+	setcookie($key, "", time()-36000, "/");
 }
 
 ?>
