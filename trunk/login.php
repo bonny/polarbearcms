@@ -9,7 +9,8 @@ $errmsg = null;
  */
 if (isset($_GET["removeTab"])) {
 	$returnto = $_SERVER["HTTP_REFERER"];
-	setcookie("pb_been_logged_in", "0", time()+60*60*24*30, "/");
+	#setcookie("pb_been_logged_in", "0", time()+60*60*24*30, "/");
+	pb_cookie("pb_been_logged_in", "0");
 	header("Location: $returnto");
 	exit;
 }
@@ -23,8 +24,10 @@ if (isset($_GET["logout"]) && $polarbear_u) {
 	if (isset($_GET["returnto"])) {
 		$returnto = $_GET["returnto"];
 		if ($returnto == "referer") {
-			$_SESSION["pb_logged_out"] = "1";
-			$_SESSION["pb_show_site_edit_tab"] = "1";
+
+			pb_cookie("pb_logged_out", "1");
+			pb_cookie("pb_show_site_edit_tab", "1");
+
 			$returnto = $_SERVER["HTTP_REFERER"];
 		}
 		header("Location: $returnto");
@@ -95,8 +98,10 @@ if (isset($_POST["login"])) {
 
 		// enable site edit icons, if user is an admin
 		if ($u->isAdmin()) {
-			setcookie("pb_site_edit_icons_enabled", "1", time()+60*60*24*30, "/");
-			setcookie("pb_been_logged_in", "1", time()+60*60*24*30, "/");
+			#setcookie("pb_site_edit_icons_enabled", "1", time()+60*60*24*30, "/");
+			#setcookie("pb_been_logged_in", "1", time()+60*60*24*30, "/");
+			pb_cookie("pb_site_edit_icons_enabled", "1");
+			pb_cookie("pb_been_logged_in", "1");
 		}
 
 		// inloggad. välkommen in i polarbear! ;)
@@ -104,9 +109,9 @@ if (isset($_POST["login"])) {
 			$returnto = $_POST["returnto"];
 			if ($returnto == "referer") { $returnto = $_SERVER["HTTP_REFERER"]; }
 			if ($u->isAdmin()) {
-				$_SESSION["pb_show_site_edit_tab"] = "1";
+				pb_cookie("pb_show_site_edit_tab", "1");
 			}
-			$_SESSION["pb_ok_login"] = "1";
+			pb_cookie("pb_ok_login", "1");
 			header("Location: $returnto");
 		} else {
 			header("Location: " . POLARBEAR_WEBPATH);
@@ -122,9 +127,10 @@ if (isset($_POST["login"])) {
 		if (isset($_POST["returnto"])) {
 			$returnto = $_POST["returnto"];
 			if ($returnto == "referer") { $returnto = $_SERVER["HTTP_REFERER"]; }
-			#$_SESSION["pb_show_site_edit_tab"] = "1";
-			$_SESSION["pb_wrong_login"] = "1";
-			$_SESSION["pb_show_site_edit_tab"] = "1";
+
+			pb_cookie("pb_wrong_login", "1");
+			pb_cookie("pb_show_site_edit_tab", "1");
+
 			header("Location: $returnto");
 			exit;
 		} else {
