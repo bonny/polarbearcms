@@ -1621,6 +1621,7 @@ function polarbear_boot() {
 	pb_event_attach("pb_field_connector_saved", "pb_cache_clear");
 	pb_event_attach("pb_field_connection_saved", "pb_cache_clear");
 	pb_event_attach("pb_settings_general_saved", "pb_cache_clear");
+	pb_event_attach("pb_boot_end", "pb_plugins_add_enabled");
 
 	// connect to database
 	polarbear_connect_db();
@@ -2982,6 +2983,7 @@ function pb_cache_get_cached_file_max_age() {
 function pb_must_come_through_tree() {
 	if (empty($_SERVER["HTTP_X_REQUESTED_WITH"])) {
 		// go to the current page, but via tree
+		$url = $_SERVER["REQUEST_URI"];
 		$url = polarbear_treepage($url);
 		header("Location: $url");
 		exit;
@@ -3009,5 +3011,63 @@ function pb_cookie($key, $val = null) {
 function pb_cookie_unset($key) {
 	setcookie($key, "", time()-36000, "/");
 }
+
+
+/**
+ * Removes plugins that no longer exists from database
+ * (deleted from file system)
+ */
+function pb_plugins_cleanup() {
+	if ($plugins = pb_plugins_get_enabled()) {
+		global $polarbear_db;
+		foreach ($plugins as $one) {
+			$file = POLARBEAR_PLUGINS_PATH . "/" . $one->filename;
+			if (!file_exists($file)) {
+				$sql = "DELETE FROM " . POLARBEAR_DB_PREFIX . "_plugins WHERE id = " . (int) $one->id;
+				$polarbear_db->query($sql);
+			}
+		}
+	}
+}
+
+
+/**
+ * Get all enabled plugins, i.e. all plugins in database
+ * @return null or object
+ */
+function pb_plugins_get_enabled() {
+	$sql = "SELECT id, filename, name FROM " . POLARBEAR_DB_PREFIX . "_plugins";
+	global $polarbear_db;
+	$r = $polarbear_db->get_results($sql);
+	return $r;
+}
+
+
+function pb_plugins_add_enabled() {
+	$arrPluginsEnabled = pb_plugins_get_enabled();
+	if (sizeof($arrPluginsEnabled)>0) {
+		foreach ($arrPluginsEnabled as $one) {
+			$fileFullPath = POLARBEAR_PLUGINS_PATH . "/" . $one->filename;
+			require_once($fileFullPath);
+		}
+	}
+}
+
+/**
+ * add
+	Array
+	(
+	    [name] => En testplugin
+	    [icon] => sökväg till icon
+	    [filename] => example.php
+	)
+ */
+function pb_plugin_add_to_tree($options) {
+	global $pb_tree_added;
+	if (!is_array($pb_tree_added)) {
+		$pb_tree_added[] = $options;
+	}
+}
+
 
 ?>

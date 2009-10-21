@@ -191,10 +191,11 @@ function treeOnChange(node,tree) {
 				return false;
 			}
 		}
-		
+
 		polarbearContentMain.load(treepage, function() { polarbear_article_onload(); });
 		treepage = ""; // we have to clear it so we can go elsewhere in the tree afterwards
 		return true;
+
 	}
 	var node = $(node);
 
@@ -595,7 +596,6 @@ function polarbear_page_users_onload() {
 	}
 
 	// koppla på en layout till
-	//$(".users-layout").layout();
 	usersLayout1 = $("#polarbear-content-main").layout({
 		applyDefaultStyles: false,
 		defaults: {
@@ -608,7 +608,6 @@ function polarbear_page_users_onload() {
 		east: {
 			size: .40
 		}
-
 	});
 
 }

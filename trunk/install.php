@@ -26,7 +26,8 @@ function pb_createAndUpdateTables($action = "check", & $whatToBeDone = null) {
 	  `parentID` int(10) unsigned default NULL,
 	  `isDeleted` tinyint(4) default NULL,
 	  `prio` int(11) NOT NULL default '0',
-	  PRIMARY KEY  (`id`)
+	  PRIMARY KEY  (`id`),
+	  KEY `parentID` (`parentID`),
 	) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 	
 	
@@ -129,7 +130,8 @@ function pb_createAndUpdateTables($action = "check", & $whatToBeDone = null) {
 	CREATE TABLE `polarbear_files_tags` (
 	  `fileID` int(10) unsigned NOT NULL auto_increment,
 	  `tagName` varchar(255) collate utf8_swedish_ci NOT NULL default '',
-	  PRIMARY KEY  (`fileID`,`tagName`)
+	  PRIMARY KEY  (`fileID`,`tagName`),
+  	  KEY `tagName` (`tagName`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 	
 	
@@ -213,6 +215,13 @@ function pb_createAndUpdateTables($action = "check", & $whatToBeDone = null) {
 	  KEY `date` (`date`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 	
+
+	CREATE TABLE `polarbear_plugins` (
+	  `id` int(11) NOT NULL auto_increment,
+	  `filename` varchar(255) character set latin1 NOT NULL,
+	  `name` varchar(255) character set latin1 NOT NULL,
+	  PRIMARY KEY  (`id`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 
 	
 	";

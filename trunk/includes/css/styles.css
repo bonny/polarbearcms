@@ -702,3 +702,8 @@ border-color: #c3c694;
 .tree-default li a, .tree-default li span {
 	background-image: none;
 }
+
+dl dd {
+	margin-left: 1em;
+	margin-bottom: 1em;
+}
