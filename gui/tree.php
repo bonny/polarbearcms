@@ -136,6 +136,27 @@ if ($id == "0") {
 					}
 
 				}
+				<?php
+				// If POLARBEAR_PLUGINS_PATH is not false, that means we have a plugins-directory
+				if (POLARBEAR_PLUGINS_PATH != false) {
+				?>
+				,
+				{
+					data: {
+						title: "Plugins",
+						icon: "<?php polarbear_webpath() ?>images/silkicons/page_white_wrench.png",
+						attributes: {
+							href: "gui/plugins.php"
+						}
+					},
+					attributes: {
+						id: "categorySettingsPlugins"
+					}
+
+				}
+				<?php
+				}
+				?>
 				]
 			
 			}
@@ -156,6 +177,41 @@ if ($id == "0") {
 			}
 			*/
 			<?php
+
+			global $pb_tree_added;
+			/*
+			pb_d($pb_tree_added);
+		    [0] => Array
+		        (
+		            [name] => En testplugin
+		            [icon] => sökväg till icon
+		            [filename] => example.php
+		        )
+
+			*/
+			if (is_array($pb_tree_added)) {
+				$treeAddedNum = 0;
+				foreach ($pb_tree_added as $oneAddedTreeItem) {
+					?>
+					,{
+						data: {
+							title: "<?php echo htmlspecialchars ($oneAddedTreeItem["name"], ENT_COMPAT, "UTF-8") ?>",
+							icon: "<?php polarbear_webpath() ?>images/silkicons/folder.png",
+							attributes: {
+								href: "<?php echo POLARBEAR_WEBPATH . "includes/php/plugin-load.php?pluginFilename=" . rawurlencode($oneAddedTreeItem["filename"]) ?>"
+							}
+						
+						},
+						attributes: {
+							id: "treeAddedNum<?php echo $treeAddedNum ?>"
+						}
+					}
+					<?php
+					$treeAddedNum++;
+				}
+			}
+			
+			
 		} // end if type
 		?>
 		
