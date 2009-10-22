@@ -185,12 +185,12 @@ function treeOnChange(node,tree) {
 	if (treepage != "") {
 		
 		// if treepage contains gui/overview.php make sure first branch is selected (it doesn't get selected when we for example save and article)
-		if (treepage.indexOf("gui/overview.php") >= 0) {
+/*		if (treepage.indexOf("gui/overview.php") >= 0) {
 			if (tree.selected[0].id != "categoryOverview") {
 				tree.select_branch("#categoryOverview");
 				return false;
 			}
-		}
+		}*/
 
 		polarbearContentMain.load(treepage, function() { polarbear_article_onload(); });
 		treepage = ""; // we have to clear it so we can go elsewhere in the tree afterwards
