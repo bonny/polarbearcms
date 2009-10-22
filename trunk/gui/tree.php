@@ -28,11 +28,14 @@ if ($id == "0") {
 		},
 		<?php } ?>
 		{
-			attributes: { id : "root", data: "{type: \"root\", deletable: false, renameable: false, draggable: false, dropable: false, droppable: false, clickable: true }" }, 
+			attributes: { rel: "root", id : "root", data: "{type: \"root\", deletable: false, renameable: false, draggable: false, dropable: false, droppable: false, clickable: true }" }, 
 			state: "open", 
 			data: {
 				title: "Articles",
-				icon: "<?php polarbear_webpath() ?>images/silkicons/folder_page_white.png"
+				icon: "<?php polarbear_webpath() ?>images/silkicons/folder_page_white.png",
+				attributes: {
+					href: "#"
+				}
 			},
 			children: <?php
 				$sql = "SELECT * FROM " . POLARBEAR_DB_PREFIX . "_articles WHERE parentID IS NULL AND status <> 'deleted' AND status <> 'revision' AND status <> 'new' AND status <> 'preview' ORDER BY prio DESC";
@@ -50,7 +53,8 @@ if ($id == "0") {
 								attributes: { 
 									id : "article-<?php echo $a->getId() ?>", 
 									data: "{type: \"article\"}",
-									title: "Article id: <?php echo $a->getId() ?>"
+									title: "Article id: <?php echo $a->getId() ?>",
+									rel: "article",
 								}, 
 								state: "closed", 
 								data: {
@@ -81,7 +85,8 @@ if ($id == "0") {
 					}
 				},
 				attributes: {
-					id: "categoryFiles"
+					id: "categoryFiles",
+					rel: "folder"
 				}
 			},
 			{
@@ -94,7 +99,8 @@ if ($id == "0") {
 				
 				},
 				attributes: {
-					id: "categoryUsers"
+					id: "categoryUsers",
+					rel: "folder"
 				}
 			
 			},
@@ -108,7 +114,8 @@ if ($id == "0") {
 				
 				},
 				attributes: {
-					id: "categorySettings"
+					id: "categorySettings",
+					rel: "folder"
 				},
 				children: [{
 					data: {
@@ -120,7 +127,8 @@ if ($id == "0") {
 
 					},
 					attributes: {
-						id: "categorySettingsGeneral"
+						id: "categorySettingsGeneral",
+						rel: "folder"
 					}
 				},
 				{
@@ -132,7 +140,8 @@ if ($id == "0") {
 						}
 					},
 					attributes: {
-						id: "categorySettingsFields"
+						id: "categorySettingsFields",
+						rel: "folder"
 					}
 
 				}
@@ -150,7 +159,8 @@ if ($id == "0") {
 						}
 					},
 					attributes: {
-						id: "categorySettingsPlugins"
+						id: "categorySettingsPlugins",
+						rel: "folder"
 					}
 
 				}
@@ -241,7 +251,12 @@ if ($id == "0") {
 			}
 			?>
 				{ 
-					attributes: { id : "article-<?php echo $a->getId() ?>", data: "{type: \"article\"}", title: "Article id: <?php echo $a->getId() ?>" }, 
+					attributes: { 
+						rel: "article",
+						id : "article-<?php echo $a->getId() ?>", 
+						data: "{type: \"article\"}", 
+						title: "Article id: <?php echo $a->getId() ?>"
+					}, 
 					state: "<?php echo $state ?>", 
 					data: {
 						title: "<?php

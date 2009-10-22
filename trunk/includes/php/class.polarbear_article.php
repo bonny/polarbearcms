@@ -525,7 +525,8 @@ class PolarBear_Article {
 	function move($targetArticleID, $positionType) {
 
 		global $polarbear_db;
-		if (ctype_digit($targetArticleID)) {
+
+		if (is_numeric($targetArticleID)) {
 			// integer, instanstiate article
 			$targetArticle = PolarBear_Article::getInstance($targetArticleID);			
 		} else {
@@ -1453,8 +1454,8 @@ class PolarBear_Article {
 	 * @return string output
 	 */
 	function output($template) {
-		global $polarbear_u, $polarbear_a;
 
+		global $polarbear_u, $polarbear_a;
 		$isOk = false;
 
 		if ($this->isPublished()) {
@@ -1466,12 +1467,11 @@ class PolarBear_Article {
 		if ($isOk == false) {
 			return '';
 		}
-
 		$dwoo = new Dwoo();
-
 		$dwoo->setCompileDir(POLARBEAR_STORAGEPATH . 'dwoo');
 		$data = new Dwoo_Data(); 
 		$tpl = new Dwoo_Template_String($template);
+
 		// add variables
 		$data->assign('id', $this->getId());
 		$data->assign('titleArticle', htmlspecialchars($this->getTitleArticle(), ENT_COMPAT, "UTF-8"));
@@ -1490,6 +1490,7 @@ class PolarBear_Article {
 		$data->assign('dateChanged', $this->getDateChanged());
 		$data->assign('metaDescription', trim($this->getMetaDescription()));
 		$data->assign('metaKeywords', trim($this->getMetaKeywords()));
+
 		if ($this->getStatus()=="preview") {
 			// no edit icons in preview mode
 		} else {
@@ -1656,12 +1657,14 @@ class PolarBear_Article {
 	 * @return int If article found: id of that article. If no artcle found: bool false.
 	 */
 	function getArticleByShortname($shortname) {
+
 		global $polarbear_db;
 		$shortnameForSQL = $polarbear_db->escape($shortname);
 		$sql = "SELECT id from " . POLARBEAR_DB_PREFIX . "_articles WHERE shortname = '$shortnameForSQL' AND status <> 'deleted' AND status <> 'revision'";
 		$articleID = $polarbear_db->get_var($sql);
 		if($articleID) {
-			return PolarBear_Article::getInstance($articleID);
+			$a = PolarBear_Article::getInstance($articleID);
+			return $a;
 		} else {
 			return false;
 		}

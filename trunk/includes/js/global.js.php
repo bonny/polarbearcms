@@ -55,6 +55,35 @@ $(function() {
 		},
 		plugins: {
 			cookie : { prefix: "articles" }
+		},
+		types: {
+			"default" : {
+				clickable	: true,
+				renameable	: true,
+				deletable	: true,
+				creatable	: true,
+				draggable	: false,
+				max_children	: -1,
+				max_depth	: -1,
+				valid_children	: [],
+				icon : {
+					image : false,
+					position : false
+				}
+			},
+			"root" : {
+				draggable: false,
+				valid_children	: ["article"]
+			},
+			"article" : {
+				draggable: true,
+				valid_children	: ["article"]
+			},
+			"folder" : {
+				draggable: false,
+				valid_children: []
+			}
+
 		}
 
 
