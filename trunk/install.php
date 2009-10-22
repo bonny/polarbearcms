@@ -22,12 +22,12 @@ function pb_createAndUpdateTables($action = "check", & $whatToBeDone = null) {
 	
 	CREATE TABLE `polarbear_article_tags` (
 	  `id` int(10) unsigned NOT NULL auto_increment,
-	  `name` varchar(255) collate utf8_swedish_ci default NULL,
+	  `name` varchar(255) default NULL,
 	  `parentID` int(10) unsigned default NULL,
 	  `isDeleted` tinyint(4) default NULL,
 	  `prio` int(11) NOT NULL default '0',
 	  PRIMARY KEY  (`id`),
-	  KEY `parentID` (`parentID`),
+	  KEY `parentID` (`parentID`)
 	) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 	
 	
@@ -63,7 +63,7 @@ function pb_createAndUpdateTables($action = "check", & $whatToBeDone = null) {
 	  KEY `parentID` (`parentID`),
 	  KEY `shortName` (`shortName`),
 	  KEY `status` (`status`)
-	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
+	) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 	
 	
 	CREATE TABLE `polarbear_fields` (
@@ -76,7 +76,7 @@ function pb_createAndUpdateTables($action = "check", & $whatToBeDone = null) {
 	  `content` text NOT NULL,
 	  PRIMARY KEY  (`id`),
 	  KEY `fieldCollectionID` (`fieldcollectionID`)
-	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
+	) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 	
 	
 	CREATE TABLE `polarbear_fields_collections` (
@@ -85,7 +85,7 @@ function pb_createAndUpdateTables($action = "check", & $whatToBeDone = null) {
 	  `repeatable` tinyint(4) NOT NULL default '0',
 	  `deleted` tinyint(4) NOT NULL default '0',
 	  PRIMARY KEY  (`id`)
-	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
+	) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 	
 	
 	CREATE TABLE `polarbear_fields_connectors` (
@@ -93,7 +93,7 @@ function pb_createAndUpdateTables($action = "check", & $whatToBeDone = null) {
 	  `name` varchar(255) NOT NULL default '',
 	  `deleted` tinyint(4) NOT NULL default '0',
 	  PRIMARY KEY  (`id`)
-	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
+	) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 	
 	
 	CREATE TABLE `polarbear_fields_link_connectors_collections` (
@@ -101,7 +101,7 @@ function pb_createAndUpdateTables($action = "check", & $whatToBeDone = null) {
 	  `fieldCollectionID` int(10) unsigned NOT NULL default '0',
 	  `prio` int(11) NOT NULL default '0',
 	  PRIMARY KEY  (`fieldConnectorID`,`fieldCollectionID`)
-	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
+	) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 	
 	
 	CREATE TABLE `polarbear_fields_values` (
@@ -110,7 +110,7 @@ function pb_createAndUpdateTables($action = "check", & $whatToBeDone = null) {
 	  `value` text NOT NULL,
 	  `numInSet` int(11) NOT NULL default '0',
 	  PRIMARY KEY  (`fieldID`,`articleID`,`numInSet`)
-	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
+	) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 	
 	
 	CREATE TABLE `polarbear_files` (
@@ -124,7 +124,7 @@ function pb_createAndUpdateTables($action = "check", & $whatToBeDone = null) {
 	  `width` int(11) default NULL,
 	  `height` int(11) default NULL,
 	  PRIMARY KEY  (`id`)
-	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
+	) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 	
 	
 	CREATE TABLE `polarbear_files_tags` (
@@ -132,7 +132,7 @@ function pb_createAndUpdateTables($action = "check", & $whatToBeDone = null) {
 	  `tagName` varchar(255) collate utf8_swedish_ci NOT NULL default '',
 	  PRIMARY KEY  (`fileID`,`tagName`),
   	  KEY `tagName` (`tagName`)
-	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
+	) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 	
 	
 	CREATE TABLE `polarbear_settings` (
@@ -141,7 +141,7 @@ function pb_createAndUpdateTables($action = "check", & $whatToBeDone = null) {
 	  `date` datetime NOT NULL default '0000-00-00 00:00:00',
 	  PRIMARY KEY  (`id`),
 	  KEY `date` (`date`)
-	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
+	) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 	
 	
 	CREATE TABLE `polarbear_storage` (
@@ -150,7 +150,7 @@ function pb_createAndUpdateTables($action = "check", & $whatToBeDone = null) {
 	  `thevalue` text NOT NULL,
 	  `dateExpire` datetime default NULL,
 	  PRIMARY KEY  (`id`)
-	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
+	) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 
 	
 	CREATE TABLE `polarbear_usergroups` (
@@ -158,7 +158,7 @@ function pb_createAndUpdateTables($action = "check", & $whatToBeDone = null) {
 	  `name` varchar(255) character set latin1 default NULL,
 	  `isDeleted` tinyint(4) default '0',
 	  PRIMARY KEY  (`id`)
-	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
+	) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 	
 	
 	CREATE TABLE `polarbear_users` (
@@ -175,14 +175,14 @@ function pb_createAndUpdateTables($action = "check", & $whatToBeDone = null) {
 	  `dateLastSeen` datetime default NULL,
 	  `passwordResetCode` varchar(32) character set latin1 default NULL,
 	  PRIMARY KEY  (`id`)
-	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
+	) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 	
 	
 	CREATE TABLE `polarbear_users_groups_relation` (
 	  `userID` int(10) unsigned NOT NULL default '0',
 	  `groupID` int(10) unsigned NOT NULL default '0',
 	  PRIMARY KEY  (`userID`,`groupID`)
-	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
+	) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 	
 	
 	CREATE TABLE `polarbear_users_values` (
@@ -192,7 +192,7 @@ function pb_createAndUpdateTables($action = "check", & $whatToBeDone = null) {
 	  `userID` int(10) unsigned NOT NULL,
 	  PRIMARY KEY  (`id`),
 	  KEY `userID` (`userID`)
-	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
+	) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 	
 		
 	CREATE TABLE `polarbear_log` (
@@ -205,15 +205,7 @@ function pb_createAndUpdateTables($action = "check", & $whatToBeDone = null) {
 	  `objectName` varchar(255) collate utf8_swedish_ci NOT NULL,
 	  PRIMARY KEY  (`id`),
 	  KEY `date` (`date`)
-	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
-	
-	CREATE TABLE `polarbear_test` (
-	  `id` int(10) unsigned NOT NULL auto_increment,
-	  `date` datetime NOT NULL,
-	  `objectName` varchar(255) collate utf8_swedish_ci NOT NULL,
-	  PRIMARY KEY  (`id`),
-	  KEY `date` (`date`)
-	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
+	) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 	
 
 	CREATE TABLE `polarbear_plugins` (
@@ -221,7 +213,7 @@ function pb_createAndUpdateTables($action = "check", & $whatToBeDone = null) {
 	  `filename` varchar(255) character set latin1 NOT NULL,
 	  `name` varchar(255) character set latin1 NOT NULL,
 	  PRIMARY KEY  (`id`)
-	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
+	) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 
 	
 	";
@@ -249,7 +241,7 @@ function pb_createAndUpdateTables($action = "check", & $whatToBeDone = null) {
 					#echo "<br><strong>$tableName did not exist</strong>, so I will now create it.";
 					$oneTable = str_replace("polarbear_", POLARBEAR_DB_PREFIX . "_", $oneTable);
 					$sql = "CREATE TABLE $oneTable";
-					mysql_query($sql) or die(mysql_error());
+					mysql_query($sql) or die(mysql_error()."<br>Query was: <pre>$sql</pre>");
 					$didSomething = true;
 				} else {
 					$somethingNeedsToBeDoneStr .= "<li>Table <strong>$tableName</strong></li>";
@@ -342,7 +334,7 @@ Finns tabell
 		<?php
 			// check database connection and stuff like that
 			$polarbear_db = new ezSQL_mysql();
-			$polarbear_db->show_errors=false; // @todo: should be false, right? or set through config
+			$polarbear_db->show_errors=true; // @todo: should be false, right? or set through config
 			if (!$polarbear_db->connect(POLARBEAR_DB_USER, POLARBEAR_DB_PASSWORD, POLARBEAR_DB_SERVER)) {
 				?>
 				<h2>Check your config</h2>
@@ -388,7 +380,7 @@ Finns tabell
 
 		<?php		
 		if ($_POST["action"]== "addAdmin") {
-			
+			require_once("./polarbear-boot.php");
 			// make sure admin-group exists
 			$sql = "SELECT count(id) FROM " . POLARBEAR_DB_PREFIX . "_usergroups WHERE name = 'Administrators'";
 			if ($polarbear_db->get_var($sql) == 0) {
