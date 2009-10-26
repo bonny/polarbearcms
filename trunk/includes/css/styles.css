@@ -702,6 +702,12 @@ border-color: #c3c694;
 .tree-default li a, .tree-default li span {
 	background-image: none;
 }
+.tree-default li a:link, .tree-default li a:visited, .tree-default li a:hover, .tree-default li a:visited,
+.tree-default li a:link.clicked, .tree-default li a:visited.clicked, .tree-default li a:hover.clicked, .tree-default li a:active.clicked,
+.tree-default li a.hover
+{
+	background-repeat: no-repeat;
+}
 
 dl dd {
 	margin-left: 1em;

@@ -53,6 +53,7 @@ class Query_String {
 	
 	/**
 	 * Prints a version of the query string that can be used for HTTP redirects
+	 * Deprecated...
 	 */
 	function url(){
 		
@@ -92,7 +93,9 @@ class Query_String {
 	/**
 	 * Converts the object into a query string based off the object's properties
 	 */
-	function __toString($url_encoded = true){
+	function __toString(){
+		
+		$url_encoded = true; // added by Pär Thernström
 		
 		if(!count($this->_vars)) return "";
 		

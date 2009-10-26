@@ -6,8 +6,8 @@
 // Database settings
 define("POLARBEAR_DB_SERVER", "localhost");
 define("POLARBEAR_DB_USER", "root");
-define("POLARBEAR_DB_PASSWORD", "root");
-define("POLARBEAR_DB_DATABASE", "maj");
+define("POLARBEAR_DB_PASSWORD", "");
+define("POLARBEAR_DB_DATABASE", "polarbear");
 define("POLARBEAR_DB_PREFIX", "polarbear");
 
 // Misc

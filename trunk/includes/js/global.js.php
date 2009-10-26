@@ -101,12 +101,23 @@ $(function() {
 		if (!a.hasClass("ui-state-disabled")) {
 			// tree.create("article");
 			//tree.create({ type: "article", data: "abc", attributes: { data: "{type: \"article\"}" } } );
-			tree.create({
+			/*var r = tree.create({
 				data: {
 					icon: "<?php polarbear_webpath() ?>images/silkicons/page_white_text.png",
 					title: "New article"
 				}
+			});*/
+			r = tree.create({
+				attributes: {
+					title: "Article id: abc",
+					rel: "article"
+				},
+				data: {
+				     title: "New article",
+				     icon: "<?php polarbear_webpath() ?>images/silkicons/page_white_text.png"
+				}
 			});
+			//alert(r);
 		}
 		return false;
 	}).hover(function() {$(this).toggleClass("ui-state-hover");}, function() {$(this).toggleClass("ui-state-hover");});
