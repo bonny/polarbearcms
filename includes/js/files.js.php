@@ -166,13 +166,14 @@ function polarbear_files_onload() {
 					// om tagName == "New tag..." ska en ny tag skapas
 					// todo: inte särskilt stabilt när polarbear blir flerspråkigt
 					if (tagName == "New tag...") {
-						//tagName = prompt("Enter name of new tag");
 						tagName = jPrompt("Enter name of new tag", "", "PolarBear CMS", function(r) {
 							if (r) {
 								// lägg till och uppdatera taggarna för filen, både databasmässigt och visuellt
 								polarbear_addTagToFile(fileID, r);
 							}
 						});
+					} else {
+						polarbear_addTagToFile(fileID, tagName);
 					}
 				});
 			});
