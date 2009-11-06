@@ -10,9 +10,10 @@ define('POLARBEAR_VERSION', 0.2);
 
 // setup some paths
 define('POLARBEAR_DOC_ROOT', realpath(dirname( __FILE__ ).'/../')); // absolute path to the root of the webfolder
-define('POLARBEAR_ROOT', realpath(dirname( __FILE__ ).'/')); // absolute path the directory where our CMS is
+define('POLARBEAR_ROOT', (realpath(dirname( __FILE__ ).'/')) . "/"); // absolute path the directory where our CMS is
 define('POLARBEAR_WEBPATH', '/' . basename(dirname(__FILE__)) . '/'); // Path to polarbear, for webbrowser
-define("POLARBEAR_PLUGINS_PATH", rtrim(realpath(POLARBEAR_ROOT . "/../polarbear-plugins/"), "/") . "/");
+define("POLARBEAR_PLUGINS_PATH", realpath(POLARBEAR_ROOT . "/polarbear-plugins/"). "/");
+define("POLARBEAR_PLUGINS_WEBPATH", POLARBEAR_WEBPATH . "polarbear-plugins/");
 
 require_once(POLARBEAR_ROOT . '/includes/php/functions.php');
 require_once(POLARBEAR_ROOT . '/polarbear-config.php');

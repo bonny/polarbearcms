@@ -713,3 +713,15 @@ dl dd {
 	margin-left: 1em;
 	margin-bottom: 1em;
 }
+
+.jsOverLabel {
+    position: absolute;
+    left: -9999px;
+}
+
+.jsOverLabelBlur .jsOverLabel {
+    left: .5ex;
+    top: .5ex;
+    color: #aaa;
+    cursor: text;
+}

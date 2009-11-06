@@ -189,6 +189,7 @@ if ($id == "0") {
 			<?php
 
 			global $pb_tree_added;
+
 			/*
 			pb_d($pb_tree_added);
 		    [0] => Array
