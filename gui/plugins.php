@@ -77,8 +77,7 @@ if ($action == "pluginEnable" || $action == "pluginDisable") {
 					}
 					?>
 					<h2>
-						<img src="<?php echo $img ?>" alt="" /> <?php echo $onePlugin->name ?>)
-						
+						<img src="<?php echo $img ?>" alt="" /> <?php echo $onePlugin->name ?>
 					</h2>
 					<p>
 						Author: <?php echo htmlspecialchars($onePlugin->author) ?>
