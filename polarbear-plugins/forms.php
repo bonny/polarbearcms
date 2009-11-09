@@ -27,7 +27,7 @@ $plugin_form_file = "forms.php";
 if (!class_exists("plugin_form")) {
 	class plugin_form {
 
-		private $id, $name, $email, $is_active, $is_deleted, $date_created, $after_submit, $after_submit_message, $after_submit_url, $fields;
+		private $id, $name, $email, $is_active, $is_deleted, $date_created, $after_submit, $after_submit_message, $after_submit_url, $fields, $submit_button_text;
 		
 		function __construct() {
 			$this->id = null;
@@ -36,10 +36,18 @@ if (!class_exists("plugin_form")) {
 			$this->date_created = time();
 			$this->fields = array();
 			$this->after_submit = "showMessage"; // showMessage | goToURL
+			$this->submit_button_text = "Ok";
 		}
 		
 		function id() {
 			return $this->id;
+		}
+
+		function submit_button_text($newValue = null) {
+			if (isset($newValue)) {
+				$this->submit_button_text = $newValue;
+			}
+			return $this->submit_button_text;
 		}
 
 		function email($newValue = null) {
@@ -113,6 +121,7 @@ if (!class_exists("plugin_form")) {
 		 * loads a form
 		 */
 		function load($id) {
+
 			if (!is_numeric($id)) {
 				return false;
 			}
@@ -123,6 +132,7 @@ if (!class_exists("plugin_form")) {
 			if (sizeof($r) != 1) {
 				return false;
 			}
+
 			$row = $r[0];
 			$this->id = (int) $id;
 			$this->name($row->name);
@@ -134,9 +144,12 @@ if (!class_exists("plugin_form")) {
 			$this->after_submit($row->afterSubmit);
 			$this->after_submit_message($row->afterSubmitMessage);
 			$this->after_submit_url($row->afterSubmitURL);
-			
+			$this->submit_button_text($row->submitButtonText);
+
+			return true;
 		}
-		
+
+
 		/**
 		 * Saves
 		 * Field will get a new ID if it does not have one yet.
@@ -153,7 +166,8 @@ if (!class_exists("plugin_form")) {
 			$sql .= POLARBEAR_DB_PREFIX . "_plugin_forms ";
 			$sql .= "SET ";
 			$sql .= " name='".$polarbear_db->escape($this->name)."', ";
-			$sql .= " email='".$polarbear_db->escape($this->name)."', ";
+			$sql .= " email='".$polarbear_db->escape($this->email)."', ";
+			$sql .= " submitButtonText='".$polarbear_db->escape($this->submit_button_text)."', ";
 			$sql .= " afterSubmit='".$polarbear_db->escape($this->after_submit)."', ";
 			$sql .= " afterSubmitMessage='".$polarbear_db->escape($this->after_submit_message)."', ";
 			$sql .= " afterSubmitURL='".$polarbear_db->escape($this->after_submit_url)."', ";
@@ -183,9 +197,21 @@ if (!class_exists("plugin_form")) {
 		}
 		
 		
+		/**
+		 * Delete this form
+		 */
+		function delete() {
+			$sql = "UPDATE " . POLARBEAR_DB_PREFIX . "_plugin_forms SET isDeleted = 1 WHERE id = '{$this->id}'";
+			global $polarbear_db;
+			$polarbear_db->query($sql);
+		}
+		
+		/**
+		 * returns all forms, to be used like plugin_form::get_forms
+		 */
 		function get_forms() {
 			global $polarbear_db;
-			$sql = "SELECT id FROM " . POLARBEAR_DB_PREFIX . "_plugin_forms ORDER BY name ASC";
+			$sql = "SELECT id FROM " . POLARBEAR_DB_PREFIX . "_plugin_forms WHERE isDeleted = 0 ORDER BY name ASC";
 			$polarbear_db->query($sql);
 			$arrForms = array();
 			if ($r = $polarbear_db->get_results()) {
@@ -215,11 +241,13 @@ if ($pb_plugin_action == "plugin_form_save") {
 	}
 
 	$plugin_form->name($_POST["pb_plugin_forms_name"]);
+	$plugin_form->is_active($_POST["pb_plugin_forms_active"]);
 	$plugin_form->email($_POST["pb_plugin_forms_email"]);
 	$plugin_form->after_submit($_POST["pb_plugin_forms_after_submit"]);
 	$plugin_form->after_submit_message($_POST["pb_plugin_forms_after_submit_message"]);
 	$plugin_form->after_submit_url($_POST["pb_plugin_forms_after_submit_url"]);
 	$plugin_form->fields($_POST["pb_plugin_forms_fields"]);
+	$plugin_form->submit_button_text($_POST["pb_plugin_forms_submit_button_text"]);
 	$plugin_form->save();
 	
 	// sparad, gå till översikt
@@ -238,9 +266,87 @@ if ($pb_plugin_action == "plugin_forms_field_get_template") {
 }
 
 
+// delete a form
+if ($pb_plugin_action == "plugin_form_delete") {
+
+	$plugin_form = new plugin_form;
+
+	$plugin_form->load($_GET["pb_plugin_form_id"]);
+	$plugin_form->delete();
+	
+}
+
 
 // Add shortcodes and your own functions here
-// So don't name your function "myfunction()", name it "mypluginname_myfunction()"
+function plugin_form_shortcode($options) {
+    
+	$defaults = array(
+		"id" => null
+	);
+	$options = polarbear_extend($defaults, $options);
+	
+	$out = "";
+	if (!is_numeric($options["id"])) {
+		$out = "";
+	}
+		
+	$form = new plugin_form;
+	if ($form->load($options["id"]) != false) {
+		
+		// form exists, but is it active?
+		if ($form->is_active()) {
+			// oh my, it is!
+			$fields = $form->fields();
+			$out = "</p><form method='post' class='plugin_form' action=''>";
+			foreach ($fields as $key => $oneField) {
+				/*
+			    [0] => Array
+			        (
+			            [name] => Name
+			            [type] => text
+			            [choices] => 
+			            [isDeleted] => 0
+			        )
+				*/
+				$fieldID = "plugin-form-" . $form->id() . "-field-{$key}";
+				$fieldName = $oneField["name"];
+				$out .= "<p class='plugin-form-{$oneField["type"]}'>";
+				$out .= "<label for='$fieldID'>" . htmlspecialchars($oneField["name"], ENT_COMPAT, "UTF-8") . "</label>";
+				if ($oneField["type"] == "text") {
+					$out .= "<input class='plugin-form-text' type='text' name='$fieldName' id='$fieldID' />";
+				} else if ($oneField["type"] == "multiline") {
+					$out .= "<textarea class='plugin-form-textarea' cols='35' rows='10' name='$fieldName' id='$fieldID'></textarea>";
+				} else if ($oneField["type"] == "multichoice") {
+					$out .= "<select class='plugin-form-select' name='$fieldName' id='$fieldID'>";
+					
+					$choices = $oneField["choices"];
+					$choices = trim($choices);
+					$choices = explode("\n", $choices);
+					foreach ($choices as $oneChoice) {
+						$oneChoice = trim($oneChoice);
+						$oneChoice = htmlspecialchars ($oneChoice, ENT_COMPAT, "UTF-8");
+						$out .= "<option value='$oneChoice'>$oneChoice</option>";
+					}
+					
+					$out .= "</select>";
+				}
+				$out .= "</p>";
+			}
+			$buttonValue = htmlspecialchars ($form->submit_button_text(), ENT_COMPAT, "UTF-8");
+			$out .= "
+				<p class='plugin-form-submit'><input class='plugin-form-submit' type='submit' value='$buttonValue' /></p>
+			";
+			$out .= "</form><p>";
+		
+		}
+		
+	}
+	
+	//return "arge1 = {$options["arg1"]}, arg2 = $options[arg2]";
+	return $out;
+}
+pb_add_shortcode('plugin_form', 'plugin_form_shortcode');
+
 
 
 /**
@@ -300,6 +406,22 @@ if ($pb_plugin_action) {
 			margin-bottom: 1em;
 		}
 		
+		.pb_plubin_form_edit_inactive {
+			color: #999;
+		}
+		
+		.plugin_forms_form_row_delete {
+			text-align: right;
+			margin-top: -2.5em;
+			margin-right: 1em;
+		}
+		
+		.pb_plubin_form_list_edit {
+			display: none;
+			margin-left: .5em;
+			font-size: 10px;
+		}
+			
 	</style>
 
 	<script>
@@ -351,17 +473,40 @@ if ($pb_plugin_action) {
 			$("label[for='plugin_forms_after_submit_goToURL_theURL']").hide();
 			//$("label[for='plugin_forms_after_submit_showMessage_theMessage']").hide();
 		});
+		
+		$(".plugin_forms_form_row_delete a").live("click", function() {
+			jConfirm("Delete this form?", "", function(r) {
+				if (r == true) {
+					document.location = $(".plugin_forms_form_row_delete a").attr("href");
+				}
+			});
+			return false;
+		});
+		
+		$(".plugin_forms li").live("mouseover", function() {
+			$(this).find(".pb_plubin_form_list_edit").show();
+		}).live("mouseout", function() {
+			$(this).find(".pb_plubin_form_list_edit").hide();
+		});
+		
 	</script>
 	
 	<?php
 	if ($_GET["pb_plugin_forms_saved"]) {
-		$okmsg = "Saved form";
+		polarbear_infomsg("Saved form");
+	} else if ($_GET["pb_plugin_okmsg"]) {
+		polarbear_infomsg($_GET["pb_plugin_okmsg"]);
 	}
-	polarbear_infomsg($okmsg);
+	
 	?>
 	
+	
+	
 	<div>
-		<h1><a href="<?php echo $plugin_form_file ?>?pb_plugin_action=show_gui">Forms</a></h1>
+		<h1>
+			<a href="<?php echo $plugin_form_file ?>?pb_plugin_action=show_gui">Forms</a>
+			<img src="../images/silkicons/application_form.png" alt="" />
+		</h1>
 	</div>
 	
 	<div style="float: left; width: 30%; margin-right: 2%">
@@ -388,7 +533,11 @@ if ($pb_plugin_action) {
 					$class = "selected";
 				}
 				echo "<li class='$class'>";
-				echo "<a href='{$plugin_form_file}?pb_plugin_action=edit&pb_plugin_form_edit_id={$oneForm->id()}'>" . $oneForm->name() . "</a>";
+				echo "<a href='{$plugin_form_file}?pb_plugin_action=view&pb_plugin_form_view_id={$oneForm->id()}'>" . htmlspecialchars ($oneForm->name(), ENT_COMPAT, "UTF-8") . "</a>";
+				if ($oneForm->is_active() == false) {
+					echo " <span class='pb_plubin_form_edit_inactive'>Inactive</span>";
+				}
+				echo "<span class='pb_plubin_form_list_edit'><a href='{$plugin_form_file}?pb_plugin_action=edit&pb_plugin_form_edit_id={$oneForm->id()}'>Edit</a></span>";
 				echo "</li>";
 			}
 		}
@@ -396,6 +545,9 @@ if ($pb_plugin_action) {
 		</ul>
 		
 	</div>
+	
+	
+	
 	
 	<?php
 	/**
@@ -414,20 +566,28 @@ if ($pb_plugin_action) {
 				// existing form
 				$pb_plugin_form_edit_Form = new plugin_form;
 				$pb_plugin_form_edit_Form->load($pb_plugin_form_edit_id);
-				$form_title = $pb_plugin_form_edit_Form->name();
+				$form_title = htmlspecialchars($pb_plugin_form_edit_Form->name(), ENT_COMPAT, "UTF-8");
 			}
 			
-			echo "<h3>$form_title</h3>";
+			echo "<h2>$form_title</h2>";
 			
 			// Stuff that all forms have
 			?>
 			<form class="plugin_forms_form" method="post" action="<?php echo $plugin_form_file ?>">
+
 				<div class="plugin_forms_form_row">
 					<label for="plugin_forms_name">Name</label>
 					<small class="plugin_forms_description">Give your form a name, for example "Contact form". This name is only visible for you and other admins.</small>
 					<input type="text" name="pb_plugin_forms_name" value="<?php echo htmlspecialchars($pb_plugin_form_edit_Form->name(), ENT_COMPAT, "UTF-8") ?>" id="plugin_forms_name" />
 				</div>
-	
+
+
+				<div class="plugin_forms_form_row">
+					<label for="plugin_forms_active">Active</label>
+					<div><input <?php print($pb_plugin_form_edit_Form->is_active()?" checked='checked' ":"") ?> id="pb_plugin_forms_active_yes" type="radio" name="pb_plugin_forms_active" class="" value="1" /><label class="for-radio" for="pb_plugin_forms_active_yes"> Yes</label></div>
+					<div><input <?php print(!$pb_plugin_form_edit_Form->is_active()?" checked='checked' ":"") ?> id="pb_plugin_forms_active_no" type="radio" name="pb_plugin_forms_active" class="" value="0" /><label class="for-radio" for="pb_plugin_forms_active_no"> No</label></div>
+				</div>
+						
 				<div class="plugin_forms_form_row">
 					<label for="plugin_forms_email">Email</label>
 					<small class="plugin_forms_description">Notify this email address when someones submits this form (separate multiple email addresses with comma)</small>
@@ -460,7 +620,12 @@ if ($pb_plugin_action) {
 					</div>
 
 				</div>
-				
+
+				<div class="plugin_forms_form_row">
+					<label>Text on submit button</label>
+					<input type="text" name="pb_plugin_forms_submit_button_text" value="<?php echo htmlspecialchars($pb_plugin_form_edit_Form->submit_button_text(), ENT_COMPAT, "UTF-8") ?>" />
+				</div>
+
 				<h3>Fields</h3>
 				<p><a class="plugin_forms_field_add" href="#">+ Add</a></p>
 
@@ -477,6 +642,14 @@ if ($pb_plugin_action) {
 					<input type="hidden" name="pb_plugin_action" value="plugin_form_save" />
 					<input type="hidden" name="pb_plugin_forms_form_id" value="<?php echo $pb_plugin_form_edit_Form->id() ?>" />
 				</div>
+				
+				<?php
+				if ($pb_plugin_form_edit_Form->id()) {
+					?>
+					<div class="plugin_forms_form_row plugin_forms_form_row_delete">
+						<a href="<?php echo $plugin_form_file ?>?pb_plugin_action=plugin_form_delete&pb_plugin_form_id=<?php echo $pb_plugin_form_edit_Form->id() ?>&pb_plugin_okmsg=<?php echo urlencode("Form deleted") ?>">Delete form</a>
+					</div>
+				<?php } ?>
 
 			</form>
 			<?php

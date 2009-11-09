@@ -7,9 +7,9 @@ $pb_shortcode_tags = array();
 
 function pb_add_shortcode($tag, $func) {
 	global $pb_shortcode_tags;
-
-	if ( is_callable($func) )
+	if ( is_callable($func) ) {
 		$pb_shortcode_tags[$tag] = $func;
+	}
 }
 
 function pb_remove_shortcode($tag) {
@@ -25,6 +25,7 @@ function pb_remove_all_shortcodes() {
 }
 
 function pb_do_shortcode($args) {
+
 	$content = $args["output"];
 	global $pb_shortcode_tags;
 
@@ -38,6 +39,7 @@ function pb_do_shortcode($args) {
 
 function pb_get_shortcode_regex() {
 	global $pb_shortcode_tags;
+
 	$tagnames = array_keys($pb_shortcode_tags);
 	$tagregexp = join( '|', array_map('preg_quote', $tagnames) );
 
@@ -45,6 +47,7 @@ function pb_get_shortcode_regex() {
 }
 
 function pb_do_shortcode_tag($m) {
+
 	global $pb_shortcode_tags;
 
 	// allow [[foo]] syntax for escaping a tag
