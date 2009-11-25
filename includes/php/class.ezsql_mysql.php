@@ -629,8 +629,8 @@
 		/**********************************************************************
 		*  Try to connect to mySQL database server
 		*/
-
-		function connect($dbuser='', $dbpassword='', $dbhost='localhost')
+		// added by Pär Thernström 25 nov 2009: try to connect again after a short period of time. fixes problems with levonline.com
+		function connect($dbuser='', $dbpassword='', $dbhost='localhost', $numOfTries=0)
 		{
 			global $ezsql_mysql_str; $return_val = false;
 
@@ -653,10 +653,19 @@
 				$this->dbhost = $dbhost;
 				$return_val = true;
 			}
-
+			
+			// if we failed, try again...
+			
+			if ($return_val == false && $numOfTries < 3) {
+				$numOfTries++;
+				sleep(1);
+				$this->connect($dbuser, $dbpassword, $dbhost, $numOfTries);
+			}
+			
 			return $return_val;
 		}
-
+		
+		
 		/**********************************************************************
 		*  Try to select a mySQL database
 		*/
