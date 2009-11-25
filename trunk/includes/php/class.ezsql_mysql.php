@@ -655,16 +655,17 @@
 			}
 			
 			// if we failed, try again...
-			
-			if ($return_val == false && $numOfTries < 3) {
+			$numOfTries = (int) $numOfTries; // otherwise it's a boolean. kinda wierd.
+			if ($return_val == false && $numOfTries < 10) { // try up to 10 times
+				polarbear_hd("Inuti grejjen");
 				$numOfTries++;
-				sleep(1);
-				$this->connect($dbuser, $dbpassword, $dbhost, $numOfTries);
+				//sleep(1);
+				usleep(250000); // 2000000 = 2 secs, 250000 = 1/4 of a second
+				$return_val = $this->connect($dbuser, $dbpassword, $dbhost, $numOfTries);
 			}
 			
 			return $return_val;
 		}
-		
 		
 		/**********************************************************************
 		*  Try to select a mySQL database
