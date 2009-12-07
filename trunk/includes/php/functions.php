@@ -538,7 +538,7 @@ function polarbear_files_get_tags_content($selectedTag = "", $selectedSort = "",
 		</ul>
 		<?php
 	} else {
-		?><ul><li>No files tagged yet</li></ul><?
+		?><ul><li>No files tagged yet</li></ul><?php
 	}
 }
 
@@ -601,7 +601,7 @@ function polarbear_files_get_page_content($argv = null) {
 				<input type="file" id="uploadify1" name="uploadify1" />
 			</div>
 
-			<?
+			<?php
 			unset($qs->file_tag);
 			?>
 			<h3>Display</h3>
