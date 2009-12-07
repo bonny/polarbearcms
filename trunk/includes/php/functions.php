@@ -1621,10 +1621,13 @@ function polarbear_boot() {
 	pb_event_attach("pb_field_connector_saved", "pb_cache_clear");
 	pb_event_attach("pb_field_connection_saved", "pb_cache_clear");
 	pb_event_attach("pb_settings_general_saved", "pb_cache_clear");
-	pb_event_attach("article_output", "pb_plugins_add_enabled");
+	#pb_event_attach("article_output", "pb_plugins_add_enabled");
+	#pb_event_attach("article_output", "pb_plugins_add_enabled");
 
 	// connect to database
 	polarbear_connect_db();
+
+	pb_plugins_add_enabled();
 	
 	// set up some constants
 	define("POLARBEAR_STORAGEPATH", rtrim(polarbear_setting('storagepath'), "/") . "/");
