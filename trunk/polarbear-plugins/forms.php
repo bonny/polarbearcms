@@ -964,6 +964,9 @@ if ($pb_plugin_action) {
 							<input type="text" id="pb_plugin_forms_subscribe_button_text" name="pb_plugin_forms_subscribe_button_text" value="<?php echo htmlspecialchars($pb_plugin_form_edit_Form->subscribeButtonText, ENT_COMPAT, "UTF-8") ?>" />
 						</div>
 
+						<script>
+							var pb_plugin_forms_unsubscribe_keyField
+						</script>
 						<div class="plugin_forms_form_row">
 							<div id="pb_plugin_forms_unsubscribe_keyField">
 								<label>Field to use as key</label>
