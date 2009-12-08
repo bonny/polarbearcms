@@ -356,7 +356,7 @@ Finns tabell
 		?>
 		
 		<h2>Create/Update database</h2>
-		<?
+		<?php
 		if (isset($_POST["action"]) && $_POST["action"] == "databasePerformUpdate") {
 			pb_createAndUpdateTables("perform");
 			echo "<p class='okmsg'>Updated database</p>";

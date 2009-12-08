@@ -32,6 +32,7 @@ if (!class_exists("plugin_form")) {
 			$date_created, $after_submit, $after_submit_message, 
 			$after_submit_url, $fields, $submit_button_text,
 			$after_submit_message_error;
+			
 		
 		function __construct() {
 			$this->id = null;
@@ -46,6 +47,7 @@ if (!class_exists("plugin_form")) {
 			$this->unsubscribeButtonText = "Unsubscribe";
 			$this->afterSubscribeMessage = "Your are now susbcribed to our newsletter.";
 			$this->afterUnsubscribeMessage = "You have not unsubscribed from our newsletter.";
+			$this->subscribe_keyField = "";
 		}
 		
 		function id() {
@@ -190,7 +192,7 @@ if (!class_exists("plugin_form")) {
 			$this->unsubscribeButtonText = $row->unsubscribeButtonText;
 			$this->afterSubscribeMessage = $row->afterSubscribeMessage;
 			$this->afterUnsubscribeMessage = $row->afterUnsubscribeMessage;
-
+			$this->subscribe_keyField = $row->subscribeKeyField;
 
 			return true;
 		}
@@ -224,6 +226,7 @@ if (!class_exists("plugin_form")) {
 			$sql .= " unsubscribeButtonText = '" . $polarbear_db->escape($this->unsubscribeButtonText)."', ";
 			$sql .= " afterSubscribeMessage = '" . $polarbear_db->escape($this->afterSubscribeMessage)."', ";
 			$sql .= " afterUnsubscribeMessage = '" . $polarbear_db->escape($this->afterUnsubscribeMessage)."', ";
+			$sql .= " subscribeKeyField = '" . $polarbear_db->escape($this->subscribe_keyField)."', ";
 
 			$sql .= " dateCreated=FROM_UNIXTIME(".$polarbear_db->escape($this->date_created)."), ";
 			$sql .= " isActive=". (int) $this->is_active.", ";
@@ -311,6 +314,7 @@ if ($pb_plugin_action == "plugin_form_save") {
 	$plugin_form->unsubscribeButtonText = $_POST["pb_plugin_forms_unsubscribe_button_text"];
 	$plugin_form->afterSubscribeMessage= $_POST["pb_plugin_forms_after_subscribe_message"];
 	$plugin_form->afterUnsubscribeMessage = $_POST["pb_plugin_forms_after_unsubscribe_message"];
+	$plugin_form->subscribe_keyField = $_POST["pb_plugin_forms_unsubscribe_keyField_theValue"];
 	
 	$plugin_form->save();
 	
@@ -426,7 +430,7 @@ function plugin_form_shortcode($options) {
 			$allValid = true;
 			$isAddedToDatabase = false;
 			if ($isSubmitted) {
-				
+
 				// check for spam
 				$fakeFieldRequired = $_POST["pb-plugin-forms-captcha"]; // must be 1
 				$fakeFieldNotRequired = $_POST["pb-plugin-forms-captcha-confirm"]; // must be empty ("")
@@ -519,10 +523,16 @@ function plugin_form_shortcode($options) {
 			            [isDeleted] => 0
 			        )
 				*/
+				
+			
+			
 				$fieldID = "plugin-form-" . $form->id() . "-field-{$key}";
 				$fieldName = htmlspecialchars($oneField["name"], ENT_COMPAT, "UTF-8");
 				$fieldNamePrefixed = "plugin_forms_" . htmlspecialchars($oneField["name"], ENT_COMPAT, "UTF-8");
-				$fieldValue = htmlspecialchars($_POST[$fieldNamePrefixed], ENT_COMPAT, "UTF-8");
+				// name måste ha underscore istället för mellanslag. verkar som att webbläsaren ändrar
+				$fieldNamePrefixedNoSpaces = str_replace(" ", "_", $fieldNamePrefixed);
+
+				$fieldValue = htmlspecialchars($_POST[$fieldNamePrefixedNoSpaces], ENT_COMPAT, "UTF-8");
 				$is_required = $oneField["is_required"];
 				$is_required_is_valid = $oneField["is_required_is_valid"];
 				$out .= "<p class='plugin-form-{$oneField["type"]}'>";
@@ -747,6 +757,18 @@ if ($pb_plugin_action) {
 			$("#plugin_forms_after_submit_goToURL_theURL").overLabel();
 			$("label[for='plugin_forms_after_submit_goToURL_theURL']").hide();
 			//$("label[for='plugin_forms_after_submit_showMessage_theMessage']").hide();
+			
+			$("form.plugin_forms_form").submit(function() {
+				return pb_plugin_forms_submit_validate();
+			});
+			
+			$('body').layout({
+				applyDefaultStyles: false,
+				west: {
+					size: 300
+				}
+			});
+			
 		});
 		
 		$(".plugin_forms_form_row_delete a").live("click", function() {
@@ -764,15 +786,31 @@ if ($pb_plugin_action) {
 			$(this).find(".pb_plugin_form_list_edit").hide();
 		});
 		
-		$(function() {
-			$('body').layout({
-				applyDefaultStyles: false,
-				west: {
-					size: 300
+		function pb_plugin_forms_submit_validate() {
+			var formType = $("input[name=pb_plugin_forms_type]:checked").val();
+			if (formType == "subscribe") {
+				var enteredField = $("#pb_plugin_forms_unsubscribe_keyField_theValue").val();
+				var foundEnteredField = false;
+				$(".plugin_forms_field_add_wrapper li").each(function(i, o) {
+					// hämta första input i varje
+					inputVal = $(o).find("input[type=text]:first").val();
+					if (inputVal == enteredField) {
+						foundEnteredField = true;
+					}
+				});
+				
+				if (!foundEnteredField) {
+					alert("Please make sure 'Field to use as key' has an existing name entered");
 				}
-			});
-		});
-		
+				
+				return foundEnteredField;
+				
+			} else {
+				return true;
+			}
+		}
+
+
 	</script>
 	
 	<?php
@@ -849,11 +887,11 @@ if ($pb_plugin_action) {
 		<div class="ui-layout-center">
 				
 			<div>
-				<?
+				<?php
 				if ($values) {
 					?>
 					<a href="<?php echo $plugin_form_file ?>?pb_plugin_action=download_csv&amp;pb_plugin_form_id=<?php echo $pb_plugin_form_view_id ?>">Download as CSV-file</a>
-					<?
+					<?php
 				}
 				?>
 			</div>
@@ -927,6 +965,21 @@ if ($pb_plugin_action) {
 				// Stuff that all forms have
 				?>
 				<form class="plugin_forms_form" method="post" action="<?php echo $plugin_form_file ?>">
+				
+					<div class="" style="float: right; margin: 1em; width: 250px; padding: .5em; background-color: #eee;">
+						<p>
+							Use this code to show this form on your webpage:<br />
+							<?php
+							if (!$pb_plugin_form_edit_id) {
+								?>Please save your form to see the code.<?php
+							} else {
+								?>
+								<code>[plugin_form id="<?php echo $pb_plugin_form_edit_id ?>"]</code>
+								<?php
+							}
+							?>
+						</p>
+					</div>
 	
 					<div class="plugin_forms_form_row">
 						<label for="plugin_forms_name">Name</label>
@@ -950,12 +1003,13 @@ if ($pb_plugin_action) {
 					<?php
 					// $pb_plugin_form_edit_Form->type;
 					?>
+					<!--
 					<div class="plugin_forms_form_row">
 						<label>Type of form</label>
 						<div><input <?php echo ($pb_plugin_form_edit_Form->type=="form") ? " checked='checked' " : "" ?> name="pb_plugin_forms_type" type="radio" value="form" id="pb_plugin_forms_type_form" /><label for="pb_plugin_forms_type_form" class="for-radio"> Form</label></div>
 						<div><input <?php echo ($pb_plugin_form_edit_Form->type=="subscribe") ? " checked='checked' " : "" ?> name="pb_plugin_forms_type" type="radio" value="subscribe" id="pb_plugin_forms_type_subscribe" /><label for="pb_plugin_forms_type_subscribe" class="for-radio"> Subscribe</label></div>
 					</div>
-
+					-->
 
 					<div id="plugin_forms_form_row_type_subscribe_options" style="<?php echo ($pb_plugin_form_edit_Form->type=="subscribe") ? " ": " display: none; " ?>">
 
@@ -964,15 +1018,11 @@ if ($pb_plugin_action) {
 							<input type="text" id="pb_plugin_forms_subscribe_button_text" name="pb_plugin_forms_subscribe_button_text" value="<?php echo htmlspecialchars($pb_plugin_form_edit_Form->subscribeButtonText, ENT_COMPAT, "UTF-8") ?>" />
 						</div>
 
-						<script>
-							var pb_plugin_forms_unsubscribe_keyField
-						</script>
 						<div class="plugin_forms_form_row">
+							<!-- <a href="#" onclick="pb_plugin_forms_submit_validate();">test</a> -->
 							<div id="pb_plugin_forms_unsubscribe_keyField">
-								<label>Field to use as key</label>
-								<select>
-									<option>Select field...</option>
-								</select>
+								<label for="pb_plugin_forms_unsubscribe_keyField_theValue">Field to use as key</label>
+								<input id="pb_plugin_forms_unsubscribe_keyField_theValue" type="text" name="pb_plugin_forms_unsubscribe_keyField_theValue" value="<?php echo $pb_plugin_form_edit_Form->subscribe_keyField ?>" />
 							</div>
 						</div>
 
