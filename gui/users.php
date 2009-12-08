@@ -140,7 +140,7 @@ if ($_POST["action"] == "users_user_edit") {
 						<a class="user_edit_values_remove" style="float:left" title="Remove this custom value" class="" href=""><span class="ui-icon ui-icon-trash"></span></a>
 						<input type="text" class="user-edit-custom-value-thevalue text ui-widget-content ui-corner-all" value="<?php echo $one->value ?>" />
 					</div>
-					<?
+					<?php
 				}
 			}
 		?>

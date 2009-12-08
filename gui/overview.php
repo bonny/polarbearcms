@@ -87,7 +87,7 @@ if (!empty($gaID)) {
 
 ?>
 </div>
-<?
+<?php
 
 /**
  * statistics from Google Analytics
