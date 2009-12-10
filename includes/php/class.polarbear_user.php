@@ -22,6 +22,10 @@ class PolarBear_User {
 
 	function __construct($id = "") {
 		global $polarbear_db;
+
+		// defaults
+		$this->isDeleted = 0;
+		
 		if (is_numeric($id)) {
 			$this->id = $id;
 			$this->load();
@@ -111,7 +115,7 @@ class PolarBear_User {
 		if ($fetchNewID) {
 			$this->id = $polarbear_db->insert_id;
 		}
-		
+
 		$args = array(
 			"user" => $this,
 			"isNew" => $fetchNewID

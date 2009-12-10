@@ -397,7 +397,7 @@ Finns tabell
 			$password = trim($_POST["password"]);
 			
 			if ($firstname && $lastname && $email && $password) {
-						
+
 				$newUser = new PolarBear_User();
 				$newUser->firstname = $firstname;
 				$newUser->lastname = $lastname;
