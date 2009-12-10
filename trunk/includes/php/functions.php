@@ -2803,12 +2803,12 @@ function pb_log($options) {
 		if ($options["isNew"]) { $type = "create"; }
 	}
 	
-	$objectName = null;
+	$objectName = "";
 	if (isset($options["objectName"])) {
 		$objectName = $options["objectName"];
-		$sqlObjectName = ", objectName = '" . $polarbear_db->escape($objectName) . "' ";
 	}
-	
+	$sqlObjectName = ", objectName = '" . $polarbear_db->escape($objectName) . "' ";
+
 	$objectID = (int) $objectID;
 
 	$sql = "INSERT INTO " . POLARBEAR_DB_PREFIX . "_log SET date = now(), user = $user, type = '$type', objectType='$objectType', objectID = $objectID $sqlObjectName ";
