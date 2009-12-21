@@ -1511,7 +1511,7 @@ class PolarBear_Article {
 
 		// $isCurrentArticle, good for using i lists
 		$isCurrentArticle = false;
-		if ($polarbear_a->getId() == $this->getId()) {
+		if ($polarbear_a && $polarbear_a->getId() == $this->getId()) {
 			$isCurrentArticle = true;
 		}
 		$data->assign('isCurrentArticle', $isCurrentArticle);
