@@ -310,6 +310,21 @@ class PolarBear_User {
 		return $arr;
 		
 	}
+	
+	/**
+	 * Get one custom value
+	 * @param $key name of custom value to get
+	 * @return the value, or bool false if not found
+	 */
+	function customValue($key) {
+		$customValues = $this->customValues();
+		foreach ($customValues as $one) {
+			if ($one->name == $key) {
+				return $one->value;
+			}
+		}
+		return false;
+	}
 
 
 }

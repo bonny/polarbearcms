@@ -1836,7 +1836,7 @@ function pb_add_site_edit($args) {
 
 	// make the pb-box visible if we a) just (tried) logged in or b) just logged out
 	if ($pb_show_site_edit_tab == "1") {
-		$visibleStyle = "left: 0px;";
+		$visibleStyle = " style='left: 0px;' ";
 	}
 
 	$out = "";
@@ -1856,7 +1856,7 @@ function pb_add_site_edit($args) {
 			$showHideIcons = "<br /><a href='$editiconslink'>show</a> | hide";
 		}
 		$out .= "
-			<div id='polarbear-site-edit-tab' style='$visibleStyle'>
+			<div id='polarbear-site-edit-tab' $visibleStyle>
 				<a href='#' id='polarbear-site-edit-tab-logo'><img src='" . POLARBEAR_WEBPATH . "images/polarbear/pb-tab.png' alt='PolarBearCMS' width='39' height='69' /></a>
 				<div id='polarbear-site-edit-tab-menu'>
 					$okLoginTxt
@@ -1888,7 +1888,7 @@ function pb_add_site_edit($args) {
 			$loggedOutTxt = "<p class='pb-site-edit-msg'>You have been logged out.</p>";
 		}
 		$out .= "
-			<div id='polarbear-site-edit-tab' style='$visibleStyle'>
+			<div id='polarbear-site-edit-tab' $visibleStyle>
 				<a href='#' id='polarbear-site-edit-tab-logo'><img src='" . POLARBEAR_WEBPATH . "images/polarbear/pb-tab.png' alt='PolarBearCMS' /></a>
 				<div id='polarbear-site-edit-tab-menu'>
 						
