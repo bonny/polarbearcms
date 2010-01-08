@@ -284,10 +284,20 @@ class PolarBear_User {
 		$polarbear_db->query($sql);
 	}
 
+	/**
+	 * adds a custom value
+	 * if the value exists, it will be overwritten
+	 */
 	function addCustomValue($name, $value) {
 		global $polarbear_db;
 		$name = $polarbear_db->escape($name);
 		$value = $polarbear_db->escape($value);
+		
+		// remove
+		$sql = "DELETE FROM " . POLARBEAR_DB_PREFIX . "_users_values WHERE userID = '$this->id' AND name = '$name'";
+		$polarbear_db->query($sql);
+		
+		// add
 		$sql = "INSERT INTO " . POLARBEAR_DB_PREFIX . "_users_values SET userID = '$this->id', name = '$name', value = '$value'";
 		$polarbear_db->query($sql);
 	}
