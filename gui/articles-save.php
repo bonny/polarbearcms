@@ -10,6 +10,11 @@ polarbear_require_admin();
 $articleID = (int) $_POST["article-id"];
 $isPreview = (bool) $_POST["isPreview"];
 
+
+// debug
+#parse_str($_POST["maj-tags-serialized"], $arrSupertmp); pb_d($arrSupertmp);exit;
+// end debug
+
 $a = new PolarBear_Article($articleID);
 
 if ($_POST["article-use-different-title"]) {
@@ -124,7 +129,12 @@ if (is_array($arrTags) && is_array($arrTags["tags"])) {
 
 			$Tag = new polarbear_tag($oneTag["id"]);
 			$Tag->id = $oneTag["id"];
-			$Tag->name = $oneTag["name"];
+
+			// dont know why but sometimes the name has some weird chars in it, like hard spaces
+			$Tag->name = trim($oneTag["name"]);
+			$Tag->name = str_replace(chr(194), " ", $Tag->name);
+			$Tag->name = str_replace(chr(160), " ", $Tag->name);
+			$Tag->name = trim($Tag->name);
 			
 			// finns parentID i $arrNewTags[$oneTag["id"]] så ska vi använda det värdet istället
 			if (isset($arrNewTags[$oneTag["parentID"]])) {
