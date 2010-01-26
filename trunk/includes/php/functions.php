@@ -899,7 +899,6 @@ function polarbear_getFieldStructureForFieldConnector($fieldConnectorID) {
 	// Get info about the field connector
 
 	$sql = "SELECT * FROM " . POLARBEAR_DB_PREFIX . "_fields_connectors WHERE id = $fieldConnectorID AND deleted = 0";
-
 	$rowFieldConnector = $polarbear_db->get_row($sql);
 
 	$arr[$rowFieldConnector->id] = array(
@@ -1400,7 +1399,7 @@ function polarbear_connect_db() {
 
 	pb_event_fire("pb_connect_db_start");
 	$polarbear_db = new ezSQL_mysql();
-	$polarbear_db->show_errors=true; // @todo: should be false, right? or set through config
+	$polarbear_db->show_errors=false; // @todo: should be false, right? or set through config
 	$dbok = $polarbear_db->quick_connect(POLARBEAR_DB_USER,POLARBEAR_DB_PASSWORD,POLARBEAR_DB_DATABASE,POLARBEAR_DB_SERVER);
 	if (!$dbok) {
 		$content = "
@@ -1836,7 +1835,7 @@ function pb_add_site_edit($args) {
 
 	// make the pb-box visible if we a) just (tried) logged in or b) just logged out
 	if ($pb_show_site_edit_tab == "1") {
-		$visibleStyle = " style='left: 0px;' ";
+		$visibleStyle = "left: 0px;";
 	}
 
 	$out = "";
@@ -1856,7 +1855,7 @@ function pb_add_site_edit($args) {
 			$showHideIcons = "<br /><a href='$editiconslink'>show</a> | hide";
 		}
 		$out .= "
-			<div id='polarbear-site-edit-tab' $visibleStyle>
+			<div id='polarbear-site-edit-tab' style='$visibleStyle'>
 				<a href='#' id='polarbear-site-edit-tab-logo'><img src='" . POLARBEAR_WEBPATH . "images/polarbear/pb-tab.png' alt='PolarBearCMS' width='39' height='69' /></a>
 				<div id='polarbear-site-edit-tab-menu'>
 					$okLoginTxt
@@ -1888,7 +1887,7 @@ function pb_add_site_edit($args) {
 			$loggedOutTxt = "<p class='pb-site-edit-msg'>You have been logged out.</p>";
 		}
 		$out .= "
-			<div id='polarbear-site-edit-tab' $visibleStyle>
+			<div id='polarbear-site-edit-tab' style='$visibleStyle'>
 				<a href='#' id='polarbear-site-edit-tab-logo'><img src='" . POLARBEAR_WEBPATH . "images/polarbear/pb-tab.png' alt='PolarBearCMS' /></a>
 				<div id='polarbear-site-edit-tab-menu'>
 						

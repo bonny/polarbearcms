@@ -103,12 +103,24 @@ class PolarBear_Article {
 	 * todo: får man ladda in en artikel som är deleted? I vanlig fall: nej!
 	 */
 	function load($id) {
-		global $polarbear_db;
+	
 		$id = (int) $id;
 
-		$sql = "SELECT * FROM " . POLARBEAR_DB_PREFIX . "_articles WHERE id = '$id' AND status <> 'deleted'";
-		$rows = $polarbear_db->get_results($sql);
-		$this->loadThroughObject($rows[0]);
+		// leta efter artikeln i preload först
+		$preloader = pb_query_preloader::getInstance();
+		$preloadRow = $preloader->getPreloadArticleRow($id);
+		if ($preloadRow) {
+			// in preload, get it from there
+			$this->loadThroughObject($preloadRow);
+			#echo "<br>got from preload: $id";
+		} else {
+			// not in preload, fetch from db
+			global $polarbear_db;
+			#echo "<br>not in preload: $id";
+			$sql = "SELECT * FROM " . POLARBEAR_DB_PREFIX . "_articles WHERE id = '$id' AND status <> 'deleted'";
+			$rows = $polarbear_db->get_results($sql);
+			$this->loadThroughObject($rows[0]);
+		}
 
 		// update fields
 		$this->fieldsAndValues(true);
@@ -960,9 +972,20 @@ class PolarBear_Article {
 		global $polarbear_db;
 		$childrenArr = array();
 		if ($r = $polarbear_db->get_results($sql)) {
-			foreach ($r as $row) {
+
+			$preloader = pb_query_preloader::getInstance();
+			$strArticleIDs = "";
+			foreach ($r as $row) {		
+				// in med hittade id:n i preloadern
+				$strArticleIDs .= ",".$row->id;
+			}
+			$preloader->addArticle($strArticleIDs);
+			$preloader->update();
+
+			foreach ($r as $row) {		
 				$childrenArr[] = PolarBear_Article::getInstance($row->id);
 			}
+			
 		}
 		
 		$this->childrenCache[$optionsQuery] = $childrenArr;
@@ -1167,15 +1190,28 @@ class PolarBear_Article {
 			return $this->fieldValues;
 		}
 
-		global $polarbear_db;		
-		$sql = "
-			SELECT 
-				fv.fieldID, fv.articleID, fv.value, fv.numInSet,
-				f.name as fieldName, f.type as fieldType
-			FROM " . POLARBEAR_DB_PREFIX . "_fields_values as fv
-			INNER JOIN " . POLARBEAR_DB_PREFIX . "_fields as f ON f.id = fv.fieldID
-			WHERE articleID = '$this->id' ORDER BY fieldID ASC, numInSet ASC";
-		$rows = $polarbear_db->get_results($sql);
+		// fieldvalues fanns inte.
+		// kolla preload först och om inte där så ladda in
+		$preloader = pb_query_preloader::getInstance();
+		$preloadRows = $preloader->getPreloadFieldsRows($this->id);
+		if ($preloadRows === false) {
+			#echo "<br>nah, no preload row for field, article: $this->id ";
+			// no preload for this articles field, fetch them from db
+			global $polarbear_db;		
+			$sql = "
+				SELECT 
+					fv.fieldID, fv.articleID, fv.value, fv.numInSet,
+					f.name as fieldName, f.type as fieldType
+				FROM " . POLARBEAR_DB_PREFIX . "_fields_values as fv
+				INNER JOIN " . POLARBEAR_DB_PREFIX . "_fields as f ON f.id = fv.fieldID
+				WHERE articleID = '$this->id' ORDER BY fieldID ASC, numInSet ASC";
+			$rows = $polarbear_db->get_results($sql);
+		} else {
+			#echo "<br>got preload row for field, article: $this->id";
+			// horay! we got the field values preloaded
+			$rows = $preloadRows;
+		}
+	
 		$arrFieldValues = array();
 		$arrFieldCount = array();
 		if (is_array($rows)) {
@@ -1683,18 +1719,18 @@ class PolarBear_Article {
 	 * @return array with tags. Can be empty.
 	 */
 	function tags() {
-		global $polarbear_db;
-		$sql = "
-			SELECT 
-				atr.*, at.*
-			FROM " . POLARBEAR_DB_PREFIX . "_article_tag_relation as atr 
-			INNER JOIN " . POLARBEAR_DB_PREFIX . "_article_tags as at on at.id = atr.tagID
-			WHERE 
-				atr.articleID = '$this->id'
-				AND at.isDeleted = 0
-			";
-		$sql = "SELECT * FROM " . POLARBEAR_DB_PREFIX . "_article_tag_relation WHERE articleID = '$this->id'";
-		$rows = $polarbear_db->get_results($sql);
+
+		$preloader = pb_query_preloader::getInstance();
+		$preloadRow = $preloader->getPreloadArticleTag($this->id);
+
+		if ($preloadRow) {
+			$rows = $preloadRow;
+		} else {
+			global $polarbear_db;
+			$sql = "SELECT tagID FROM " . POLARBEAR_DB_PREFIX . "_article_tag_relation WHERE articleID = '$this->id'";
+			$rows = $polarbear_db->get_results($sql);
+		}
+
 		$arrTags = array();
 		if ($rows) {
 			foreach ($rows as $row) {
