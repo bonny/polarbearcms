@@ -136,8 +136,10 @@ class pb_query_preloader {
 			WHERE articleID IN ($strAllFoundArticlesIds) ORDER BY fieldID ASC, numInSet ASC
 		";
 		$res = $polarbear_db->get_results($sql); // load använder get_results så vi måste ha samma
-		foreach ($res as $oneRes) {
-			$this->arrPreloads["fields"][$oneRes->articleID][] = $oneRes;
+		if ($res) {
+			foreach ($res as $oneRes) {
+				$this->arrPreloads["fields"][$oneRes->articleID][] = $oneRes;
+			}
 		}
 		
 		// hämta in tags
