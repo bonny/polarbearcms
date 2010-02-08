@@ -2,7 +2,6 @@
 /**
  * Little "bootstrap" function go load a plugin, since the plugins are located outside the polarbear cms-folder
  */
-
 require_once("../../polarbear-boot.php");
 $pluginFilename = $_GET["pluginFilename"];
 
