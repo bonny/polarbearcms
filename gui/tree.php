@@ -106,6 +106,21 @@ if ($id == "0") {
 			},
 			{
 				data: {
+					title: "Email lists",
+					icon: "<?php polarbear_webpath() ?>images/silkicons/folder_table.png",
+					attributes: {
+						href: "gui/emaillists.php"
+					}
+				
+				},
+				attributes: {
+					id: "categoryEmaillists",
+					rel: "folder"
+				}
+			
+			},
+			{
+				data: {
 					title: "Settings & Tools",
 					icon: "<?php polarbear_webpath() ?>images/silkicons/folder_wrench.png",
 					attributes: {
