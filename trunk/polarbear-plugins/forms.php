@@ -6,6 +6,7 @@
  * Plugin_author: Pär Thernström / MarsApril AB <par@marsapril.se>
  */
 
+
 // Load PolarBear
 if (defined("POLARBEAR_ROOT")) {
 	require_once(POLARBEAR_ROOT . "polarbear-boot.php");
@@ -13,10 +14,13 @@ if (defined("POLARBEAR_ROOT")) {
 	require_once(realpath(dirname($_SERVER["DOCUMENT_ROOT"] . $_SERVER["SCRIPT_NAME"]) . "/../polarbear-boot.php"));
 }
 
+
 // Make plugin visible in tree
 if (function_exists("pb_plugin_add_to_tree")) {
 	pb_plugin_add_to_tree(array("name" => "Forms", "icon" => "sökväg till icon", "filename" => "forms.php"));
 }	
+
+
 
 $pb_plugin_action = $_REQUEST["pb_plugin_action"];
 $pb_plugin_form_edit_id = (int) $_REQUEST["pb_plugin_form_edit_id"];
@@ -601,6 +605,9 @@ pb_add_shortcode('plugin_form', 'plugin_form_shortcode');
 #if ($pb_plugin_action == "show_gui") {
 if ($pb_plugin_action) {
 	$skip_layout = true;
+
+
+
 	require_once(POLARBEAR_ROOT . "/includes/php/admin-header.php");
 	?>
 	<style type="text/css">
