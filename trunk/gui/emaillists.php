@@ -67,7 +67,8 @@ if ($emaillistAction == "emaillist-downloadCSV") {
 /**
  * save a new or edited list
  */
-if ($emaillistAction == "emaillistSave") {
+if ($_POST["action"] == "emaillistSave") {
+
 	$oneList = new pb_emaillist($_POST["emailListID"]);
 	$oneList->name = $_POST["emaillistName"];
 	$oneList->isDeleted = $_POST["isDeleted"];
@@ -100,6 +101,28 @@ if ($emaillistAction == "emaillists-removeEmail") {
 	exit;
 }
 
+if ($_POST["action"] == "emaillists-addAddresses") {
+
+	$addresses = $_POST["addresses"];
+	$emailListID = $_POST["emailListID"];
+	$oneList = new pb_emaillist($emailListID);
+	
+	$addresses = preg_replace("/[,;:\n\r\t ]+/", " ", $addresses);
+	$arrAddresses = explode(" ", $addresses);
+
+	$numAdded = 0;
+	foreach ($arrAddresses as $oneEmail) {
+		if ($oneList->addEmail($oneEmail)) {
+			$numAdded++;
+		}
+	}
+
+	$okmsg = urlencode("Added $numAdded addresses");
+	$url = polarbear_treepage("gui/emaillists.php?action=emaillists-viewList&emailListID=$emailListID&okmsg=$okmsg");
+	header("Location: $url");
+	exit;
+}
+
 pb_must_come_through_tree();
 
 $okmsg = $_GET["okmsg"];
@@ -116,6 +139,9 @@ polarbear_infomsg($_GET["okmsg"], $errmsg);
 		margin-top: .5em;
 	}
 	
+	table.pb-emaillists {
+		margin-top: 2em;
+	}
 	table.pb-emaillists th,
 	table.pb-emaillists td {
 		text-align: left;
@@ -145,6 +171,10 @@ polarbear_infomsg($_GET["okmsg"], $errmsg);
 		});
 		return false;
 	});
+	
+	$("#pb-emaillists-add-addresses-link").live("click", function() {
+		$("#pb-emaillists-add-addresses").slideDown("slow");
+	});
 
 </script>
 
@@ -155,6 +185,7 @@ polarbear_infomsg($_GET["okmsg"], $errmsg);
 	$existingEmaillists = $emaillist->getLists();
 	
 	if ($emaillistAction == "emaillists-editList") {
+
 		// lägg till eller redigera formulär
 		$emailListID = (int) $_GET["emailListID"];
 		$name = "";
@@ -194,14 +225,32 @@ polarbear_infomsg($_GET["okmsg"], $errmsg);
 		?>
 		<p><a href="gui/emaillists.php">« Back to all lists</a></p>
 		<h1><?php echo $oneList->name ?></h1>
+
+		<p><?php echo $oneList->count ?> emails in this list.</p>
+		<ul>
+			<?php $editLink = polarbear_treepage("gui/emaillists.php?action=emaillists-editList&emailListID={$emailListID}"); ?>
+			<li><a href="<?php echo $editLink ?>">Edit</a></li>
+			<li><a href="gui/emaillists.php?action=emaillist-downloadCSV&emailListID=<?php echo $emailListID ?>">Download as CSV</a></li>
+			<li><a id="pb-emaillists-add-addresses-link" href="#">Add email addresses</a></li>
+		</ul>
+		
+		<div id="pb-emaillists-add-addresses" style="display: none;">
+			<form method="post" action="gui/emaillists.php">
+				<p>Enter or paste the addresses in the textbox below. Separate the adresses with spaces, colons, newlines or tabs.</p>
+				<textarea name="addresses" cols="50" rows="7"></textarea>
+				<p><input type="submit" value="Add" /></p>
+				<input type="hidden" name="action" value="emaillists-addAddresses" />
+				<input type="hidden" name="emailListID" value="<?php echo $emailListID ?>" />
+			</form>
+		</div>
+
 		<?
 		
 		if (empty($emails)) {
-			?><p>There are no emails in this list.</p><?
+			
 		} else {
-			echo "<p>{$oneList->count} emails in this list.";
 			?>
-			<p><a href="gui/emaillists.php?action=emaillist-downloadCSV&emailListID=<?php echo $emailListID ?>">Download as CSV</a></p>
+			
 			<?
 			echo "<table class='pb-emaillists'>";
 			echo "<tr><th>Email</th><th>Date added</th><th></th></tr>";
@@ -230,10 +279,9 @@ polarbear_infomsg($_GET["okmsg"], $errmsg);
 			echo "<ul class='emaillists-existing-lists'>";
 			foreach ($existingEmaillists as $oneList) {
 				$viewLink = polarbear_treepage("gui/emaillists.php?action=emaillists-viewList&emailListID={$oneList->id}");
-				$editLink = polarbear_treepage("gui/emaillists.php?action=emaillists-editList&emailListID={$oneList->id}");
 				echo "<li>";
-				echo "{$oneList->name} ({$oneList->count})";
-				echo "<br><a href='$viewLink'>View</a> | <a href='$editLink'>edit</a>";
+				echo "<a href='$viewLink'>{$oneList->name}</a> ({$oneList->count})";
+				#echo "<br><a href='$viewLink'>View</a> | <a href='$editLink'>edit</a>";
 				echo "</li>";
 			}
 			echo "</ul>";

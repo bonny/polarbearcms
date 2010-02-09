@@ -216,6 +216,25 @@ function pb_createAndUpdateTables($action = "check", & $whatToBeDone = null) {
 	) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 
 	
+	CREATE TABLE `polarbear_emaillist_lists` (
+	  `id` int(11) NOT NULL AUTO_INCREMENT,
+	  `name` varchar(255) NOT NULL,
+	  `isDeleted` tinyint(4) NOT NULL,
+	  PRIMARY KEY (`id`)
+	) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
+	
+	
+	CREATE TABLE `polarbear_emaillist_emails` (
+	  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+	  `listID` int(11) NOT NULL,
+	  `email` varchar(255) NOT NULL,
+	  `dateAdded` datetime NOT NULL,
+	  PRIMARY KEY (`id`),
+	  KEY `listID` (`listID`)
+	) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
+
+
+	
 	";
 	$didSomething = false;
 	$somethingNeedsToBeDone = false;
