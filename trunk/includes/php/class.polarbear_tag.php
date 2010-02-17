@@ -133,7 +133,7 @@ class polarbear_tag {
 	/**
 	 * get all articles that has this tag
 	 */
-	function articles() {
+	function articles($orderBy = "titleArticle ASC") {
 		$arr = array();
 		$sql = "
 			SELECT 
@@ -147,6 +147,7 @@ class polarbear_tag {
 			WHERE
 				tr.tagID = '$this->id' AND 
 				at.isDeleted = 0
+				ORDER BY $orderBy
 		";
 		global $polarbear_db;
 		if ($r = $polarbear_db->get_results($sql)) {
