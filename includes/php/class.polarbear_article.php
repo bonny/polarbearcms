@@ -1511,6 +1511,7 @@ class PolarBear_Article {
 		// add variables
 		$data->assign('id', $this->getId());
 		$data->assign('titleArticle', htmlspecialchars($this->getTitleArticle(), ENT_COMPAT, "UTF-8"));
+		$data->assign('titleArticleRaw', $this->getTitleArticle());
 		$data->assign('titlePage', htmlspecialchars($this->getTitlePage(), ENT_COMPAT, "UTF-8"));
 		$data->assign('titleNav', htmlspecialchars($this->getTitleNav(), ENT_COMPAT, "UTF-8"));
 		$data->assign('href', $this->href());
