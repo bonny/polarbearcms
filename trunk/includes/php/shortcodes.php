@@ -34,6 +34,9 @@ function pb_do_shortcode($args) {
 
 	$pattern = pb_get_shortcode_regex();
 	$args["output"] = preg_replace_callback('/'.$pattern.'/s', 'pb_do_shortcode_tag', $content);
+
+	pb_pqp_log_speed("do shortcode");
+
 	return $args;
 }
 
@@ -57,6 +60,8 @@ function pb_do_shortcode_tag($m) {
 
 	$tag = $m[2];
 	$attr = pb_shortcode_parse_atts($m[3]);
+
+	pb_pqp_log_speed("do shortcode tag");
 
 	if ( isset($m[5]) ) {
 		// enclosing tag - extra parameter
@@ -88,6 +93,7 @@ function pb_shortcode_parse_atts($text) {
 	} else {
 		$atts = ltrim($text);
 	}
+	pb_pqp_log_speed("shortcode partse atts");
 	return $atts;
 }
 

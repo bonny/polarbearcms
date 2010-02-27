@@ -157,6 +157,8 @@ class pb_query_preloader {
 		#echo "<br>size of $this->arrPreloads[article] " . sizeof($this->arrPreloads["article"]);
 		#echo "<br>arrArticlesToPreloadTmp: ";pb_d($arrArticlesToPreloadTmp);
 
+		pb_pqp_log_speed("Preloaded updated");
+
 	}
 	
 	function getPreloadArticleTag($articleID) {

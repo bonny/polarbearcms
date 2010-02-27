@@ -49,6 +49,9 @@ class pb_observer {
 				}
 			}
 		}
+		
+		pb_pqp_log_speed("observer fire");
+		
 		return $contentToReturn;
 	}
 
