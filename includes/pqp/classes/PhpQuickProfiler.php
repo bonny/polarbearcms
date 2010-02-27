@@ -25,7 +25,7 @@ class PhpQuickProfiler {
 	public function __construct($startTime, $config = '/pqp/') {
 		$this->startTime = $startTime;
 		$this->config = $config;
-		require_once(__DIR__.'/Console.php'); // changed by Pär
+		require_once(dirname(__FILE__).'/Console.php'); // changed by Pär
 	}
 	
 	/*-------------------------------------------
@@ -197,7 +197,7 @@ class PhpQuickProfiler {
 		$this->gatherMemoryData();
 		$this->gatherQueryData();
 		$this->gatherSpeedData();
-		require_once(__DIR__ . '/../display.php');
+		require_once(dirname(__FILE__) . '/../display.php');
 		displayPqp($this->output, $this->config);
 	}
 	

@@ -17,7 +17,7 @@
 
 function displayPqp($output, $config) {
 	
-$cssUrl = $config.'css/pQp.css';
+$cssUrl = POLARBEAR_WEBPATH.'/includes/pqp/css/pQp.css';
 		
 echo <<<JAVASCRIPT
 <!-- JavaScript -->
