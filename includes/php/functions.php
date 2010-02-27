@@ -171,11 +171,10 @@ function polarbear_user_login_from_cookie() {
 	global $polarbear_db;
 	#if (isset($_COOKIE['polarbear_user']) && isset($_COOKIE['polarbear_token'])) {
 	if (pb_cookie('polarbear_user') && pb_cookie('polarbear_token')) {
-		#$userID = $polarbear_db->escape($_COOKIE['polarbear_user']);
 		$userID = $polarbear_db->escape(pb_cookie('polarbear_user'));
-		#$userToken = $polarbear_db->escape($_COOKIE['polarbear_token']);
 		$userToken = $polarbear_db->escape(pb_cookie('polarbear_token'));
 		$sql = "SELECT id FROM " . POLARBEAR_DB_PREFIX . "_users WHERE id = '$userID' AND loginToken = '$userToken' AND isDeleted = 0 AND loginToken <> ''";
+		pb_pqp_log_speed("login_from_cookie()");
 		if ($r = $polarbear_db->get_var($sql)) {
 			// mark this user as seen
 			$sql = "UPDATE " . POLARBEAR_DB_PREFIX . "_users SET dateLastSeen = now() WHERE id = '$userID'";
@@ -440,6 +439,9 @@ function polarbear_getGlobalSettings() {
 
 	$sql = "SELECT * FROM " . POLARBEAR_DB_PREFIX . "_settings ORDER BY date DESC LIMIT 1";
 	$r = $polarbear_db->get_results($sql);
+	
+	pb_pqp_log_speed("getGlobalSettings");
+	
 	if ($r) {
 		$settings = $r[0]->settings;
 		$settings = unserialize($settings);
@@ -487,6 +489,7 @@ function polarbear_getTemplates() {
 				"file" => trim($tmp[$i+1])
 			);
 		}
+		pb_pqp_log_speed("getTemplates");
 		return $arrTemplates;
 	} else {
 		return array();
@@ -873,6 +876,7 @@ function polarbear_getFieldConnectors() {
 	global $polarbear_db;
 	$sql = "SELECT * FROM " . POLARBEAR_DB_PREFIX . "_fields_connectors WHERE deleted = 0 ORDER BY name ASC";
 	$rows = $polarbear_db->get_results($sql);
+	pb_pqp_log_speed("getFieldConnectors");
 	return $rows;
 }
 
@@ -944,6 +948,7 @@ function polarbear_getFieldStructureForFieldConnector($fieldConnectorID) {
 
 		}
 	}
+	pb_pqp_log_speed("getFieldStructureForConnector");
 	$polarbear_getFieldStructureForFieldConnector[$fieldConnectorID] = $arr;
 	return $arr;
 }				
@@ -1052,6 +1057,7 @@ function polarbear_getFieldForArticleEdit($articleID, $fieldID, $numInSet = 0) {
 function polarbear_article_bootload() {
 
 	pb_event_fire("pb_article_bootload_start");
+	pb_pqp_log_speed("polarbear_article_bootload start");
 
 	global $polarbear_rewrite_shortnames,$polarbear_a,$polarbear_u,$polarbear_article_is_autoloaded,$polarbear_db;
 	$doLoadArticle = false;
@@ -1237,6 +1243,8 @@ function polarbear_menu($rootPageID = null, $options = null) {
 	if ($out) {
 		$out = "<ul class='{$options["rootULClass"]}'>$out</ul>";
 	}
+
+	pb_pqp_log_speed("menu()");
 	
 	return $out;
 	
@@ -1398,6 +1406,7 @@ function polarbear_connect_db() {
 	global $polarbear_db;
 
 	pb_event_fire("pb_connect_db_start");
+	pb_pqp_log_speed("connect_db start");
 	$polarbear_db = new ezSQL_mysql();
 	$polarbear_db->show_errors=false; // @todo: should be false, right? or set through config
 	$dbok = $polarbear_db->quick_connect(POLARBEAR_DB_USER,POLARBEAR_DB_PASSWORD,POLARBEAR_DB_DATABASE,POLARBEAR_DB_SERVER);
@@ -1414,7 +1423,7 @@ function polarbear_connect_db() {
 	# $polarbear_db->debug_all = true;
 	// Fixa så att MySQL fixar UTF8 (http://se2.php.net/manual/en/function.mysql-set-charset.php#86455)
 	$polarbear_db->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
-
+	pb_pqp_log_speed("connect_db");
 	pb_event_fire("pb_connect_db_end");
 }
 
@@ -1451,6 +1460,7 @@ function polarbear_script_end_stats() {
 		}
 	}
 	//*
+	pb_pqp_log_speed("script_end_stats");
 	return $out;
 }
 
@@ -1625,8 +1635,10 @@ function polarbear_boot() {
 
 	// connect to database
 	polarbear_connect_db();
+	pb_pqp_log_speed("database connected");
 
 	pb_plugins_add_enabled();
+	pb_pqp_log_speed("plugins added");
 	
 	// set up some constants
 	define("POLARBEAR_STORAGEPATH", rtrim(polarbear_setting('storagepath'), "/") . "/");
@@ -1657,7 +1669,6 @@ function polarbear_boot() {
 		
 		DEFINE('POLARBEAR_DOMAIN', $polarbear_domain);
 	}
-
 
 	// Fix magic quotes, code fom simple php framework
 	if(get_magic_quotes_gpc())
@@ -1712,13 +1723,16 @@ function polarbear_boot() {
 	
 	// fetch settings
 	$polarbear_settings = polarbear_getGlobalSettings();
-
+	pb_pqp_log_speed("get global settings");
+	
 	// setup user
 	global $polarbear_u;
 	$polarbear_u = polarbear_user_login_from_cookie();
+	pb_pqp_log_speed("user setup");
 
 	// finally, load selected article, if any, and load it's template, if it exists. this is a truly awesome function!
 	polarbear_article_bootload();
+	pb_pqp_log_speed("polarbear_article_bootload() end");
 
 	pb_event_fire("pb_boot_end");
 
@@ -2021,6 +2035,7 @@ function pb_add_site_edit($args) {
 	// attach right after <body> or right before </body>
 	$newBuffer = str_replace("</body>", "$out\n</body>", $args["buffer"]);
 	$args["buffer"] = $newBuffer;
+	pb_pqp_log_speed("add site edit");
 	return $args;
 }
 
@@ -2061,7 +2076,7 @@ function pb_add_pb_seo_meta($args) {
 			}
 			$args["buffer"] = str_replace("</head>", "$out</head>", $args["buffer"]);
 		}
-	
+		pb_pqp_log_speed("add pb seo meta");
 		return $args;
 	}
 }
@@ -2084,6 +2099,7 @@ function pb_clear_cache() {
 		if($oneFile->isDot()) continue;
 		unlink(POLARBEAR_CACHEPATH . $oneFile->getFilename());
 	}
+	pb_pqp_log_speed("clear cache");
 }
 
 
@@ -2198,6 +2214,7 @@ class polarbear_articlefetcher {
 				$arr[] = polarbear_article::getInstance($row->id);
 			}
 		}
+		pb_pqp_log_speed("fetcher articles()");
 		return $arr;
 	}
 	
@@ -2386,6 +2403,7 @@ function polarbear_storage_get($key = null, & $expired = null) {
 			return null;
 		}
 	}
+	pb_pqp_log_speed("storage get");
 }
 
 
@@ -2715,6 +2733,9 @@ function pb_search_results($options) {
 		"numHits" => $numHits,
 		"content" => $strSearchResultsFull
 	);
+	
+	pb_pqp_log_speed("search results");
+	
 	return $arrReturn;
 
 }
@@ -2732,6 +2753,7 @@ function pb_users_values_all_unique_labels() {
 			$arr[] = $one->name;
 		}
 	}
+	pb_pqp_log_speed("users values all unique labels");
 	return $arr;
 }
 
@@ -2812,6 +2834,8 @@ function pb_log($options) {
 
 	$sql = "INSERT INTO " . POLARBEAR_DB_PREFIX . "_log SET date = now(), user = $user, type = '$type', objectType='$objectType', objectID = $objectID $sqlObjectName ";
 	$polarbear_db->query($sql);
+
+	pb_pqp_log_speed("log");
 
 }
 
@@ -3585,14 +3609,34 @@ function pb_emaillist_shortcode($options) {
 }
 
 
+function pb_pqp_start() {
+	global $PQP, $PQPEnabled;
+	$PQPEnabled = (bool) $_GET["pb_debug"];
+	if ($PQPEnabled) {
+		$PQP = new PhpQuickProfiler(PhpQuickProfiler::getMicroTime());
+		Console::logSpeed("Profiler start");
+	}
+}
+function pb_pqp_display($args) {
+	global $PQP, $polarbear_db, $PQPEnabled;
+	if ($PQPEnabled) {
+		ob_start();
+		$PQP->display($polarbear_db);
+		$profilesContents = ob_get_clean();
+		// </body>
+		$args["buffer"] = str_replace("</body>", $profilesContents . "</body>", $args["buffer"]);
+		return $args;
+	}
+}
 
-
-
-
-
-
-
-
-
-
+function pb_pqp_log_speed($what = "") {
+	global $PQPEnabled;
+	if ($PQPEnabled) {
+		if ($what) {
+			Console::logSpeed($what);
+		} else {
+			Console::logSpeed();
+		}
+	}
+}
 ?>

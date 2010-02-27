@@ -16,6 +16,12 @@ define("POLARBEAR_PLUGINS_PATH", realpath(POLARBEAR_ROOT . "/polarbear-plugins/"
 define("POLARBEAR_PLUGINS_WEBPATH", POLARBEAR_WEBPATH . "polarbear-plugins/");
 
 require_once(POLARBEAR_ROOT . '/includes/php/functions.php');
+
+// php quick profiler, as soon as possible
+require_once(POLARBEAR_ROOT . '/includes/pqp/classes/PhpQuickProfiler.php');
+pb_event_attach("pb_boot_start", "pb_pqp_start");
+pb_event_attach("pb_page_contents", "pb_pqp_display");
+
 require_once(POLARBEAR_ROOT . '/polarbear-config.php');
 require_once(POLARBEAR_ROOT . '/includes/php/locale.php');
 require_once(POLARBEAR_ROOT . '/includes/dwoo/dwooAutoload.php');

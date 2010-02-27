@@ -125,6 +125,8 @@ class PolarBear_Article {
 		// update fields
 		$this->fieldsAndValues(true);
 
+		pb_pqp_log_speed("Article $id loaded");
+	
 	}
 	
 	function loadThroughObject($row) {
@@ -292,6 +294,7 @@ class PolarBear_Article {
 		}
 
 		$this->shortName = $validatedShortName;
+
 		return $this->shortName;
 	}
 	function getTeaser() {
@@ -495,6 +498,9 @@ class PolarBear_Article {
 				break;
 			}
 		}
+		
+		pb_pqp_log_speed("article prevArticle");
+		
 		if ($foundAtPos>=0) {
 			return $parentChildren[$foundAtPos];
 		} else {
@@ -519,6 +525,9 @@ class PolarBear_Article {
 				break;
 			}
 		}
+		
+		pb_pqp_log_speed("article nextArticle");
+				
 		if ($foundAtPos>=0 && $foundAtPos<$aCount) {
 			return $parentChildren[$foundAtPos];
 		} else {
@@ -864,6 +873,9 @@ class PolarBear_Article {
 		// */
 		
 		$templates = polarbear_getTemplates();
+		
+		pb_pqp_log_speed("article templateToUse");
+		
 		if ($templateType == 'custom') {
 			return $templateCustom;
 		} else if (isset($templates[$templateName])) {
@@ -988,6 +1000,8 @@ class PolarBear_Article {
 			
 		}
 		
+		pb_pqp_log_speed("article children()");
+		
 		$this->childrenCache[$optionsQuery] = $childrenArr;
 		return $this->childrenCache[$optionsQuery];
 	}
@@ -1009,6 +1023,7 @@ class PolarBear_Article {
 			$subChilds = array_merge($subChilds, $oneChild->descendants());
 		}
 		$childs = array_merge($childs, $subChilds);
+		pb_pqp_log_speed("article descendants()");
 		return $childs;
 	}
 
@@ -1068,9 +1083,11 @@ class PolarBear_Article {
 					$arr[] = $current;
 				}
 			}
+			pb_pqp_log_speed("article parents()");
 			$this->polarbear_article_parents = $arr;
 			return $this->polarbear_article_parents;
 		} else {
+			pb_pqp_log_speed("article parents()");
 			return $this->polarbear_article_parents;
 		}
 				
@@ -1104,6 +1121,7 @@ class PolarBear_Article {
 			}
 		}
 		$txtPath .= "/";
+		pb_pqp_log_speed("article fullpath()");
 		return $txtPath;
 		
 	}
@@ -1155,7 +1173,7 @@ class PolarBear_Article {
 				}
 			}
 		}
-
+		pb_pqp_log_speed("article fieldConnectorToUse()");
 		return $fieldConnectorID;
 		
 	}
@@ -1248,6 +1266,9 @@ class PolarBear_Article {
 				$arrFieldValues[$fieldID][$i]["fieldSetCount"] = $fieldCount;
 			}
 		}
+		
+		pb_pqp_log_speed("article fieldValues()");
+		
 		$this->fieldValues = $arrFieldValues;
 		return $this->fieldValues;
 	}
@@ -1302,6 +1323,9 @@ class PolarBear_Article {
 				}
 			}
 		}
+
+		pb_pqp_log_speed("article fieldsAndValues()");
+		
 		$this->fieldsAndValues = $arrFields;
 		return $this->fieldsAndValues;
 		
@@ -1405,6 +1429,7 @@ class PolarBear_Article {
 			$title .= $separator;
 			$title .= htmlspecialchars($oneParent->getTitlePage(), ENT_COMPAT, "UTF-8");
 		}
+		pb_pqp_log_speed("article fullPageTitle()");
 		return $title;
 	}
 
@@ -1472,7 +1497,9 @@ class PolarBear_Article {
 			}
 
 		}
-		
+
+		pb_pqp_log_speed("article isChildOrSubChildOf()");
+
 		return false;
 	}
 	/**
@@ -1580,6 +1607,8 @@ class PolarBear_Article {
 		$out = pb_event_fire("article_output", array("article" => $this, "output" => $out));
 		$out = $out["output"];
 
+		pb_pqp_log_speed("article output()");
+
 		return $out;
 	}
 
@@ -1610,6 +1639,8 @@ class PolarBear_Article {
 			$formatTmp = str_replace('{$editAdd}', $editAdd, $formatTmp);
 			$out .= $children[$i]->output($formatTmp);
 		}
+
+		pb_pqp_log_speed("article outputChildren()");
 
 		return $out;
 	}
@@ -1699,6 +1730,7 @@ class PolarBear_Article {
 		$shortnameForSQL = $polarbear_db->escape($shortname);
 		$sql = "SELECT id from " . POLARBEAR_DB_PREFIX . "_articles WHERE shortname = '$shortnameForSQL' AND status <> 'deleted' AND status <> 'revision'";
 		$articleID = $polarbear_db->get_var($sql);
+		pb_pqp_log_speed("article getArticleByShortname()");
 		if($articleID) {
 			$a = PolarBear_Article::getInstance($articleID);
 			return $a;
@@ -1738,6 +1770,9 @@ class PolarBear_Article {
 				$arrTags[] = polarbear_tag::getInstance($row->tagID);
 			}
 		}
+
+		pb_pqp_log_speed("article tags()");
+
 		return $arrTags;
 	}
 	
