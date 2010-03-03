@@ -5,10 +5,12 @@
  * @param object $class_name namn på klassen
  */
 function polarbear_class_autoload($class_name) {
+	pb_pqp_log_speed("class autoload start ($class_name)");
 	$file = POLARBEAR_ROOT.'/includes/php/class.'.strtolower($class_name).'.php';
 	if (is_file($file)) {
 		require POLARBEAR_ROOT.'/includes/php/class.'.strtolower($class_name).'.php';
 	}
+	pb_pqp_log_speed("class autoload end");
 }
 
 
@@ -955,12 +957,13 @@ function polarbear_getFieldStructureForFieldConnector($fieldConnectorID) {
 
 
 function polarbear_getFieldForArticleEdit($articleID, $fieldID, $numInSet = 0) {
+
 	$out = "";
+
 	global $polarbear_db;
 	// get info about this field. returns one row
 	$sql = "SELECT id, name, type, fieldcollectionID, deleted, prio, content FROM " . POLARBEAR_DB_PREFIX . "_fields WHERE id = $fieldID";
 	$field = $polarbear_db->get_row($sql);
-	
 	$fieldType = $field->type;
 	$fieldID = $field->id;
 	$fieldCollectionID = $field->fieldcollectionID;
@@ -977,14 +980,18 @@ function polarbear_getFieldForArticleEdit($articleID, $fieldID, $numInSet = 0) {
 	if (is_numeric($numInSet)) {
 		$sql = "SELECT value FROM " . POLARBEAR_DB_PREFIX . "_fields_values WHERE articleID = '$articleID' AND fieldID = $fieldID AND numInSet = $numInSet";
 		$fieldValue = $polarbear_db->get_var($sql);
+		$fieldValueNoSpecialChars = $fieldValue;
 		$fieldValue = htmlspecialchars ($fieldValue, ENT_QUOTES, "UTF-8");
 	}
+	#echo "<br>fieldValue: $fieldValue";
 	if ($fieldType == "multichoice") {
 		$arrChoices = explode("\n", $fieldContentUnserialized["multichoiceChoices"]);
+	#echo "<br>arrChoices: " . print_r($arrChoices,true);
 		$out .= "<select name='$fieldInputName' id='$fieldID'>";
 		foreach ($arrChoices as $oneChoice) {
 			$selected = "";
-			if (trim($oneChoice) == trim($fieldValue)) {
+			// compare both escaped and non-escaped value. was some bugs with for example ampersands...
+			if (trim($oneChoice) == trim($fieldValue) || trim($oneChoice) == trim($fieldValueNoSpecialChars)) {
 				$selected = " selected='selected' ";
 			}
 			$out .= "<option $selected>$oneChoice</option>";
