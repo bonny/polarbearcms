@@ -26,14 +26,14 @@ function pb_remove_all_shortcodes() {
 
 function pb_do_shortcode($args) {
 
-	$content = $args["output"];
+	#$content = $args["output"];
 	global $pb_shortcode_tags;
 
 	if (empty($pb_shortcode_tags) || !is_array($pb_shortcode_tags))
 		return $args;
 
 	$pattern = pb_get_shortcode_regex();
-	$args["output"] = preg_replace_callback('/'.$pattern.'/s', 'pb_do_shortcode_tag', $content);
+	$args["output"] = preg_replace_callback('/'.$pattern.'/s', 'pb_do_shortcode_tag', $args["output"]);
 
 	pb_pqp_log_speed("do shortcode");
 

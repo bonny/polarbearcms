@@ -120,12 +120,11 @@ class PolarBear_Article {
 			$sql = "SELECT * FROM " . POLARBEAR_DB_PREFIX . "_articles WHERE id = '$id' AND status <> 'deleted'";
 			$rows = $polarbear_db->get_results($sql);
 			$this->loadThroughObject($rows[0]);
+			pb_pqp_log_speed("Article $id loaded from db");
 		}
 
 		// update fields
 		$this->fieldsAndValues(true);
-
-		pb_pqp_log_speed("Article $id loaded");
 	
 	}
 	
@@ -499,8 +498,6 @@ class PolarBear_Article {
 			}
 		}
 		
-		pb_pqp_log_speed("article prevArticle");
-		
 		if ($foundAtPos>=0) {
 			return $parentChildren[$foundAtPos];
 		} else {
@@ -525,9 +522,7 @@ class PolarBear_Article {
 				break;
 			}
 		}
-		
-		pb_pqp_log_speed("article nextArticle");
-				
+					
 		if ($foundAtPos>=0 && $foundAtPos<$aCount) {
 			return $parentChildren[$foundAtPos];
 		} else {
@@ -1083,11 +1078,10 @@ class PolarBear_Article {
 					$arr[] = $current;
 				}
 			}
-			pb_pqp_log_speed("article parents()");
+			#pb_pqp_log_speed("article parents()");
 			$this->polarbear_article_parents = $arr;
 			return $this->polarbear_article_parents;
 		} else {
-			pb_pqp_log_speed("article parents()");
 			return $this->polarbear_article_parents;
 		}
 				
@@ -1121,7 +1115,7 @@ class PolarBear_Article {
 			}
 		}
 		$txtPath .= "/";
-		pb_pqp_log_speed("article fullpath()");
+		#pb_pqp_log_speed("article fullpath()");
 		return $txtPath;
 		
 	}
@@ -1173,7 +1167,7 @@ class PolarBear_Article {
 				}
 			}
 		}
-		pb_pqp_log_speed("article fieldConnectorToUse()");
+		#pb_pqp_log_speed("article fieldConnectorToUse()");
 		return $fieldConnectorID;
 		
 	}
@@ -1267,7 +1261,7 @@ class PolarBear_Article {
 			}
 		}
 		
-		pb_pqp_log_speed("article fieldValues()");
+		#pb_pqp_log_speed("article fieldValues()");
 		
 		$this->fieldValues = $arrFieldValues;
 		return $this->fieldValues;
@@ -1324,7 +1318,7 @@ class PolarBear_Article {
 			}
 		}
 
-		pb_pqp_log_speed("article fieldsAndValues()");
+		#pb_pqp_log_speed("article fieldsAndValues()");
 		
 		$this->fieldsAndValues = $arrFields;
 		return $this->fieldsAndValues;
@@ -1429,7 +1423,6 @@ class PolarBear_Article {
 			$title .= $separator;
 			$title .= htmlspecialchars($oneParent->getTitlePage(), ENT_COMPAT, "UTF-8");
 		}
-		pb_pqp_log_speed("article fullPageTitle()");
 		return $title;
 	}
 
@@ -1607,7 +1600,7 @@ class PolarBear_Article {
 		$out = pb_event_fire("article_output", array("article" => $this, "output" => $out));
 		$out = $out["output"];
 
-		pb_pqp_log_speed("article output()");
+		#pb_pqp_log_speed("article output()");
 
 		return $out;
 	}
