@@ -2923,7 +2923,7 @@ function pb_cache($args) {
 		$out .= " Time until refresh of cached file: $timeUntilRefresh seconds. -->";
 		$args["buffer"] = str_replace("</body>", "$out\n</body>", $args["buffer"]);
 		#$args["buffer"] = $args["buffer"] . $out;
-
+	
 		// check if cached file is old
 		$cachedFile_max_age = pb_cache_get_cached_file_max_age();
 		$now = time();
@@ -2952,7 +2952,7 @@ function pb_cache($args) {
 		$filemtime = filemtime($cacheFileName);
 		header('Last-Modified: '.gmdate('D, d M Y H:i:s', $filemtime).' GMT');
 		header("Etag: $etag");
-		header("Cache-Control: max-age=30");
+		header("Cache-Control: max-age=30, must-revalidate");
 	} else {
 		$str = "\n<!-- Caching of file was not allowed -->";
 		#$args["buffer"] = $args["buffer"] . $str;
