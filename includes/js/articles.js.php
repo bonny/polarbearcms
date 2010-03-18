@@ -4,6 +4,7 @@ $polarbear_cache_allow_client_caching = true;
 require_once("../../polarbear-boot.php");
 
 $tinymce_theme_advanced_styles = polarbear_setting("tinymce_theme_advanced_styles");
+$theme_advanced_blockformats = polarbear_setting("theme_advanced_blockformats");
 ?>
 // formuläret inladdat, på med lyssnare och sånt
 
@@ -64,7 +65,7 @@ function polarbear_article_onload() {
 		theme_advanced_resizing : true,
 		theme_advanced_resize_horizontal : false,
 		button_tile_map : true,
-		theme_advanced_blockformats : "p,h2,h3,h4",
+		theme_advanced_blockformats : "<?php print ($theme_advanced_blockformats)?$theme_advanced_blockformats:"p,h2,h3,h4" ?>",
 		content_css : "<?php polarbear_webpath() ?>includes/css/tinymce.css",
 		file_browser_callback : "polarbearTinyCustomFileBrowser",
 		relative_urls : false,
@@ -137,7 +138,7 @@ function polarbear_article_onload() {
 		theme_advanced_resizing : true,
 		theme_advanced_resize_horizontal : false,
 		button_tile_map : true,
-		theme_advanced_blockformats : "p,h2,h3,h4",
+		theme_advanced_blockformats : "<?php print ($theme_advanced_blockformats)?$theme_advanced_blockformats:"p,h2,h3,h4" ?>",
 		content_css : "<?php polarbear_webpath() ?>includes/css/tinymce.css",
 		file_browser_callback : "polarbearTinyCustomFileBrowser",
 		relative_urls : false,
@@ -591,7 +592,7 @@ $(".polarbear-article-edit-fields-add").live("click", function () {
 				theme_advanced_resizing : true,
 				theme_advanced_resize_horizontal : false,
 				button_tile_map : true,
-				theme_advanced_blockformats : "p,h2,h3,h4",
+				theme_advanced_blockformats : "<?php print ($theme_advanced_blockformats)?$theme_advanced_blockformats:"p,h2,h3,h4" ?>",
 				content_css : "<?php polarbear_webpath() ?>includes/css/tinymce.css",
 				file_browser_callback : "polarbearTinyCustomFileBrowser",
 				relative_urls : false,
