@@ -604,6 +604,15 @@ function polarbear_files_get_page_content($argv = null) {
 
 			<div id="uploadify">
 				<input type="file" id="uploadify1" name="uploadify1" />
+				<!-- the form below is used on browsers without flash -->
+				<div style="display:none" id="pb-files-upload-no-flash">
+					Upload file
+					<form enctype="multipart/form-data" action="<?php polarbear_webpath() ?>includes/php/files-upload.php" method="post">
+						<input type="file" id="uploadify_noflash" name="Filedata" size="5" />
+						<input type="hidden" name="upload-noflash" value="1" />
+						<input type="submit" value="Upload" />
+					</form>
+				</div>
 			</div>
 
 			<?php

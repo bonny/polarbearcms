@@ -25,6 +25,7 @@ Array
 
 // 1. kontrollera att uppladdningen gick igenom
 $file_error = $_FILES["Filedata"]["error"];
+
 $uploadOK = true;
 if ($file_error !== UPLOAD_ERR_OK) {
 	switch ($file_error) {
@@ -113,7 +114,24 @@ ok
 }
 
 if ($uploadOK) {
-	echo "ok";
+
+	if ($_POST["upload-noflash"]) {
+		// upload was done without flash
+		// how do we get back? just do a location-history--1?
+		$referer = $_SERVER["HTTP_REFERER"];
+		if ($referer) {
+			header("Location: $referer");
+			exit;
+		} else {
+			?>
+			<script>
+				history.go(-1);
+			</script>
+			<?php
+		}
+	} else {
+		echo "ok";
+	}
 } else {
 	header("HTTP/1.0 500 Internal Server Error");
 	echo "There was an error during upload: $errtxt"; // denna syns aldrig i klienten... hm...
