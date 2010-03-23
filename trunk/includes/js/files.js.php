@@ -92,6 +92,21 @@ function polarbear_files_onload() {
 				polarbear_files_onload();
 			});
 		},
+		onInit: function() {
+			// alert(123);
+			// if div #uploadify1Uploader exists that means that the flash was added. if not: show alternative upload form
+			setTimeout(function() {
+				var flashDiv = $("#uploadify1Uploader");
+				// alert(flashDiv.attr("tagName"));
+				// object = flash, div = inte flash
+				if (flashDiv.attr("tagName") == "DIV") {
+					// not flash, show alternative upload form
+					$("#pb-files-upload-no-flash").show();
+				}
+			}, 500);
+			
+			
+		},
 		scriptData: {uploaderID: <?php echo (int) $polarbear_u->id ?>}
 	});
 
