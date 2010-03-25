@@ -114,7 +114,16 @@ if (isset($_POST["login"])) {
 			pb_cookie("pb_ok_login", "1");
 			header("Location: $returnto");
 		} else {
-			header("Location: " . POLARBEAR_WEBPATH);
+		
+			// go to admin area or website
+			$goToAfter = $_POST["login-go-to-after"];
+			if ($goToAfter == 1) {
+				// go to domain
+				$gotoURL = "http://" . POLARBEAR_DOMAIN;
+			} else {
+				$gotoURL = POLARBEAR_WEBPATH;
+			}
+			header("Location: $gotoURL");
 		}
 		exit;
 		
@@ -354,14 +363,13 @@ if (isset($_POST["forgot-password"])) {
 					<label for="login-password">Password</label>
 					<input id="login-password" name="login-password" type="password" size="30" class="password text ui-widget-content ui-corner-all" />
 				</p>
-				<!--
-				<p>
-					<label>Go to PolarBear CMS</label>
-					<input type="radio" name="goTo" />
-					<label>Go to <?php polarbear_domain() ?></label>
-					<input type="radio" name="goTo" />				
-				</p>
-				-->
+
+				<div>
+					<div>After login, go to</div>
+					<input checked="checked" id="login-go-to-after-0" type="radio" class="radio" name="login-go-to-after" value="0" /><label class="checkbox" for="login-go-to-after-0"> Admin interface</label>
+					<br /><input type="radio" id="login-go-to-after-1" class="radio" name="login-go-to-after" value="1" /><label for="login-go-to-after-1" class="checkbox"> <?php polarbear_domain() ?></label>
+				</div>
+
 				<p>
 					<input type="checkbox" class="checkbox" value="1" name="login-remember-me" id="login-remember-me" checked="checked" />
 					<label class="checkbox" for="login-remember-me">Remember me on this computer</label>
@@ -369,15 +377,17 @@ if (isset($_POST["forgot-password"])) {
 
 				<p>
 					<input type="submit" value="Log in" class="submit fg-button ui-state-default ui-priority-primary ui-corner-all" name="login" />
-					or
-					<a href="http://<?php polarbear_domain() ?>">return to <?php polarbear_domain() ?></a>
 				</p>
+
 			</form>
 
 			<p class="forgot">
 				<a href="login.php?forgotPassword">Forgot your password?</a>
 			</p>
-
+			<!--
+			or
+			<a href="http://<?php polarbear_domain() ?>">return to <?php polarbear_domain() ?></a>
+			-->
 			<?php
 		}
 		?>
