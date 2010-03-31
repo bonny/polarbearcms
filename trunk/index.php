@@ -1,9 +1,7 @@
 <?php
-
 require_once("polarbear-boot.php");
 polarbear_require_admin();
 require_once("includes/php/admin-header.php");
-
 ?>
 
 	<div class="ui-layout-west">
