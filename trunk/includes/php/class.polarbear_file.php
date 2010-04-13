@@ -301,6 +301,12 @@ class PolarBear_File {
 		
 		// look for mime in $mimeTypes
 		foreach ($mimeTypes as $extension => $mime) {
+
+			// we like .jpg instead of .jpe
+			if ($extension == "jpe") {
+				$extension = "jpg";
+			}
+
 			if ($this->mime == $mime) {
 				return "{$dot}{$extension}";
 			}
