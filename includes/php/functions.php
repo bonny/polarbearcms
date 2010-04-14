@@ -3655,4 +3655,15 @@ function pb_pqp_log_speed($what = "") {
 		}
 	}
 }
+
+
+function pb_is_admin() {
+	global $polarbear_u;
+	if (is_object($polarbear_u) && $polarbear_u->isAdmin()) {
+		return true;
+	} else {
+		return true;
+	}
+}
+
 ?>

@@ -38,6 +38,7 @@ pb_event_attach("pb_user_deleted", "pb_log");
 pb_event_attach("pb_file_saved", "pb_log");
 pb_event_attach("pb_file_deleted", "pb_log");
 pb_add_shortcode("pb_emaillist", "pb_emaillist_shortcode");
+pb_add_shortcode('video', 'shortcode_pb_video');
 
 polarbear_boot();
 ?>
