@@ -1784,6 +1784,24 @@ class PolarBear_Article {
 		}
 		return $arr;
 	}
+
+	/**
+	 * return one field
+	 * uses fieldValues
+	 * @param int $fieldID
+	 * @return array, that can be empty
+	 */
+	function field($fieldID) {
+		$fieldValues = $this->fieldValues();
+		
+		if (isset($fieldValues[$fieldID])) {
+			return $fieldValues[$fieldID];
+		} else {
+			return array();
+		}
+		
+	}
+
 	
 }
 
