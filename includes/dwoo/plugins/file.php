@@ -21,6 +21,11 @@ function Dwoo_Plugin_file(Dwoo $dwoo, $id, $text=null, $attachment=false, $title
 		$title = " title=\"$title\" ";
 	}
 	
+	// if no text, use file name?
+	if (!$text) {
+		$text = $file->name;
+	}
+	
 	$class = "";
 	if ($extension = $file->getExtension()) {
 		$class = "filetype-$extension";
