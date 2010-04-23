@@ -164,6 +164,33 @@ class polarbear_tag {
 	function tagEscaped() {
 		return htmlspecialchars($this->name, ENT_COMPAT, "UTF-8");
 	}
+
+
+	/**
+	 * Get number of published  articles with this tag
+	 */
+	function getArticleCount() {
+		$numberOfArticles = 0;
+		$sql = "
+			SELECT 
+				count(tr.articleID) as numberOfArticles
+			FROM
+				" . POLARBEAR_DB_PREFIX . "_article_tag_relation AS tr
+			INNER JOIN
+				" . POLARBEAR_DB_PREFIX . "_articles AS a ON a.id = tr.articleID
+			INNER JOIN
+				" . POLARBEAR_DB_PREFIX . "_article_tags AS at ON at.id = tr.tagID
+			WHERE
+				tr.tagID = '$this->id' AND 
+				at.isDeleted = 0
+		";
+
+		global $polarbear_db;
+		if ($r = $polarbear_db->get_row($sql)) {
+			$numberOfArticles = $r->numberOfArticles;
+		}
+		return $numberOfArticles;
+	}
 	
 }
 
