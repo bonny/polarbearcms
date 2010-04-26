@@ -2747,7 +2747,8 @@ function pb_search_results($options) {
 	$arrReturn = array(
 		"hitsUL" => $strSearchResults,
 		"numHits" => $numHits,
-		"content" => $strSearchResultsFull
+		"content" => $strSearchResultsFull,
+		"articles" => $results
 	);
 	
 	pb_pqp_log_speed("search results");
