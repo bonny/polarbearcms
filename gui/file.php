@@ -49,8 +49,6 @@ $etag = md5($lastModified . serialize($_GET));
 // om vanlig fil eller bild utan argument (dvs. inte resize eller liknande)
 if (!$imageOptionsExists) {
 	
-	#polarbear_hd("file type: regular file");
-
 	// om clienten skickar med http_if_modified_since eller http_if_none_match ska vi kolla det
 	// bug: firefox verkar godta en 304 första gången men nästa gång så skickar den ingen if-modified-since...
 	if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) || isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
@@ -75,7 +73,7 @@ if (!$imageOptionsExists) {
 	}
 
 	// http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.1
-	header("Cache-Control: public"); // 3600 firefox börjar kolla if-modified-since och in-none-match
+	header("Cache-Control: public, max-age=86400"); // 3600 firefox börjar kolla if-modified-since och in-none-match
 	header("Content-Type: $file->mime");
 	header("Last-Modified: $lastModified"); 
 	header("ETag: \"$etag\""); 
@@ -146,7 +144,7 @@ if (!$imageOptionsExists) {
 
 		// Fixa till headers
 		$cacheFileSize = filesize(POLARBEAR_CACHEPATH . $cachefilename);
-		header("Cache-Control: public"); // firefox börjar kolla if-modified-since och in-none-match
+		header("Cache-Control: public, max-age=86400"); // firefox börjar kolla if-modified-since och in-none-match
 		header("Last-Modified: $cacheLastModified"); 
 		header("ETag: \"$getmd5\""); 
 		header("Content-Type: $contentType");
@@ -218,7 +216,7 @@ if (!$imageOptionsExists) {
 		$cacheFileSize = filesize(POLARBEAR_CACHEPATH . $cachefilename);
 		$cacheLastModified = filemtime(POLARBEAR_CACHEPATH . $cachefilename);
 		$cacheLastModified = gmdate("D, d M Y H:i:s", $cacheLastModified) . ' GMT';
-		header("Cache-Control: public"); // firefox börjar kolla if-modified-since och in-none-match
+		header("Cache-Control: public, max-age=86400"); // firefox börjar kolla if-modified-since och in-none-match
 		header("Last-Modified: $cacheLastModified"); 
 		header("ETag: \"$getmd5\""); 
 		header("Content-Type: $contentType");
