@@ -1516,7 +1516,7 @@ class PolarBear_Article {
 
 		if ($this->isPublished()) {
 			$isOk = true;
-		} else if ($this->getStatus()=="preview" && $polarbear_u->isAdmin()) {
+		} else if ($this->getStatus()=="preview" && is_object($polarbear_u) && $polarbear_u->isAdmin()) {
 			$isOk = true;
 		}
 		
